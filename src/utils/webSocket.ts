@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 
-class Socket {
+export default class Socket {
   private ws;
   private ee;
 
@@ -46,17 +46,4 @@ class Socket {
       console.log(Date().toString() + ": ", err);
     }
   }
-}
-
-const URL = process.env.REACT_APP_WEBSOCKET_URL;
-
-export default function onSocketConnect() {
-    const ws = new WebSocket(URL+"/");
-    let socket = new Socket(ws);
-    socket.on("message", receiveMessage);
-    function receiveMessage(e:any){
-        let message = JSON.parse(e.data);
-        console.log(message);
-    }
-    return socket;
 }
