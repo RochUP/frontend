@@ -2,6 +2,7 @@ import { ProFormText } from '@ant-design/pro-form';
 import {
   UserOutlined,
   LockOutlined,
+  IdcardOutlined
 } from '@ant-design/icons';
 import '@ant-design/pro-form/dist/form.css';
 import { Button, Space } from 'antd';
@@ -33,7 +34,21 @@ export default function RegisterPage () {
                     </div>
                     <div className='ant-pro-form-login-main'>
                         <ProFormText
-                            name='username'
+                            name="userid"
+                            fieldProps={{
+                            size: 'large',
+                            prefix: <IdcardOutlined className={'prefixIcon'} />,
+                            }}
+                            placeholder={'ユーザID'}
+                            rules={[
+                            {
+                                required: true,
+                                message: 'ユーザIDを入力してください!',
+                            },
+                            ]}
+                        />
+                        <ProFormText
+                            name="username"
                             fieldProps={{
                             size: 'large',
                             prefix: <UserOutlined className={'prefixIcon'} />,
