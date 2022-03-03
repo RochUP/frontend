@@ -8,7 +8,9 @@ function TestButton() {
         <Button type="primary"
           onClick={() => {signup("testId", "testName", "testPassword");}}
         >SignUp</Button>
-        <Button type="primary">LogIn</Button>
+        <Button type="primary"
+          onClick={() => {login("testId", "testPassword");}}
+        >LogIn</Button>
     </div>
   );
 }
