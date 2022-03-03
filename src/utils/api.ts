@@ -3,7 +3,7 @@ import axios from "axios";
 const URL = process.env.REACT_APP_API_URL;
 
 async function post(path:string, data:object) {
-    await axios.post(URL + path, data)
+    return await axios.post(URL + path, data=data)
         .then(res => {
             console.log(res);
             return res.data;
@@ -27,7 +27,7 @@ async function get(path:string) {
 }
 
 
-export function signup(userId:string, userName:string, userPassword:string){
+export async function signup(userId:string, userName:string, userPassword:string): Promise<any>{
     // TODO: 
     // - ID被りのレスポンス
     // - レスポンスのフォーマット
@@ -36,22 +36,41 @@ export function signup(userId:string, userName:string, userPassword:string){
         "userName": userName,
         "userPassword": userPassword
     }
+    // const data = new FormData();
+    // data.append('userId', userId);
+    // data.append('userName', userName);
+    // data.append('userPassword', userPassword);
+
+    console.log(data);
     
-    const response = post("/user/signup", data);
-    return response
+    return await post("/user/signup", data)
+        .then(res => {
+            return res;
+        })
+        .catch(err => {
+            throw err;
+        });
 }
 
-export function login(userId:string, userPassword:string){
+export async function login(userId:string, userPassword:string): Promise<any>{
     const data = {
         userId: userId,
         userPassword: userPassword,
     }
+    // const data = new URLSearchParams();
+    // data.append('userId', userId);
+    // data.append('userPassword', userPassword);
     
-    const response = post("/user/login", data);
-    return response;
+    return await post("/user/login", data)
+        .then(res => {
+            return res;
+        })
+        .catch(err => {
+            throw err;
+        });
 }
 
-export function meetingCreate(meetingName:string, startTime:Date, presenters:string[]){
+export function meetingCreate(meetingName:string, startTime:string, presenters:string[]){
     // TODO: 
     // - startTimeのフォーマット
     const data = {
@@ -59,6 +78,10 @@ export function meetingCreate(meetingName:string, startTime:Date, presenters:str
         startTime: startTime,
         presenters: presenters,
     }
+    // const data = new URLSearchParams();
+    // data.append('meetingName', meetingName);
+    // data.append('startTime', startTime);
+    // data.append('presenters', presenters);
 
     const response = post("/meeting/create", data);
     return response;
