@@ -32,9 +32,9 @@ export function signup(userId:string, userName:string, userPassword:string){
     // - ID被りのレスポンス
     // - レスポンスのフォーマット
     const data = {
-        userId: userId,
-        userName: userName,
-        userPassword: userPassword,
+        "userId": userId,
+        "userName": userName,
+        "userPassword": userPassword
     }
     
     const response = post("/user/signup", data);
