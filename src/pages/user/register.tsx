@@ -12,12 +12,26 @@ import { signup } from '../../utils/api';
 
 export default function RegisterPage () {
 
-    const handleRegisterClick = () => {
+    const handleRegisterClick = async () => {
         const userid = (document?.getElementById("userid") as HTMLInputElement).value;
         const username = (document?.getElementById("username") as HTMLInputElement).value;
         const password = (document?.getElementById("password") as HTMLInputElement).value;
         console.log(userid, username, password);
-        // signup("userId, username, password);
+        
+        await signup(userid, username, password)
+            .then(result => {
+                if (!result) {
+                    throw new Error("Signup failed");
+                }
+                alert("Signup success");
+                // TODO:
+                // - ローディング表示
+                // - 画面遷移
+            })
+            .catch(err => {
+                console.log(err);
+                alert(err.message);
+            });
     }
 
     return (

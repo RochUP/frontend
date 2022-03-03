@@ -1,6 +1,6 @@
 import { Button } from 'antd';
 
-import { signup, login } from '../utils/api';
+import { signup, login, meetingCreate, meetingJoin } from '../utils/api';
 
 function TestButton() {
   return (
@@ -11,6 +11,12 @@ function TestButton() {
         <Button type="primary"
           onClick={() => {login("test", "test");}}
         >LogIn</Button>
+        <Button type="primary"
+          onClick={() => {meetingCreate("meeting02", "2022/02/22 00:00:00", ["koki1998", "test01"]);}}
+        >MeetingCreare</Button>
+        <Button type="primary"
+          onClick={() => {meetingJoin("koki1998", 294);}}
+        >MeetingJoin</Button>
     </div>
   );
 }

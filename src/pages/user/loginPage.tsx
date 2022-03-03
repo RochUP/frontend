@@ -11,11 +11,25 @@ import { login } from '../../utils/api';
 
 export default function LoginPage () {
 
-    const handleLoginClick = () => {
+    const handleLoginClick = async () => {
         const userid = (document?.getElementById("userid") as HTMLInputElement).value;
         const password = (document?.getElementById("password") as HTMLInputElement).value;
         console.log(userid, password);
-        // login(userId, password);
+
+        await login(userid, password)
+            .then(result => {
+                if (!result) {
+                    throw new Error("Login failed");
+                }
+                alert("Login success");
+                // TODO:
+                // - ローディング表示
+                // - 画面遷移
+            })
+            .catch(err => {
+                console.log(err);
+                alert(err.message);
+            });
     }
 
     return (
