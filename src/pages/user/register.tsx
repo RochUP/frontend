@@ -25,6 +25,9 @@ export default function RegisterPage () {
                     throw new Error("Signup failed");
                 }
                 alert("Signup success");
+                // TODO:
+                // - ローディング表示
+                // - 画面遷移
             })
             .catch(err => {
                 console.log(err);

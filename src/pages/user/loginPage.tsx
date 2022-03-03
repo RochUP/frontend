@@ -23,6 +23,9 @@ export default function LoginPage () {
                     throw new Error("Login failed");
                 }
                 alert("Login success");
+                // TODO:
+                // - ローディング表示
+                // - 画面遷移
             })
             .catch(err => {
                 console.log(err);
