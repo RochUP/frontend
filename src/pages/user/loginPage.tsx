@@ -1,13 +1,23 @@
 import { ProFormText, } from '@ant-design/pro-form';
 import {
-  UserOutlined,
   LockOutlined,
+  IdcardOutlined
 } from '@ant-design/icons';
 import '@ant-design/pro-form/dist/form.css';
 import { Button, Space,} from 'antd';
 import { Link } from 'react-router-dom';
 
+import { login } from '../../utils/api';
+
 export default function LoginPage () {
+
+    const handleLoginClick = () => {
+        const userid = (document?.getElementById("userid") as HTMLInputElement).value;
+        const password = (document?.getElementById("password") as HTMLInputElement).value;
+        console.log(userid, password);
+        // login(userId, password);
+    }
+
     return (
         <div className='content___2zk1-'>
             <div className='ant-pro-form-login-container'>
@@ -22,16 +32,16 @@ export default function LoginPage () {
                     </div>
                         <div className='ant-pro-form-login-main'>
                             <ProFormText
-                                name="username"
+                                name="userid"
                                 fieldProps={{
                                 size: 'large',
-                                prefix: <UserOutlined className={'prefixIcon'} />,
+                                prefix: <IdcardOutlined className={'prefixIcon'} />,
                                 }}
-                                placeholder={'ユーザネーム: admin or user'}
+                                placeholder={'ユーザID'}
                                 rules={[
                                 {
                                     required: true,
-                                    message: 'ユーザネームを入力してください!',
+                                    message: 'ユーザIDを入力してください!',
                                 },
                                 ]}
                             />
@@ -50,7 +60,9 @@ export default function LoginPage () {
                                 ]}
                             />
                             <Space direction='vertical' style={{ width: 330 }}>
-                                <Button type='primary' block>ログイン</Button>
+                                <Button type='primary' block 
+                                    onClick={()=>{handleLoginClick()}}
+                                >ログイン</Button>
                                 <Link to={'../register'}>
                                     <Button type='link' block>新規登録</Button>
                                 </Link>

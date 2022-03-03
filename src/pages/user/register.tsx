@@ -7,7 +7,18 @@ import '@ant-design/pro-form/dist/form.css';
 import { Button, Space } from 'antd';
 import { Link } from 'react-router-dom';
 
+import { signup } from '../../utils/api';
+
 export default function RegisterPage () {
+
+    const handleRegisterClick = () => {
+        const userid = (document?.getElementById("userid") as HTMLInputElement).value;
+        const username = (document?.getElementById("username") as HTMLInputElement).value;
+        const password = (document?.getElementById("password") as HTMLInputElement).value;
+        console.log(userid, username, password);
+        // signup("userId, username, password);
+    }
+
     return (
         <div className='content___2zk1-'>
             <div className='ant-pro-form-login-container'>
@@ -22,7 +33,7 @@ export default function RegisterPage () {
                     </div>
                     <div className='ant-pro-form-login-main'>
                         <ProFormText
-                            name="username"
+                            name='username'
                             fieldProps={{
                             size: 'large',
                             prefix: <UserOutlined className={'prefixIcon'} />,
@@ -36,7 +47,7 @@ export default function RegisterPage () {
                             ]}
                         />
                         <ProFormText.Password
-                            name="password"
+                            name='password'
                             fieldProps={{
                             size: 'large',
                             prefix: <LockOutlined className={'prefixIcon'} />,
@@ -50,7 +61,9 @@ export default function RegisterPage () {
                             ]}
                         />
                         <Space direction='vertical' style={{ width: 330 }}>
-                            <Button type='primary' block>登録</Button>
+                            <Button type='primary' block
+                                onClick={() => {handleRegisterClick()}}
+                            >登録</Button>
                             <Link to={'../login'}>
                                 <Button type='link' block>ログイン</Button>
                             </Link>
