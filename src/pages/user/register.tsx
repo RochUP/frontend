@@ -19,8 +19,7 @@ export default function RegisterPage () {
         console.log(userid, username, password);
         
         await signup(userid, username, password)
-            .then(res => {
-                const result = res.result;
+            .then(result => {
                 if (!result) {
                     throw new Error("Signup failed");
                 }

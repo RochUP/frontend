@@ -45,7 +45,7 @@ export async function signup(userId:string, userName:string, userPassword:string
     
     return await post("/user/signup", data)
         .then(res => {
-            return res;
+            return res.result;
         })
         .catch(err => {
             throw err;
@@ -63,7 +63,7 @@ export async function login(userId:string, userPassword:string): Promise<any>{
     
     return await post("/user/login", data)
         .then(res => {
-            return res;
+            return res.result;
         })
         .catch(err => {
             throw err;

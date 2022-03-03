@@ -17,8 +17,7 @@ export default function LoginPage () {
         console.log(userid, password);
 
         await login(userid, password)
-            .then(res => {
-                const result = res.result;
+            .then(result => {
                 if (!result) {
                     throw new Error("Login failed");
                 }
