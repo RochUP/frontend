@@ -27,7 +27,7 @@ async function get(path:string) {
 }
 
 
-export async function signup(userId:string, userName:string, userPassword:string): Promise<any>{
+export async function signup(userId:string, userName:string, userPassword:string): Promise<boolean> {
     // TODO: 
     // - ID被りのレスポンス
     // - レスポンスのフォーマット
@@ -52,7 +52,7 @@ export async function signup(userId:string, userName:string, userPassword:string
         });
 }
 
-export async function login(userId:string, userPassword:string): Promise<any>{
+export async function login(userId:string, userPassword:string): Promise<boolean> {
     const data = {
         userId: userId,
         userPassword: userPassword,
