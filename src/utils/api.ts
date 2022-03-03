@@ -36,10 +36,6 @@ export async function signup(userId:string, userName:string, userPassword:string
         "userName": userName,
         "userPassword": userPassword
     }
-    // const data = new FormData();
-    // data.append('userId', userId);
-    // data.append('userName', userName);
-    // data.append('userPassword', userPassword);
 
     console.log(data);
     
@@ -57,9 +53,6 @@ export async function login(userId:string, userPassword:string): Promise<boolean
         userId: userId,
         userPassword: userPassword,
     }
-    // const data = new URLSearchParams();
-    // data.append('userId', userId);
-    // data.append('userPassword', userPassword);
     
     return await post("/user/login", data)
         .then(res => {
@@ -78,23 +71,19 @@ export function meetingCreate(meetingName:string, startTime:string, presenters:s
         startTime: startTime,
         presenters: presenters,
     }
-    // const data = new URLSearchParams();
-    // data.append('meetingName', meetingName);
-    // data.append('startTime', startTime);
-    // data.append('presenters', presenters);
 
     const response = post("/meeting/create", data);
     return response;
 }
 
-export function meetingJoin(userId:string, meetingId:string, choko:boolean=false){
+export function meetingJoin(userId:string, meetingId:number, choko:boolean=false){
     // TODO:
     // - startTimeのフォーマット
     // - return のフォーマット
     const data = {
         userId: userId,
         meetingId: meetingId,
-        choko: choko,
+        // choko: choko,
     }
 
     const response = post("/meeting/join", data);
