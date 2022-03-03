@@ -6,10 +6,10 @@ function TestButton() {
   return (
     <div>
         <Button type="primary"
-          onClick={() => {signup("testId", "testName", "testPassword");}}
+          onClick={() => {signup("test", "test", "test");}}
         >SignUp</Button>
         <Button type="primary"
-          onClick={() => {login("testId", "testPassword");}}
+          onClick={() => {login("test", "test");}}
         >LogIn</Button>
     </div>
   );
