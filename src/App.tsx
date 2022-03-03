@@ -1,14 +1,17 @@
-import React from 'react';
 import './App.css';
-import { Button } from 'antd';
+
+import {BrowserRouter as Router,  Route, Routes } from 'react-router-dom';
+
+import TestPage from './pages/TestPage';
 
 function App() {
   return (
     <div className="App">
-      <p>OTA!!!!!</p>
-      <>
-        <Button type="primary">OTA!</Button>
-      </>
+      <Router>
+        <Routes>
+          <Route path="/test" element={<TestPage />} />
+        </Routes>
+      </Router>
     </div>
   );
 }
