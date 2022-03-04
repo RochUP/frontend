@@ -63,17 +63,22 @@ export async function login(userId:string, userPassword:string): Promise<boolean
         });
 }
 
-export function meetingCreate(meetingName:string, startTime:string, presenters:string[]){
+export async function meetingCreate(meetingName:string, meetingStartTime:string, presenters:string[]){
     // TODO: 
     // - startTimeのフォーマット
     const data = {
         meetingName: meetingName,
-        startTime: startTime,
+        meetingStartTime: meetingStartTime,
         presenters: presenters,
     }
 
-    const response = post("/meeting/create", data);
-    return response;
+    return await post("/meeting/create", data)
+        .then(res => {
+            return res;
+        })
+        .catch(err => {
+            throw err;
+        });
 }
 
 export function meetingJoin(userId:string, meetingId:number, choko:boolean=false){
