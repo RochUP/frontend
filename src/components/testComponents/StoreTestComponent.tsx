@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 import { userLogin } from '../../actions/userActions';
+import { meetingJoin } from '../../actions/meetingActions';
 import store from '../../store';
 
 export default function StoreTestComponent() {
@@ -18,6 +19,21 @@ export default function StoreTestComponent() {
 
     }
 
+    // データの受け取り
+    const meetingId = useSelector((state: any) => state.meetingReducer.meetingId);
+    const meetingName = useSelector((state: any) => state.meetingReducer.meetingName);
+
+    const handleClick2 = () => {
+        const input_meetingId = document.getElementById('meetingId') as HTMLInputElement;
+        const input_meetingName = document.getElementById('meetingName') as HTMLInputElement;
+        console.log(input_meetingId.value);
+        console.log(input_meetingName.value);
+
+        // データの登録
+        store.dispatch(meetingJoin(+input_meetingId.value, input_meetingName.value, "1990/01/01 00:00:00", [], []));
+
+    }
+
     return (
         <div>
             <input id="userid" type="text"/>
@@ -26,6 +42,13 @@ export default function StoreTestComponent() {
 
             <p>{userid}</p>
             <p>{username}</p>
+
+            <input id="meetingId" type="number"/>
+            <input id="meetingName" type="text"/>
+            <button onClick={() => {handleClick2()} }>Store</button>
+
+            <p>{meetingId}</p>
+            <p>{meetingName}</p>
 
         </div>
     );
