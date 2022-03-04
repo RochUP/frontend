@@ -61,12 +61,11 @@ export default function MeetingHost() {
         // TODO:
         // - レスポンスが帰ってくるまでロード画面にする
         // - 作成完了したら画面遷移
-        // 帰ってきたレスポンスの会議データをStoreに
 
         await meetingCreate(meetingName, meetingDate, presenterIds)
             .then(res => {
                 console.log(res);
-                if (res.meetingId==-1){
+                if (!res.result){
                     throw new Error("Meeting Create Failed");
                 }
                 storeMeetingData(res);

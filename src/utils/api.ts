@@ -84,7 +84,15 @@ export async function meetingCreate(meetingName:string, meetingStartTime:string,
 
     return await post("/meeting/create", data)
         .then(res => {
-            return res;
+            const res_data = {
+                "result": (res.meetingId!=-1),
+                "meetingId": res.meetingId,
+                "meetingName": res.meetingName,
+                "meetingStartTime": res.meetingStartTime,
+                "presenters": res.presenters,
+                "documentIds": res.documentIds,
+            }
+            return res_data;
         })
         .catch(err => {
             throw err;
@@ -102,7 +110,15 @@ export async function meetingJoin(userId:string, meetingId:number){
 
     return await post("/meeting/join", data)
         .then(res => {
-            return res;
+            const res_data = {
+                "result": res.result,
+                "meetingId": res.meetingId,
+                "meetingName": res.meetingName,
+                "meetingStartTime": res.meetingStartTime,
+                "presenters": res.presenters,
+                "documentIds": res.documentIds,
+            }
+            return res_data;
         })
         .catch(err => {
             throw err;
