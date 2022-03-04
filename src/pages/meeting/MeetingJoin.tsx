@@ -30,6 +30,7 @@ export default function MeetingJoin() {
                     ○○システム
                 </Title>
                 <Breadcrumb style={{margin:'16px 0'}}>
+                    <Breadcrumb.Item>会議</Breadcrumb.Item>
                     <Breadcrumb.Item>会議参加</Breadcrumb.Item>
                 </Breadcrumb>
                 <div className="site-layout-content" style={{background: '#fff', margin:'16px 0'}}>
@@ -42,17 +43,12 @@ export default function MeetingJoin() {
                         </Space>
                     </Card>                    
                 </div>
-                <Breadcrumb style={{margin:'16px 0'}}>
-                    <Breadcrumb.Item>会議作成</Breadcrumb.Item>
-                </Breadcrumb>
                 <div className="site-layout-content" style={{background: '#fff', margin:'16px 0'}}>
-                    <Card title="ミーティングに作成する" bordered={false} style={{ width: '100%', textAlign:'center' }}>
-                        <Space direction="vertical" style={{width: '100%'}}>
-                            <p>ミーティングID</p>
-                            <Input style={{width: '20%', textAlign:'center'}}></Input>
-                            <p style={{margin:'16px 0'}}>ミーティングを作成するために、詳細設定で設定してください。</p>
+                    <Card title="ミーティング開催者ですか？" bordered={false} style={{ width: '100%', textAlign:'center' }}>
+                        <p style={{margin:'16px 0'}}>ミーティングを作成するために、詳細設定で設定してください。</p>
+                        <Link to={'../meeting/host'}>    
                             <Button type="primary" style={{width: '20%'}}>ミーティングを作成する</Button>
-                        </Space>
+                        </Link>
                     </Card>                    
                 </div>
             </Content>
