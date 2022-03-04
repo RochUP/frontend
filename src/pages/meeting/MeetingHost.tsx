@@ -1,15 +1,26 @@
-import { Breadcrumb, Button, Card, Input, Layout, Menu, Space } from "antd";
+import { Breadcrumb, Button, Card, DatePicker, Input, Layout, Menu, Space, } from "antd";
 import {
     UserOutlined
   } from '@ant-design/icons';
 import SubMenu from "antd/lib/menu/SubMenu";
 import { Typography } from 'antd';
 import { Link } from "react-router-dom";
+// import jaJP from 'antd/es/locale/ja_JP';
 import "../../assets/css/Pages.css";
 
 const { Header, Footer, Content } = Layout;
 
-export default function MeetingJoin() {
+function onChange(value: any, dateString: any) {
+    console.log('Selected Time: ', value);
+    console.log('Formatted Selected Time: ', dateString);
+  }
+  
+  function onOk(value: any) {
+    console.log('onOk: ', value);
+  }
+  
+
+export default function MeetingHost() {
 
     const { Title } = Typography;
 
@@ -31,24 +42,27 @@ export default function MeetingJoin() {
                 </Title>
                 <Breadcrumb style={{margin:'16px 0'}}>
                     <Breadcrumb.Item>会議</Breadcrumb.Item>
-                    <Breadcrumb.Item>会議参加</Breadcrumb.Item>
+                    <Breadcrumb.Item>会議作成</Breadcrumb.Item>
                 </Breadcrumb>
                 <div className="site-layout-content" style={{background: '#fff', margin:'16px 0'}}>
-                    <Card title="ミーティングに参加する" bordered={false} style={{ width: '100%', textAlign:'center' }}>
+                    <Card title="ミーティングに作成する" bordered={false} style={{ width: '100%', textAlign:'center' }}>
                         <Space direction="vertical" style={{width: '100%'}}>
-                            <p>ミーティングID</p>
-                            <Input type={'number'} style={{width: '20%', textAlign:'center'}} placeholder="ミーティングIDを入力してください" />
-                            <p style={{margin:'16px 0'}}>ミーティングに参加するために、ミーティング開催者からミーティングを取得してください。</p>
-                            <Button type="primary" style={{width: '20%'}}>ミーティングに参加する</Button>
-                        </Space>
-                    </Card>                    
-                </div>
-                <div className="site-layout-content" style={{background: '#fff', margin:'16px 0'}}>
-                    <Card title="ミーティング開催者ですか？" bordered={false} style={{ width: '100%', textAlign:'center' }}>
-                        <p style={{margin:'16px 0'}}>ミーティングを作成するために、詳細設定で設定してください。</p>
-                        <Link to={'../meeting/host'}>    
+                            <p style={{margin:'16px 0'}}>ミーティングを作成するために、詳細設定で設定してください。</p>
+                            <Space>
+                                <span>発表者</span>
+                                <Input style={{width: '120%', textAlign:'center'}} placeholder="発表者を入力してください" ></Input>
+                            </Space>
+                            <Space>
+                                <span>開始時間</span>
+                                <DatePicker showTime onChange={onChange} onOk={onOk} />
+                            </Space>
+                            <Space>
+                                <span>会議名</span>
+                                <Input style={{width: '120%', textAlign:'center'}} placeholder="会議名を入力してください" ></Input>
+                            </Space>
+
                             <Button type="primary" style={{width: '20%'}}>ミーティングを作成する</Button>
-                        </Link>
+                        </Space>
                     </Card>                    
                 </div>
             </Content>
