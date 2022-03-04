@@ -7,6 +7,7 @@ import LoginPage from './pages/user/loginPage';
 import RegisterPage from './pages/user/register';
 import MeetingJoin from './pages/meeting/MeetingJoin';
 import MeetingHost from './pages/meeting/MeetingHost';
+import InMeeting from './pages/meeting/InMeeting';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/register" element={<RegisterPage/>} />
           <Route path='/meeting/join' element={<MeetingJoin />} />
           <Route path='/meeting/host' element={<MeetingHost />} />
+          <Route path='/meeting/in' element={<InMeeting />} />
         </Routes>
       </Router>
     </div>
