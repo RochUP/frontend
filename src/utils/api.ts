@@ -81,21 +81,25 @@ export async function meetingCreate(meetingName:string, meetingStartTime:string,
         });
 }
 
-export function meetingJoin(userId:string, meetingId:number, choko:boolean=false){
+export async function meetingJoin(userId:string, meetingId:number){
     // TODO:
     // - startTimeのフォーマット
     // - return のフォーマット
     const data = {
         userId: userId,
         meetingId: meetingId,
-        // choko: choko,
     }
 
-    const response = post("/meeting/join", data);
-    return response;
+    return await post("/meeting/join", data)
+        .then(res => {
+            return res;
+        })
+        .catch(err => {
+            throw err;
+        });
 }
 
-export function postDocument(userId:string, meetingId:string, file:string="", script:string=""){
+export async function postDocument(userId:string, meetingId:string, file:string="", script:string=""){
     // TODO:
     // - fileの扱い(ファイルのパスを受け取って，ここでBase64エンコードするか)
     const data = {
@@ -105,11 +109,25 @@ export function postDocument(userId:string, meetingId:string, file:string="", sc
         script: script,
     }
 
-    const response = post("/document", data);
-    return response;
+    return await post("/document", data)
+    .then(res => {
+        return res;
+    })
+    .catch(err => {
+        throw err;
+    });
 }
 
-export function getDocument(documentId:string){
-    const response = get("/document/?id=" + documentId);
-    return response;
+export async function getDocument(documentId:string){
+    const data = {
+        documentId: documentId,
+    }
+
+    return await post("/document", data)
+    .then(res => {
+        return res;
+    })
+    .catch(err => {
+        throw err;
+    });
 }
