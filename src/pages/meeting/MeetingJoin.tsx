@@ -21,6 +21,11 @@ export default function MeetingJoin() {
         const meetingId = +(document.getElementById("meetingId") as HTMLInputElement).value;
         console.log(userid, meetingId);
 
+        // TODO:
+        // - レスポンスが帰ってくるまでロード画面にする
+        // - 作成完了したら画面遷移
+        // 帰ってきたレスポンスの会議データをStoreに
+
         await meetingJoin(userid, meetingId)
             .then((res: any) => {
                 console.log(res);
