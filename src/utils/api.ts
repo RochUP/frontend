@@ -27,7 +27,7 @@ async function get(path:string) {
 }
 
 
-export async function signup(userId:string, userName:string, userPassword:string): Promise<boolean> {
+export async function signup(userId:string, userName:string, userPassword:string) {
     // TODO: 
     // - ID被りのレスポンス
     // - レスポンスのフォーマット
@@ -41,14 +41,19 @@ export async function signup(userId:string, userName:string, userPassword:string
     
     return await post("/user/signup", data)
         .then(res => {
-            return res.result;
+            const res_data = {
+                "result": res.result,
+                "userId": userId, //res.userId,
+                "userName": userName, //res.userName,
+            }
+            return res_data;
         })
         .catch(err => {
             throw err;
         });
 }
 
-export async function login(userId:string, userPassword:string): Promise<boolean> {
+export async function login(userId:string, userPassword:string) {
     const data = {
         userId: userId,
         userPassword: userPassword,
@@ -56,7 +61,12 @@ export async function login(userId:string, userPassword:string): Promise<boolean
     
     return await post("/user/login", data)
         .then(res => {
-            return res.result;
+            const res_data = {
+                "result": res.result,
+                "userId": userId, //res.userId,
+                "userName": "unknown", //res.userName,
+            }
+            return res_data;
         })
         .catch(err => {
             throw err;
