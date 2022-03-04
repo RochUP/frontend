@@ -1,6 +1,6 @@
 import { Button } from 'antd';
 
-import { signup, login, meetingCreate, meetingJoin } from '../utils/api';
+import { signup, login, meetingCreate, meetingJoin } from '../../utils/api';
 
 function TestButton() {
   return (
