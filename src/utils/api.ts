@@ -32,9 +32,9 @@ export async function signup(userId:string, userName:string, userPassword:string
     // - ID被りのレスポンス
     // - レスポンスのフォーマット
     const data = {
-        "userId": userId,
-        "userName": userName,
-        "userPassword": userPassword
+        userId: userId,
+        userName: userName,
+        userPassword: userPassword
     }
 
     console.log(data);
@@ -42,9 +42,9 @@ export async function signup(userId:string, userName:string, userPassword:string
     return await post("/user/signup", data)
         .then(res => {
             const res_data = {
-                "result": res.result,
-                "userId": userId, //res.userId,
-                "userName": userName, //res.userName,
+                result: res.result,
+                userId: userId, //res.userId,
+                userName: userName, //res.userName,
             }
             return res_data;
         })
@@ -62,9 +62,9 @@ export async function login(userId:string, userPassword:string) {
     return await post("/user/login", data)
         .then(res => {
             const res_data = {
-                "result": res.result,
-                "userId": userId, //res.userId,
-                "userName": "unknown", //res.userName,
+                result: res.result,
+                userId: userId, //res.userId,
+                userName: "unknown", //res.userName,
             }
             return res_data;
         })
@@ -85,12 +85,12 @@ export async function meetingCreate(meetingName:string, meetingStartTime:string,
     return await post("/meeting/create", data)
         .then(res => {
             const res_data = {
-                "result": (res.meetingId!=-1),
-                "meetingId": res.meetingId,
-                "meetingName": res.meetingName,
-                "meetingStartTime": res.meetingStartTime,
-                "presenters": res.presenters,
-                "documentIds": res.documentIds,
+                result: (res.meetingId!=-1),
+                meetingId: res.meetingId,
+                meetingName: res.meetingName,
+                meetingStartTime: res.meetingStartTime,
+                presenters: res.presenters,
+                documentIds: res.documentIds,
             }
             return res_data;
         })
@@ -111,12 +111,12 @@ export async function meetingJoin(userId:string, meetingId:number){
     return await post("/meeting/join", data)
         .then(res => {
             const res_data = {
-                "result": res.result,
-                "meetingId": res.meetingId,
-                "meetingName": res.meetingName,
-                "meetingStartTime": res.meetingStartTime,
-                "presenters": res.presenters,
-                "documentIds": res.documentIds,
+                result: res.result,
+                meetingId: res.meetingId,
+                meetingName: res.meetingName,
+                meetingStartTime: res.meetingStartTime,
+                presenters: res.presenters,
+                documentIds: res.documentIds,
             }
             return res_data;
         })
@@ -125,19 +125,20 @@ export async function meetingJoin(userId:string, meetingId:number){
         });
 }
 
-export async function postDocument(userId:string, meetingId:string, file:string="", script:string=""){
+export async function postDocument(documentId: number, documentFile:string="", script:string=""){
     // TODO:
     // - fileの扱い(ファイルのパスを受け取って，ここでBase64エンコードするか)
     const data = {
-        userId: userId,
-        meetingId: meetingId,
-        file: file,
+        documentId: documentId,
+        documentFile: documentFile,
         script: script,
     }
 
-    return await post("/document", data)
+    return await post("/document/register", data)
     .then(res => {
-        return res;
+        const res_data = {
+        }
+        return res_data;
     })
     .catch(err => {
         throw err;
@@ -149,9 +150,13 @@ export async function getDocument(documentId:string){
         documentId: documentId,
     }
 
-    return await post("/document", data)
+    return await post("/document/get", data)
     .then(res => {
-        return res;
+        const res_data = {
+            documentFile: res.documentFile,
+            script: res.script,
+        }
+        return res_data;
     })
     .catch(err => {
         throw err;
