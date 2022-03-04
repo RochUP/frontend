@@ -8,6 +8,8 @@ import { Link } from "react-router-dom";
 import "../../assets/css/Pages.css";
 import { useSelector } from "react-redux";
 import { meetingJoin } from "../../utils/api";
+import store from "../../store";
+import { meetingJoinAction } from "../../actions/meetingActions";
 
 const { Header, Footer, Content } = Layout;
 
@@ -24,7 +26,6 @@ export default function MeetingJoin() {
         // TODO:
         // - レスポンスが帰ってくるまでロード画面にする
         // - 作成完了したら画面遷移
-        // 帰ってきたレスポンスの会議データをStoreに
 
         await meetingJoin(userid, meetingId)
             .then((res: any) => {
@@ -32,6 +33,7 @@ export default function MeetingJoin() {
                 if(!res.result){
                     throw new Error("Join Meeting Failed");
                 }
+                storeMeetingData(res);
                 alert("join success");
             })
             .catch((err: any) => {
@@ -39,6 +41,10 @@ export default function MeetingJoin() {
                 alert(err.message);
             });
 
+    }
+
+    const storeMeetingData = (res: any) => {
+        store.dispatch(meetingJoinAction(res.meetingId, res.meetingName, res.meetingStartTime, res.presenterIds, res.documentIds));
     }
 
     return (

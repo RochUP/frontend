@@ -11,6 +11,8 @@ import { Link } from "react-router-dom";
 import "../../assets/css/Pages.css";
 import { useState } from "react";
 import { meetingCreate } from "../../utils/api";
+import store from "../../store";
+import { meetingJoinAction } from "../../actions/meetingActions";
 
 const { Header, Footer, Content } = Layout;
 
@@ -67,12 +69,17 @@ export default function MeetingHost() {
                 if (res.meetingId==-1){
                     throw new Error("Meeting Create Failed");
                 }
+                storeMeetingData(res);
                 alert("meeting ID: "+res.meetingId+" created");
             })
             .catch(err => {
                 console.log(err);
                 alert(err.message);
             });
+    }
+
+    const storeMeetingData = (res: any) => {
+        store.dispatch(meetingJoinAction(res.meetingId, res.meetingName, res.meetingStartTime, res.presenterIds, res.documentIds));
     }
 
     return (
