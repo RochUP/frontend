@@ -15,8 +15,8 @@ export default function MeetingJoin() {
 
     return (
         <Layout >
-            <Header>
-                <Menu theme="dark" mode="horizontal" >
+            <Header style={{maxHeight: 60}}>
+                <Menu theme="dark" mode="horizontal" style={{maxHeight: 60}}>
                     <SubMenu key="sub1" icon={<UserOutlined />} title='ユーザ' style={{paddingLeft:'90%'}}>
                         <Menu.Item key="1">プロファイル</Menu.Item>
                         <Link to={'../login'}>
@@ -53,11 +53,11 @@ export default function MeetingJoin() {
                 </div>
             </Content>
             <Footer style={{ 
-                borderTop: '1px solid #e8e8e8',
-                position: 'fixed',
+                position: 'relative',
                 left: 0,
                 bottom: 0,
                 width: '100%',
+                maxHeight: 60,
                 textAlign: 'center',}}>
                 Made by RochUP Team
             </Footer>

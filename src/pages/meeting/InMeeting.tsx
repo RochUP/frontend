@@ -50,7 +50,7 @@ export default function InMeeting() {
             author: '匿名',
             content: (
             <p>
-                ここはコメントを表示する。
+                ここでコメントを表示する。
             </p>
             ),
             datetime: (
@@ -59,28 +59,82 @@ export default function InMeeting() {
                 </Tooltip>
             ),
         },
-        // {
-        //     author: '匿名',
-        //     content: (
-        //     <p>
-        //         ここはコメント２を表示する。
-        //     </p>
-        // ),
-        // datetime: (
-        //     <Tooltip title={moment().subtract(2, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-        //     <span>{moment().subtract(2, 'days').fromNow()}</span>
-        //     </Tooltip>
-        // ),
-        // },
+        {
+            author: '匿名',
+            content: (
+            <p>
+                ここでコメントを表示する。
+            </p>
+            ),
+            datetime: (
+                <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
+                    <span>{moment().subtract(1, 'days').fromNow()}</span>
+                </Tooltip>
+            ),
+        },
+        {
+            author: '匿名',
+            content: (
+            <p>
+                ここでコメントを表示する。
+            </p>
+            ),
+            datetime: (
+                <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
+                    <span>{moment().subtract(1, 'days').fromNow()}</span>
+                </Tooltip>
+            ),
+        },
+        {
+            author: '匿名',
+            content: (
+            <p>
+                ここでコメントを表示する。
+            </p>
+            ),
+            datetime: (
+                <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
+                    <span>{moment().subtract(1, 'days').fromNow()}</span>
+                </Tooltip>
+            ),
+        },
+        {
+            author: '匿名',
+            content: (
+            <p>
+                ここでコメントを表示する。
+            </p>
+            ),
+            datetime: (
+                <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
+                    <span>{moment().subtract(1, 'days').fromNow()}</span>
+                </Tooltip>
+            ),
+        },
+        {
+            author: '匿名',
+            content: (
+            <p>
+                ここでコメントを表示する。
+            </p>
+            ),
+            datetime: (
+                <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
+                    <span>{moment().subtract(1, 'days').fromNow()}</span>
+                </Tooltip>
+            ),
+        },
     ];
 
     return (
         <Layout>
-            <Header>
-                <Menu theme="dark" mode="horizontal" >
+            <Header style={{maxHeight: 60}}>
+                <Menu theme="dark" mode="horizontal" style={{maxHeight: 60}}>
                     <SubMenu key="sub1" icon={<UserOutlined />} title='ユーザ' style={{paddingLeft:'90%'}}>
                         <Menu.Item key="1">プロファイル</Menu.Item>
-                        <Menu.Item key="2">ログアウト</Menu.Item>
+                        <Link to={'../login'}>
+                            <Menu.Item key="2">ログアウト</Menu.Item>
+                        </Link>
                     </SubMenu>
                 </Menu>
             </Header>
@@ -94,36 +148,33 @@ export default function InMeeting() {
                 </Breadcrumb>
                 <div className="site-layout-content" style={{background: '#fff'}}>
                     <Row>
-                        <Col span={12}> 
+                        <Col span={12} style={{maxHeight: 50}}> 
                             {/* style={{background:'#DD2248'}}> */}
-                            <Title level={3}>○○会議進行中</Title>
-                            <Space direction="vertical">
-                                <Text type="secondary">会議ID:</Text>
-                                <div className="meeting-control">
-                                    <Link to={'../meeting/join'}>
-                                        <Button type="primary" style={{marginRight:'10px'}}>退出</Button>
-                                    </Link>
-                                </div>
-                            </Space>
+                            <Title level={3} style={{marginLeft:'5%'}}>○○会議進行中</Title>
+                            <Text type="secondary" style={{marginLeft:'5%'}}>会議ID:</Text>
+                            <Text type="secondary" style={{marginLeft: 5}}>ABCD1234567890</Text>
                         </Col>
-                        <Col span={12}>
+                        <Col span={12} style={{maxHeight: 50}}>
                             {/* style={{background:'#DD2248'}}> */}
-                            <Title level={4}>コメント一覧</Title>
+                            <Link to={'../meeting/join'} style={{marginLeft:'90%'}}>
+                                        <Button type="primary" danger>退出</Button>
+                            </Link>
+                            <Title level={4} style={{marginLeft:'40%', width:'50%'}}>コメント一覧</Title>
                         </Col>
                         <Divider />
                         {/* 左側のコンポーネント */}
                         <Col span={12} style={{padding:"8px 0", margin:'8px'}}>
-                            <Card style={{ width: '100%', minHeight: 300 }}>
-                                <Title level={4}>ここは司会メッセージ</Title>
+                            <Card style={{ width: '100%', minHeight: 341, maxHeight: 500 }}>
+                                <Title level={4}>ここで司会メッセージを表示する</Title>
                                 <Divider />
-                                This area for slide show
+                                <p style={{minHeight: 341}}>This area for slide show</p>
                             </Card>
                         </Col>
                         {/* 右側のコンポーネント */}
                         <Col span={11} style={{padding:"8px 0", margin:'8px'}}>
-                            <Card style={{ width: '100%', minHeight: 300 }}>
+                            <Card style={{ width: '100%', minHeight: 340, maxHeight: 500 }}>
                                 <Tabs defaultActiveKey="1">
-                                    <TabPane tab="発表者1" key="1">
+                                    <TabPane tab="発表者1" key="1" style={{maxHeight: 370, overflow:'scroll', overflowX:'hidden'}}>
                                         <List
                                             className="comment-list"
                                             itemLayout="horizontal"
@@ -140,7 +191,7 @@ export default function InMeeting() {
                                             )}
                                         />
                                     </TabPane>
-                                    <TabPane tab="発表者2" key="2">
+                                    <TabPane tab="発表者2" key="2" style={{maxHeight: 370, overflow:'scroll', overflowX:'hidden'}}>
                                         <List
                                                 className="comment-list"
                                                 itemLayout="horizontal"
@@ -162,22 +213,22 @@ export default function InMeeting() {
                         </Col>
                         {/* 左側操作エリア */}
                         <Col span={12} style={{padding:"8px 0", margin:'8px'}}>
-                            <Button type="primary" icon={<ArrowUpOutlined />} style={{width:'100%'}}>Hands up</Button>
+                            <Button type="primary" icon={<ArrowUpOutlined />} style={{width:'45%', marginLeft:'25%'}}>Hands up</Button>
                         </Col>
                         {/* 右側操作エリア */}
                         <Col span={11} style={{padding:"8px 0", margin:'8px'}}>
-                            <Input placeholder="ここでコメントを書いてください" style={{width:'80%'}}></Input>
+                            <Input placeholder="ここでコメントを書いてください" style={{width:'70%', marginLeft:'5%'}}></Input>
                             <Button type="primary" icon={<CommentOutlined />} style={{width:'20%'}}>Comment</Button>
                         </Col>
                     </Row>
                 </div>
             </Content>
             <Footer style={{ 
-                borderTop: '1px solid #e8e8e8',
-                position: 'fixed',
+                position: 'relative',
                 left: 0,
                 bottom: 0,
                 width: '100%',
+                maxHeight: 60,
                 textAlign: 'center',}}>
                 Made by RochUP Team
             </Footer>
