@@ -1,7 +1,7 @@
 import { Breadcrumb, Button, Card, Input, Layout, Menu, Space } from "antd";
 import {
     UserOutlined
-  } from '@ant-design/icons';
+} from '@ant-design/icons';
 import SubMenu from "antd/lib/menu/SubMenu";
 import { Typography } from 'antd';
 import { Link } from "react-router-dom";
