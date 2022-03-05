@@ -8,10 +8,10 @@ function TestPage() {
   return (
     <div>
         {/* <TestButton /> */}
-        {/* <PdfViewerComponent />
-        <WSTestComponent /> */}
+        {/* <PdfViewerComponent /> */}
+        <WSTestComponent />
         {/* <StoreTestComponent /> */}
-        <SpeechRecTestComponent />
+        {/* <SpeechRecTestComponent /> */}
     </div>
   );
 }

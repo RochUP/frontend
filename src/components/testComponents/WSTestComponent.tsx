@@ -1,28 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Socket from "../../utils/webSocket";
+import { sendMessage, receiveData, sendQuestion } from "../../utils/webSocketUtils";
+
+const URL = process.env.REACT_APP_WEBSOCKET_URL;
+const ws = new WebSocket(URL+"");
+let socket = new Socket(ws);
 
 export default function WSTestComponent() {
     const [socketData, setSocketData] = useState({message: "init"});
 
-    const URL = process.env.REACT_APP_WEBSOCKET_URL;
-    const ws = new WebSocket(URL+"");
-    let socket = new Socket(ws);
-
-    socket.on("message", receiveData);
-    function receiveData(e:any) {
-        let data = JSON.parse(e.data);
+    function receive(e:any) {
+        let data = receiveData(e.data);
         console.log(data);
-        setSocketData(data);
     }
+    useEffect(() => {
+        console.log("socket on");
+        socket.on("message", receive);
+    }, []);
 
     function handleClick() {
-        let message = {
-            messagetype: "message",
-            message: "Hello"
-        }
-        const data = JSON.stringify(message);
-        console.log(data);
-        socket.emit(data);
+        sendMessage(socket=socket, "Hello World");
     }
 
     return (
