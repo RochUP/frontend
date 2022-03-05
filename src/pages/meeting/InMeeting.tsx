@@ -19,9 +19,9 @@ const { Text } = Typography;
 
 const { TabPane } = Tabs;
 
-function callback(key: any) {
-    console.log(key);
-}
+// function callback(key: any) {
+//     console.log(key);
+// }
 
 export default function InMeeting() {
 
@@ -122,7 +122,7 @@ export default function InMeeting() {
                         {/* 右側のコンポーネント */}
                         <Col span={11} style={{padding:"8px 0", margin:'8px'}}>
                             <Card style={{ width: '100%', minHeight: 300 }}>
-                                <Tabs defaultActiveKey="1" onChange={callback}>
+                                <Tabs defaultActiveKey="1">
                                     <TabPane tab="発表者1" key="1">
                                         <List
                                             className="comment-list"
@@ -141,7 +141,21 @@ export default function InMeeting() {
                                         />
                                     </TabPane>
                                     <TabPane tab="発表者2" key="2">
-                                        This area for comment to presenter No.2
+                                        <List
+                                                className="comment-list"
+                                                itemLayout="horizontal"
+                                                dataSource={data}
+                                                renderItem={item => (
+                                                    <li>
+                                                        <Comment
+                                                            actions={likeActions}
+                                                            author={item.author}
+                                                            content={item.content}
+                                                            datetime={item.datetime}
+                                                        />
+                                                    </li>
+                                                )}
+                                        />
                                     </TabPane>
                                 </Tabs>
                             </Card>    
