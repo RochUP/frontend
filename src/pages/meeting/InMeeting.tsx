@@ -12,6 +12,7 @@ import "../../assets/css/Pages.css";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import { createElement, useState } from "react";
+import CommentListComponent from "../../components/meeting/CommentListComponent";
 
 const { Header, Footer, Content } = Layout;
 
@@ -26,105 +27,6 @@ const { TabPane } = Tabs;
 export default function InMeeting() {
 
     const { Title } = Typography;
-
-
-    const [likes, setLikes] = useState(0);
-    const [action, setAction] : any[] = useState(null);
-    
-    const like = () => {
-        setLikes(1);
-        setAction('liked');
-    };
-
-    const likeActions = [
-        <Tooltip key="comment-basic-like" title="いいね！">
-            <span onClick={like}>
-                {createElement(action === 'liked' ? LikeFilled : LikeOutlined)}
-                <span className="comment-action">{likes}</span>
-            </span>
-        </Tooltip>
-    ]
-
-    const data = [
-        {
-            author: '匿名',
-            content: (
-            <p>
-                ここでコメントを表示する。
-            </p>
-            ),
-            datetime: (
-                <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-                    <span>{moment().subtract(1, 'days').fromNow()}</span>
-                </Tooltip>
-            ),
-        },
-        {
-            author: '匿名',
-            content: (
-            <p>
-                ここでコメントを表示する。
-            </p>
-            ),
-            datetime: (
-                <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-                    <span>{moment().subtract(1, 'days').fromNow()}</span>
-                </Tooltip>
-            ),
-        },
-        {
-            author: '匿名',
-            content: (
-            <p>
-                ここでコメントを表示する。
-            </p>
-            ),
-            datetime: (
-                <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-                    <span>{moment().subtract(1, 'days').fromNow()}</span>
-                </Tooltip>
-            ),
-        },
-        {
-            author: '匿名',
-            content: (
-            <p>
-                ここでコメントを表示する。
-            </p>
-            ),
-            datetime: (
-                <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-                    <span>{moment().subtract(1, 'days').fromNow()}</span>
-                </Tooltip>
-            ),
-        },
-        {
-            author: '匿名',
-            content: (
-            <p>
-                ここでコメントを表示する。
-            </p>
-            ),
-            datetime: (
-                <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-                    <span>{moment().subtract(1, 'days').fromNow()}</span>
-                </Tooltip>
-            ),
-        },
-        {
-            author: '匿名',
-            content: (
-            <p>
-                ここでコメントを表示する。
-            </p>
-            ),
-            datetime: (
-                <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-                    <span>{moment().subtract(1, 'days').fromNow()}</span>
-                </Tooltip>
-            ),
-        },
-    ];
 
     return (
         <Layout>
@@ -164,61 +66,20 @@ export default function InMeeting() {
                         <Divider />
                         {/* 左側のコンポーネント */}
                         <Col span={12} style={{padding:"8px 0", margin:'8px'}}>
-                            <Card style={{ width: '100%', minHeight: 341, maxHeight: 500 }}>
-                                <Title level={4}>ここで司会メッセージを表示する</Title>
-                                <Divider />
-                                <p style={{minHeight: 341}}>This area for slide show</p>
-                            </Card>
+                            <Col span={24}>
+                                <Card style={{ width: '100%', minHeight: 341, maxHeight: 500 }}>
+                                    <Title level={4}>ここで司会メッセージを表示する</Title>
+                                    <Divider />
+                                    <p style={{minHeight: 341}}>This area for slide show</p>
+                                </Card>
+                            </Col>
+                            <Col span={24} style={{padding:"8px 0", margin:'8px'}}>
+                                <Button type="primary" icon={<ArrowUpOutlined />} style={{width:'45%', marginLeft:'25%'}}>Hands up</Button>
+                            </Col>
                         </Col>
                         {/* 右側のコンポーネント */}
                         <Col span={11} style={{padding:"8px 0", margin:'8px'}}>
-                            <Card style={{ width: '100%', minHeight: 340, maxHeight: 500 }}>
-                                <Tabs defaultActiveKey="1">
-                                    <TabPane tab="発表者1" key="1" style={{maxHeight: 370, overflow:'scroll', overflowX:'hidden'}}>
-                                        <List
-                                            className="comment-list"
-                                            itemLayout="horizontal"
-                                            dataSource={data}
-                                            renderItem={item => (
-                                                <li>
-                                                    <Comment
-                                                        actions={likeActions}
-                                                        author={item.author}
-                                                        content={item.content}
-                                                        datetime={item.datetime}
-                                                    />
-                                                </li>
-                                            )}
-                                        />
-                                    </TabPane>
-                                    <TabPane tab="発表者2" key="2" style={{maxHeight: 370, overflow:'scroll', overflowX:'hidden'}}>
-                                        <List
-                                                className="comment-list"
-                                                itemLayout="horizontal"
-                                                dataSource={data}
-                                                renderItem={item => (
-                                                    <li>
-                                                        <Comment
-                                                            actions={likeActions}
-                                                            author={item.author}
-                                                            content={item.content}
-                                                            datetime={item.datetime}
-                                                        />
-                                                    </li>
-                                                )}
-                                        />
-                                    </TabPane>
-                                </Tabs>
-                            </Card>    
-                        </Col>
-                        {/* 左側操作エリア */}
-                        <Col span={12} style={{padding:"8px 0", margin:'8px'}}>
-                            <Button type="primary" icon={<ArrowUpOutlined />} style={{width:'45%', marginLeft:'25%'}}>Hands up</Button>
-                        </Col>
-                        {/* 右側操作エリア */}
-                        <Col span={11} style={{padding:"8px 0", margin:'8px'}}>
-                            <Input placeholder="ここでコメントを書いてください" style={{width:'70%', marginLeft:'5%'}}></Input>
-                            <Button type="primary" icon={<CommentOutlined />} style={{width:'20%'}}>Comment</Button>
+                            <CommentListComponent />
                         </Col>
                     </Row>
                 </div>
