@@ -8,6 +8,7 @@ import RegisterPage from './pages/user/register';
 import MeetingJoin from './pages/meeting/MeetingJoin';
 import Chat from './pages/meeting/chat';
 import Socket from "./utils/webSocket";
+
 const URL = process.env.REACT_APP_WEBSOCKET_URL;
 const ws = new WebSocket(URL+"");
 let socket = new Socket(ws);
@@ -15,10 +16,14 @@ let socket = new Socket(ws);
 function App() {
   const [data, setData] = useState(
     {
-      messagetype: "message",
-      message: "",
-      question: ""
-    }
+        messageType: "question",
+        userId: "test01",
+        meetingId: 324,
+        questionBody: "",
+        documentId: 4,
+        documentPage:3,
+        questionTime:"2022-03-03 16:50:00"
+      }
   );   
   function receiveData(e:any) {  
     setData(JSON.parse(e.data));
