@@ -3,7 +3,7 @@ import {
     UserOutlined,
     PlusOutlined,
     MinusOutlined
-  } from '@ant-design/icons';
+} from '@ant-design/icons';
 import SubMenu from "antd/lib/menu/SubMenu";
 import { Typography } from 'antd';
 import { Link } from "react-router-dom";
@@ -16,8 +16,11 @@ import { meetingJoinAction } from "../../actions/meetingActions";
 
 const { Header, Footer, Content } = Layout;
 
+function onChange(value: any, dateString: any) {
+    console.log('Selected Time: ', value);
+    console.log('Formatted Selected Time: ', dateString);
+}
 
-  
 function onOk(value: any) {
     console.log('onOk: ', value);
 }
@@ -83,8 +86,8 @@ export default function MeetingHost() {
 
     return (
         <Layout >
-            <Header>
-                <Menu theme="dark" mode="horizontal" >
+            <Header style={{maxHeight: 60}}>
+                <Menu theme="dark" mode="horizontal" style={{maxHeight: 60}}>
                     <SubMenu key="sub1" icon={<UserOutlined />} title='ユーザ' style={{paddingLeft:'90%'}}>
                         <Menu.Item key="1">プロファイル</Menu.Item>
                         <Link to={'../login'}>
@@ -146,11 +149,11 @@ export default function MeetingHost() {
                 </div>
             </Content>
             <Footer style={{ 
-                borderTop: '1px solid #e8e8e8',
-                position: 'fixed',
+                position: 'relative',
                 left: 0,
                 bottom: 0,
                 width: '100%',
+                maxHeight: 60,
                 textAlign: 'center',}}>
                 Made by RochUP Team
             </Footer>
