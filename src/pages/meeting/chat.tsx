@@ -1,5 +1,6 @@
 import { useState,useEffect } from "react";
 import Socket from "../../utils/webSocket";
+import ChatItem from "./chatItem"
 
 type ChatProps = {
     socket:Socket;
@@ -11,11 +12,11 @@ var presenterList: string[] = new Array(0);
 export default function Chat(props:ChatProps) {
 
     const [question, setquestion] = useState<string>('');//質問チャットを書き込む用
-    const [questionlist, setquestionlist] = useState<string[]>([])//これまでの質問チャットを保持する用
+    const [questionlists, setquestionlist] = useState<string[]>([])//これまでの質問チャットを保持する用
 
     useEffect (() => {
         console.log("ques add");
-        setquestionlist([...questionlist, props.data.questionBody]);
+        setquestionlist([...questionlists, props.data.questionBody]);
     }, [props.data]);
 
     function handleClick() {
@@ -24,7 +25,6 @@ export default function Chat(props:ChatProps) {
         //日付の取得
         var date = new Date();
         var qtime = date.toLocaleString();
-
 
         let message =
         {
@@ -36,6 +36,7 @@ export default function Chat(props:ChatProps) {
             documentPage:3,
             questionTime:"2022/03/03 16:50:00"
         }
+
         message.questionBody = question;
         message.questionTime = qtime;
         const data = JSON.stringify(message);
@@ -54,11 +55,12 @@ export default function Chat(props:ChatProps) {
     return (
         <div>
             <h1>WebSocket Test</h1>
-            {questionlist.map((question, idx)=>{
+            {/* {questionlists.map((question, idx)=>{
                 return(
                     <p key={"question"+idx}>{question}</p>
                 )
-            })}
+            })} */}
+            <ChatItem questionlists={questionlists}/>
             <input type="text" onChange={handleChange} value={question}/>
             <button onClick={() => handleClick()}>Send</button>
         </div>
