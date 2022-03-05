@@ -14,3 +14,9 @@
   width: 100%!important;
   min-height: 100%!important;
 }
+
+.site-layout-content {
+  min-height: 280px;
+  padding: 24px;
+  background: #fff;
+}

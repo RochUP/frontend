@@ -9,6 +9,8 @@ import { Button, Space } from 'antd';
 import { Link } from 'react-router-dom';
 
 import { signup } from '../../utils/api';
+import store from '../../store';
+import { userLogin } from '../../actions/userActions';
 
 export default function RegisterPage () {
 
@@ -19,11 +21,12 @@ export default function RegisterPage () {
         console.log(userid, username, password);
         
         await signup(userid, username, password)
-            .then(result => {
-                if (!result) {
+            .then(res => {
+                if (!res.result) {
                     throw new Error("Signup failed");
                 }
                 alert("Signup success");
+                storeUserData(res.userId, res.userName);
                 // TODO:
                 // - ローディング表示
                 // - 画面遷移
@@ -32,6 +35,10 @@ export default function RegisterPage () {
                 console.log(err);
                 alert(err.message);
             });
+    }
+
+    const storeUserData = (userId: string, userName: string) => {
+        store.dispatch(userLogin(userId, userName));
     }
 
     return (

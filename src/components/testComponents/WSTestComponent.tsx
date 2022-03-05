@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Socket from "../utils/webSocket";
+import Socket from "../../utils/webSocket";
 
 export default function WSTestComponent() {
     const [socketData, setSocketData] = useState({message: "init"});

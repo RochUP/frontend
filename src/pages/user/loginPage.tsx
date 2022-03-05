@@ -8,6 +8,8 @@ import { Button, Space,} from 'antd';
 import { Link } from 'react-router-dom';
 
 import { login } from '../../utils/api';
+import store from '../../store';
+import { userLogin } from '../../actions/userActions';
 
 export default function LoginPage () {
 
@@ -17,11 +19,12 @@ export default function LoginPage () {
         console.log(userid, password);
 
         await login(userid, password)
-            .then(result => {
-                if (!result) {
+            .then(res => {
+                if (!res.result) {
                     throw new Error("Login failed");
                 }
                 alert("Login success");
+                storeUserData(res.userId, res.userName);
                 // TODO:
                 // - ローディング表示
                 // - 画面遷移
@@ -30,6 +33,10 @@ export default function LoginPage () {
                 console.log(err);
                 alert(err.message);
             });
+    }
+
+    const storeUserData = (userId: string, userName: string) => {
+        store.dispatch(userLogin(userId, userName));
     }
 
     return (
