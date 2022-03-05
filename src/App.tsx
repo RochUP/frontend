@@ -40,13 +40,12 @@ function App() {
     <div className="App" >
       <Router>
         <Routes>
-          {/* <Route path="/chat" element={<Chat socket={socket}/>} /> */}
           <Route path="/chat" element={<Chat socket={socket} data={data}/>} />
-          {/* <Route path="/test" element={<TestPage />} />
+          <Route path="/test" element={<TestPage />} />
           <Route path="/" element={<LoginPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage/>} />
-          <Route path='/meeting/join' element={<MeetingJoin />} /> */}
+          <Route path='/meeting/join' element={<MeetingJoin />} />
         </Routes>
       </Router>
     </div>
