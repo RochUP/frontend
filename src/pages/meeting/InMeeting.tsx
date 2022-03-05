@@ -11,8 +11,11 @@ import { Typography } from 'antd';
 import "../../assets/css/Pages.css";
 import { Link } from "react-router-dom";
 import moment from "moment";
-import { createElement, useState } from "react";
+import { createElement, useEffect, useState } from "react";
 import CommentListComponent from "../../components/meeting/CommentListComponent";
+
+import Socket from "../../utils/webSocket";
+import { receiveData } from "../../utils/webSocketUtils";
 
 const { Header, Footer, Content } = Layout;
 
@@ -24,7 +27,44 @@ const { TabPane } = Tabs;
 //     console.log(key);
 // }
 
+const URL = process.env.REACT_APP_WEBSOCKET_URL;
+const ws = new WebSocket(URL+"");
+let socket = new Socket(ws);
+
 export default function InMeeting() {
+    const [questionSocket, setQuestionSocket] = useState();
+    const [questionVoteSocket, setQuestionVoteSocket] = useState();
+    const [reactionSocket, setReactionSocket] = useState();
+    const [moderatorMsgSocket, setModeratorMsgSocket] = useState();
+    const [documentSocket, setDocumentSocket] = useState();
+
+    function receiveData(e:any) {  
+        let data: any = receiveData(e.data);
+        switch (data.messageType) {
+            case "question":
+                setQuestionSocket(data);
+                break;
+            case "question_vote":
+                setQuestionVoteSocket(data);
+                break;
+            case "reaction":
+                setReactionSocket(data);
+                break;
+            case "moderator_msg":
+                setModeratorMsgSocket(data);
+                break;
+            case "document":
+                setDocumentSocket(data);
+                break;
+            default:
+                break;
+        }
+    }
+    useEffect(()=>{
+        // 初回レンダリング時のみSocket Onにする
+        console.log("socket on");
+        socket.on("message", receiveData);
+    },[])
 
     const { Title } = Typography;
 
@@ -79,7 +119,8 @@ export default function InMeeting() {
                         </Col>
                         {/* 右側のコンポーネント */}
                         <Col span={11} style={{padding:"8px 0", margin:'8px'}}>
-                            <CommentListComponent />
+                            {/* コメント一覧 */}
+                            <CommentListComponent socket={socket} data={questionSocket}/>
                         </Col>
                     </Row>
                 </div>

@@ -15,13 +15,10 @@ import moment from "moment";
 import { createElement, useEffect, useState } from "react";
 import CommentItemComponent from "./CommentItemComponent"
 
-const { Header, Footer, Content } = Layout;
-
-const { Text } = Typography;
+import Socket from '../../utils/webSocket';
 
 const { TabPane } = Tabs;
 
-// import Socket from '../../utils/webSocket';
 
 // type SocketData = {
 //     messageType: string;
@@ -33,12 +30,24 @@ const { TabPane } = Tabs;
 // }
 
 type Props = {
-    // socket: Socket;
-    // data: any;
+    socket: Socket;
+    data: any;
 }
 
 export default function CommentListComponent(props: Props) {
-
+    let data: any;
+    if (!props.data){
+        // nullだった場合適当な初期値を入れる（必要ないかも）
+        data = {
+            meetingId: 0,
+            questionBody: "",
+            documentId: 0,
+            documentPage: 0,
+            questionTime: "",
+        }
+    }else{
+        data = props.data;
+    }
 
     const presenters = [
         "発表者1",
