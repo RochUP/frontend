@@ -6,12 +6,46 @@ import SubMenu from "antd/lib/menu/SubMenu";
 import { Typography } from 'antd';
 import { Link } from "react-router-dom";
 import "../../assets/css/Pages.css";
+import { useSelector } from "react-redux";
+import { meetingJoin } from "../../utils/api";
+import store from "../../store";
+import { meetingJoinAction } from "../../actions/meetingActions";
 
 const { Header, Footer, Content } = Layout;
 
 export default function MeetingJoin() {
 
     const { Title } = Typography;
+    const userid = useSelector((state: any) => state.userReducer.userid);
+
+    const joinMeeting = async () => {
+        console.log("Join Meeting");
+        const meetingId = +(document.getElementById("meetingId") as HTMLInputElement).value;
+        console.log(userid, meetingId);
+
+        // TODO:
+        // - レスポンスが帰ってくるまでロード画面にする
+        // - 作成完了したら画面遷移
+
+        await meetingJoin(userid, meetingId)
+            .then((res: any) => {
+                console.log(res);
+                if(!res.result){
+                    throw new Error("Join Meeting Failed");
+                }
+                storeMeetingData(res);
+                alert("join success");
+            })
+            .catch((err: any) => {
+                console.log(err);
+                alert(err.message);
+            });
+
+    }
+
+    const storeMeetingData = (res: any) => {
+        store.dispatch(meetingJoinAction(res.meetingId, res.meetingName, res.meetingStartTime, res.presenterIds, res.documentIds));
+    }
 
     return (
         <Layout >
@@ -37,9 +71,9 @@ export default function MeetingJoin() {
                     <Card title="ミーティングに参加する" bordered={false} style={{ width: '100%', textAlign:'center' }}>
                         <Space direction="vertical" style={{width: '100%'}}>
                             <p>ミーティングID</p>
-                            <Input type={'number'} style={{width: '20%', textAlign:'center'}} placeholder="ミーティングIDを入力してください" />
+                            <Input id="meetingId" type={'number'} style={{width: '20%', textAlign:'center'}} placeholder="ミーティングIDを入力してください" />
                             <p style={{margin:'16px 0'}}>ミーティングに参加するために、ミーティング開催者からミーティングを取得してください。</p>
-                            <Button type="primary" style={{width: '20%'}}>ミーティングに参加する</Button>
+                            <Button type="primary" style={{width: '20%'}} onClick={joinMeeting}>ミーティングに参加する</Button>
                         </Space>
                     </Card>                    
                 </div>

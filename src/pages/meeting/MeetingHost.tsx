@@ -10,13 +10,13 @@ import { Link } from "react-router-dom";
 // import jaJP from 'antd/es/locale/ja_JP';
 import "../../assets/css/Pages.css";
 import { useState } from "react";
+import { meetingCreate } from "../../utils/api";
+import store from "../../store";
+import { meetingJoinAction } from "../../actions/meetingActions";
 
 const { Header, Footer, Content } = Layout;
 
-function onChange(value: any, dateString: any) {
-    console.log('Selected Time: ', value);
-    console.log('Formatted Selected Time: ', dateString);
-}
+
   
 function onOk(value: any) {
     console.log('onOk: ', value);
@@ -39,6 +39,46 @@ export default function MeetingHost() {
             newPresenters.pop();
             setPresenters(newPresenters);
         }
+    }
+
+    function onChange(value: any, dateString: any) {
+        console.log('Selected Time: ', value);
+        console.log('Formatted Selected Time: ', dateString);
+    }
+
+    const createMeeting = async () => {
+        console.log("Create Meeting");
+        const meetingName = (document.getElementById("meetingName") as HTMLInputElement).value;
+        const meetingDate = (document.getElementById("meetingDate") as HTMLInputElement).value;
+        const presenterIds = new Array<string>(presenters.length);
+        for (let i = 0; i < presenterIds.length; i++) {
+            presenterIds[i] = (document.getElementById("presenterId" + i) as HTMLInputElement).value;
+        }
+        console.log(meetingName);
+        console.log(meetingDate);
+        console.log(presenterIds);
+
+        // TODO:
+        // - レスポンスが帰ってくるまでロード画面にする
+        // - 作成完了したら画面遷移
+
+        await meetingCreate(meetingName, meetingDate, presenterIds)
+            .then(res => {
+                console.log(res);
+                if (!res.result){
+                    throw new Error("Meeting Create Failed");
+                }
+                storeMeetingData(res);
+                alert("meeting ID: "+res.meetingId+" created");
+            })
+            .catch(err => {
+                console.log(err);
+                alert(err.message);
+            });
+    }
+
+    const storeMeetingData = (res: any) => {
+        store.dispatch(meetingJoinAction(res.meetingId, res.meetingName, res.meetingStartTime, res.presenterIds, res.documentIds));
     }
 
     return (
@@ -72,21 +112,21 @@ export default function MeetingHost() {
                                         <Row>
                                             <Space>
                                                 <span>会議名</span>
-                                                <Input style={{width: '135%'}} placeholder="会議名を入力してください" ></Input>
+                                                <Input id="meetingName" style={{width: '135%'}} placeholder="会議名を入力してください" ></Input>
                                             </Space>
                                         </Row>
                                         <Row>
                                             <Space>
                                                 <span>開始時間</span>
-                                                <DatePicker style={{width: '113%'}} showTime onChange={onChange} onOk={onOk} />
+                                                <DatePicker id="meetingDate" style={{width: '113%'}} showTime onChange={onChange} onOk={onOk} format="yyyy/MM/DD HH:mm:ss"/>
                                             </Space>
                                         </Row>
-                                        {presenters.map((presenter, _) => {
+                                        {presenters.map((presenter, idx) => {
                                             return (
-                                                <Row key={presenter}>
+                                                <Row key={"presenter"+idx}>
                                                     <Space>
                                                         <span>発表者</span>
-                                                        <Input style={{width: '100%', textAlign:'center'}} placeholder="発表者を入力してください" ></Input>
+                                                        <Input id={"presenterId"+idx} style={{width: '100%', textAlign:'center'}} placeholder="発表者を入力してください" ></Input>
                                                         <Button onClick={onClickAdd} type="primary" icon={<PlusOutlined />} size={"small"} />
                                                         <Button onClick={onClickRemove} type="primary" danger icon={<MinusOutlined />} size={"small"} />
                                                     </Space>
@@ -97,7 +137,7 @@ export default function MeetingHost() {
                                 </Col>
                                 <Col span={8}></Col>
                             </Row>
-                            <Button type="primary" style={{width: '20%'}}>ミーティングを作成する</Button>
+                            <Button type="primary" style={{width: '20%'}} onClick={createMeeting}>ミーティングを作成する</Button>
                             <Link to={'../meeting/join'}>
                                 <Button type="default" style={{width: '20%'}}>キャンセル</Button>
                             </Link>

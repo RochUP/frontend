@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { userLogin } from '../../actions/userActions';
-import { meetingJoin } from '../../actions/meetingActions';
+import { meetingJoinAction } from '../../actions/meetingActions';
 import store from '../../store';
 
 export default function StoreTestComponent() {
@@ -30,7 +30,7 @@ export default function StoreTestComponent() {
         console.log(input_meetingName.value);
 
         // データの登録
-        store.dispatch(meetingJoin(+input_meetingId.value, input_meetingName.value, "1990/01/01 00:00:00", [], []));
+        store.dispatch(meetingJoinAction(+input_meetingId.value, input_meetingName.value, "1990/01/01 00:00:00", [], []));
 
     }
 
