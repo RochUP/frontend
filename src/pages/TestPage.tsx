@@ -2,14 +2,16 @@ import PdfViewerComponent from '../components/testComponents/PdfViewerComponent'
 import StoreTestComponent from '../components/testComponents/StoreTestComponent';
 import TestButton from '../components/testComponents/TestComponent';
 import WSTestComponent from '../components/testComponents/WSTestComponent';
+import SpeechRecTestComponent from '../components/testComponents/SpeechRecTestComponent';
 
 function TestPage() {
   return (
     <div>
-        <TestButton />
+        {/* <TestButton /> */}
         {/* <PdfViewerComponent />
         <WSTestComponent /> */}
-        <StoreTestComponent />
+        {/* <StoreTestComponent /> */}
+        <SpeechRecTestComponent />
     </div>
   );
 }
