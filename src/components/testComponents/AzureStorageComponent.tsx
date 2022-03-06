@@ -1,15 +1,15 @@
 import { BlobServiceClient } from "@azure/storage-blob";
 
 export default function AzureStorageComponent() {
-    const account = "hacku";
-    const sas_token = "?sv=2020-08-04&ss=bfqt&srt=sco&sp=rwdlacupitfx&se=2022-03-13T00:44:05Z&st=2022-03-06T16:44:05Z&spr=https&sig=FBcy34Pimt3autzqQC6bR6xlW38HdMKH%2BcMwdJf8HwQ%3D";
+    const account = process.env.REACT_APP_AZURE_ACCOUNT_NAME || "account";
+    const sas_token = process.env.REACT_APP_AZURE_SHARED_ACCESS_SIGNATURE || "sas_token";
 
 
     const blobServiceClient = new BlobServiceClient(
         `https://${account}.blob.core.windows.net${sas_token}`,
     );
 
-    const containerName = `pdfcontainer`;
+    const containerName = process.env.REACT_APP_AZURE_CONTAINER_NAME || "container";
 
     var file: any;
 
