@@ -23,6 +23,7 @@ export function receiveData(data: string) {
 // receive
 function receiveQuestion(data: any) {
     const res = {
+        messageType: "question",
         meetingId: data.meetingId,
         questionBody: data.questionBody,
         documentId: data.documentId,
@@ -34,6 +35,7 @@ function receiveQuestion(data: any) {
 
 function receiveQuestionVote(data: any) {
     const res = {
+        messageType: "question_vote",
         meetingId: data.meetingId,
         questionId: data.questionId,
         voteNum: data.voteNum,
@@ -43,6 +45,7 @@ function receiveQuestionVote(data: any) {
 
 function receiveReaction(data: any) {
     const res = {
+        messageType: "reaction",
         meetingId: data.meetingId,
         documentId: data.documentId,
         documentPage: data.documentPage,
@@ -53,6 +56,7 @@ function receiveReaction(data: any) {
 
 function receiveModeratorMsg(data: any) {
     const res = {
+        messageType: "moderator_msg",
         meetingId: data.meetingId,
         moderatorMsgBody: data.moderatorMsgBody,
     }
@@ -61,6 +65,7 @@ function receiveModeratorMsg(data: any) {
 
 function receiveDocument(data: any) {
     const res = {
+        messageType: "document",
         meetingId: data.meetingId,
         documentId: data.documentId,
     }
@@ -69,6 +74,7 @@ function receiveDocument(data: any) {
 
 function receiveMessage(data: any) {
     const res = {
+        messageType: "message",
         message: data.message,
     }
     return res;
