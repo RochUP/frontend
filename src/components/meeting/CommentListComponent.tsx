@@ -14,6 +14,7 @@ import { sendQuestion } from "../../utils/webSocketUtils";
 import { useSelector } from 'react-redux';
 
 import Title from "antd/lib/typography/Title";
+import { useEffect, useState } from "react";
 
 
 const { TabPane } = Tabs;
@@ -140,14 +141,14 @@ export default function CommentListComponent(props: Props) {
 
             //発表者が何番目であるかを取得
 
-            let presenterId = data.presenterId
+            let presenterId = data.presenterId;
             //presenterIdを変える必要あり
-            let indexnum = presenterIds.indexOf('yoshida1')
+            let indexnum = presenterIds.indexOf(presenterId);
             //現時点ではpresenterIdがないので仮に1にしている
             // indexnum=1
             let copy = [...questionList];
-            copy[indexnum].push(question)
-            updateQuestionList(copy)
+            copy[indexnum].push(question);
+            updateQuestionList(copy);
         }
 
     },[props.data]);
