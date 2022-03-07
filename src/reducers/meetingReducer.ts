@@ -5,7 +5,7 @@ const initialState = {
     meetingName: "meeting",
     meetingStartTime: "1998/06/10 00:00:00",
     presenterIds: [],
-    presenterNames: [],
+    presenterNames: ["a","b"],
     documentIds: [],
 }
 

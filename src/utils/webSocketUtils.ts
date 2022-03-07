@@ -28,7 +28,6 @@ function receiveQuestion(data: any) {
         messageType: "question",
         questionId: data.questionId,
         meetingId: data.meetingId,
-        questionId: data.questionId,
         questionBody: data.questionBody,
         documentId: data.documentId,
         documentPage: data.documentPage,

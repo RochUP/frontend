@@ -58,7 +58,7 @@ export default function CommentListComponent(props: Props) {
     //     "発表者2",
     // ]
 
-    const presenters = useSelector((state: any) => state.meetingReducer.presenters);
+    const presenters = useSelector((state: any) => state.meetingReducer.presenterNames);
     const [questionList, updateQuestionList] = useState([
         [
             // presenters[0]への質問
