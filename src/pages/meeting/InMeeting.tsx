@@ -106,7 +106,7 @@ export default function InMeeting() {
                                 <Tooltip placement="topRight" title={'発表者は原稿を登録してください'}>
                                     <Button onClick={showModal}  style={{marginLeft:'60%'}}>原稿登録</Button>
                                     {/* ここのonOKはポップアップのokボタン */}
-                                    <Modal title = "原稿登録" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+                                    <Modal title = "原稿登録" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} okText={"アップロード"} cancelText={"キャンセル"}>
                                         <Space direction="vertical" style={{width:'100%'}}>
                                             <Text>原稿を登録しますか？</Text>
                                             <Upload

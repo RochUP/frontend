@@ -1,11 +1,11 @@
 import { ProFormText } from '@ant-design/pro-form';
 import {
-  UserOutlined,
-  LockOutlined,
-  IdcardOutlined
+    UserOutlined,
+    LockOutlined,
+    IdcardOutlined
 } from '@ant-design/icons';
 import '@ant-design/pro-form/dist/form.css';
-import { Button, Space } from 'antd';
+import { Button, Space, Modal } from 'antd';
 import { Link } from 'react-router-dom';
 
 import { signup } from '../../utils/api';
@@ -23,13 +23,19 @@ export default function RegisterPage () {
         await signup(userid, username, password)
             .then(res => {
                 if (!res.result) {
-                    throw new Error("Signup failed");
+                    // throw new Error("Signup failed");
+                    return(
+                        error()
+                    )
                 }
-                alert("Signup success");
+                // alert("Signup success");
                 storeUserData(res.userId, res.userName);
                 // TODO:
                 // - ローディング表示
                 // - 画面遷移
+                return(
+                    success()
+                )
             })
             .catch(err => {
                 console.log(err);
@@ -39,6 +45,20 @@ export default function RegisterPage () {
 
     const storeUserData = (userId: string, userName: string) => {
         store.dispatch(userLogin(userId, userName));
+    }
+
+    function success() {
+        Modal.success({
+            content: '新規登録成功しました',
+            okButtonProps: {},
+        });
+    }
+
+    function error() {
+        Modal.error({
+            content: '新規登録失敗しました',
+            okButtonProps: {},
+        });
     }
 
     return (
@@ -74,7 +94,7 @@ export default function RegisterPage () {
                             size: 'large',
                             prefix: <UserOutlined className={'prefixIcon'} />,
                             }}
-                            placeholder={'ユーザネーム: admin or user'}
+                            placeholder={'ユーザネーム'}
                             rules={[
                             {
                                 required: true,
@@ -88,7 +108,7 @@ export default function RegisterPage () {
                             size: 'large',
                             prefix: <LockOutlined className={'prefixIcon'} />,
                             }}
-                            placeholder={'パスワード: ant.design'}
+                            placeholder={'パスワード'}
                             rules={[
                             {
                                 required: true,
