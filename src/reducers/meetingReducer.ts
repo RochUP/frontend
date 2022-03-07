@@ -4,7 +4,7 @@ const initialState = {
     meetingId: 0,
     meetingName: "meeting",
     meetingStartTime: "1998/06/10 00:00:00",
-    presenterIds: [],
+    presenterIds: ['ishikawa1', 'yoshida1'],
     presenterNames: ["a","b"],
     documentIds: [],
 }

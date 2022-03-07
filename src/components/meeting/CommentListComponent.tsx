@@ -59,11 +59,15 @@ export default function CommentListComponent(props: Props) {
     // ]
 
     const presenters = useSelector((state: any) => state.meetingReducer.presenterNames);
+    const presenterIds = useSelector((state: any)=> state.meetingReducer.presenterIds);
+    const userId = useSelector((state: any) => state.userReducer.userid);
+    const meetingId = useSelector((state: any) => state.meetingReducer.meetingId);
+
     const [questionList, updateQuestionList] = useState([
         [
             // presenters[0]への質問
             {
-                userId: "test01",
+                // userId: "test01",
                 meetingId: 324,
                 questionId: 1,
                 questionBody: "good!",
@@ -74,7 +78,7 @@ export default function CommentListComponent(props: Props) {
                 isVote: true,
             },
             {
-                userId: "test01",
+                // userId: "test01",
                 meetingId: 324,
                 questionId: 2,
                 questionBody: "good!",
@@ -88,7 +92,7 @@ export default function CommentListComponent(props: Props) {
         [
             // presenters[1]への質問
             {
-                userId: "test01",
+                // userId: "test01",
                 meetingId: 324,
                 questionId: 2,
                 questionBody: "good!",
@@ -116,7 +120,7 @@ export default function CommentListComponent(props: Props) {
     useEffect(()=>{
         let question =
         {
-            userId: "test01",
+            // userId: "test01",
             meetingId: 324,
             questionId: 1,
             questionBody: "test!",
@@ -132,16 +136,20 @@ export default function CommentListComponent(props: Props) {
         question.questionBody = data.questionBody
         question.questionTime = data.questionTime
 
-        //発表者が何番目であるかを取得
-        // let presentername = props.data.presenter
-        // let indexnum = presenters.indexOf("aaa")
-
         // questionList = questionList[0].push(props.data.questionBody)
         //発表者のind0exにquestionを追加
         // questionList[0].push(props.data);
         if (props.data){
+
+            //発表者が何番目であるかを取得
+
+            let presenterId = data.presenterId
+            //presenterIdを変える必要あり
+            let indexnum = presenterIds.indexOf('yoshida1')
+            //現時点ではpresenterIdがないので仮に1にしている
+            // indexnum=1
             let copy = [...questionList];
-            copy[0].push(question)
+            copy[indexnum].push(question)
             updateQuestionList(copy)
         }
 
@@ -155,14 +163,11 @@ export default function CommentListComponent(props: Props) {
         // let question = (document.getElementById("question")as HTMLInputElement).value;
         setquestion((document.getElementById("question")as HTMLInputElement).value);
 
-        // const userid = useSelector((state: any) => state.userReducer.userid);
-        // const meetingId = useSelector((state: any) => state.meetingReducer.meetingId);
-
         //日付の取得
         var date = new Date();
         var qtime = date.toLocaleString();
 
-        sendQuestion(props.socket, "4", 5, questionform, 5, 5, qtime)
+        sendQuestion(props.socket, userId, meetingId, questionform, 4, 1, qtime)
 
         //書き込み欄のクリア
         setquestion('');
