@@ -16,6 +16,7 @@ import { receiveData } from "../../utils/webSocketUtils";
 import PdfViewerComponent from "../../components/testComponents/PdfViewerComponent";
 import MeetingHeader from "../../components/meeting/MeetingHeader";
 import { useSelector } from "react-redux";
+import DocumentComponent from "../../components/meeting/DocumentComponent";
 
 const { Header, Footer, Content } = Layout;
 
@@ -132,14 +133,7 @@ export default function InMeeting() {
                                     {/* <Title level={4}>ここで司会メッセージを表示する</Title> */}
                                     {/* <Divider /> */}
                                     {/* <p style={{minHeight: 360, textAlign:'left'}}>This area for slide show</p> */}
-                                    <Space direction="horizontal" style={{maxHeight: 500, width:'100%'}}>
-                                        <Card type="inner" style={{maxHeight: 500, width: 600}}>
-                                            <PdfViewerComponent></PdfViewerComponent>
-                                        </Card>
-                                        <Card type="inner" style={{maxHeight: 500}}>
-                                            <p style={{width: 550, minHeight: 350, textAlign:'left'}}>This area for 原稿</p>
-                                        </Card>
-                                    </Space>
+                                    <DocumentComponent />
                                 </Card>
                             </Col>
                             <Col span={24} style={{padding:"8px 0", margin:'8px'}}>
