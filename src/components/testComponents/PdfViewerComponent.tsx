@@ -1,4 +1,9 @@
-import React, { useState } from 'react';
+import { Button, Space } from 'antd';
+import { useState } from 'react';
+import {
+    RightOutlined,
+    LeftOutlined,
+} from '@ant-design/icons';
 import { Document, Page, pdfjs } from 'react-pdf';
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -17,17 +22,25 @@ function PdfViewerComponent() {
     }
 
     return (
-        <div>
+        <Space direction='vertical' style={{width:'100%'}}>
             <Document
                 file={"https://arxiv.org/pdf/2110.05086.pdf"}
                 onLoadSuccess={onDocumentLoadSuccess}
             >
-                <Page pageNumber={pageNumber} />
+                <Page 
+                    height={320}
+                    pageNumber={pageNumber}
+                    renderTextLayer={false}
+                    renderAnnotationLayer={false}
+                    rotate={90}
+                    />
             </Document>
-            <p>Page {pageNumber} of {numPages}</p>
-            <button onClick={() => changePage(-1)}>Previous Page</button>
-            <button onClick={() => changePage(1)}>Next Page</button>
-        </div>
+            <Space style={{display:'flex', justifyContent:'center'}}>
+                <Button shape='circle' icon={<LeftOutlined />} onClick={() => changePage(-1)}></Button>
+                <p>Page {pageNumber} of {numPages}</p>
+                <Button shape='circle' icon={<RightOutlined />} onClick={() => changePage(1)}></Button>
+            </Space>
+        </Space>
     );
 }
 export default PdfViewerComponent;

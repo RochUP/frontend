@@ -13,6 +13,7 @@ import CommentListComponent from "../../components/meeting/CommentListComponent"
 
 import Socket from "../../utils/webSocket";
 import { receiveData } from "../../utils/webSocketUtils";
+import PdfViewerComponent from "../../components/testComponents/PdfViewerComponent";
 
 const { Header, Footer, Content } = Layout;
 
@@ -102,7 +103,8 @@ export default function InMeeting() {
                         </Col>
                         <Col span={12} style={{maxHeight: 50}}>
                             {/* style={{background:'#DD2248'}}> */}
-                            <Space align="baseline" style={{marginLeft:'65%'}}>
+                            {/* 右側操作ボタン */}
+                            <Space align="baseline" style={{marginLeft:'70%'}}>
                                 <Tooltip placement="topRight" title={'発表者は原稿を登録してください'}>
                                     <Button onClick={showModal}  style={{marginLeft:'60%'}}>原稿登録</Button>
                                     {/* ここのonOKはポップアップのokボタン */}
@@ -125,16 +127,24 @@ export default function InMeeting() {
                                     </Link>
                                 </Tooltip>
                             </Space>
-                            <Title level={4} style={{marginLeft:'40%', width:'50%'}}>コメント一覧</Title>
                         </Col>
                         <Divider />
                         {/* 左側のコンポーネント */}
-                        <Col span={12} style={{padding:"8px 0", margin:'8px'}}>
+                        {/* <Col span={12} style={{padding:"8px 0", margin:'8px'}}> */}
+                        <Col flex={4} style={{width:'30%'}}>
                             <Col span={24}>
-                                <Card title="ここで司会メッセージを表示する" style={{ width: '100%', minHeight: 341, maxHeight: 500, textAlign: 'center' }}>
+                                <Card title="ここで司会メッセージを表示する" style={{ width: '100%', minHeight: 500, maxHeight: 500, textAlign: 'center' }}>
                                     {/* <Title level={4}>ここで司会メッセージを表示する</Title> */}
                                     {/* <Divider /> */}
-                                    <p style={{minHeight: 360, textAlign:'left'}}>This area for slide show</p>
+                                    {/* <p style={{minHeight: 360, textAlign:'left'}}>This area for slide show</p> */}
+                                    <Space direction="horizontal" style={{maxHeight: 500, width:'100%'}}>
+                                        <Card type="inner" style={{maxHeight: 500, width: 600}}>
+                                            <PdfViewerComponent></PdfViewerComponent>
+                                        </Card>
+                                        <Card type="inner" style={{maxHeight: 500}}>
+                                            <p style={{width: 550, minHeight: 350, textAlign:'left'}}>This area for 原稿</p>
+                                        </Card>
+                                    </Space>
                                 </Card>
                             </Col>
                             <Col span={24} style={{padding:"8px 0", margin:'8px'}}>
@@ -142,7 +152,8 @@ export default function InMeeting() {
                             </Col>
                         </Col>
                         {/* 右側のコンポーネント */}
-                        <Col span={11} style={{padding:"8px 0", margin:'8px'}}>
+                        {/* <Col span={11} style={{padding:"8px 0", margin:'8px'}}> */}
+                        <Col flex={1} style={{marginLeft:'8px', maxWidth:'30%'}}>
                             {/* コメント一覧 */}
                             <CommentListComponent socket={socket} data={questionSocket}/>
                         </Col>

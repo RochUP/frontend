@@ -4,27 +4,31 @@ import {
     IdcardOutlined
 } from '@ant-design/icons';
 import '@ant-design/pro-form/dist/form.css';
-import { Button, Space, Modal } from 'antd';
-import { Link } from 'react-router-dom';
+import { Button, Space, Modal, Spin } from 'antd';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { login } from '../../utils/api';
 import store from '../../store';
 import { userLogin } from '../../actions/userActions';
+import { useState } from 'react';
 
 export default function LoginPage () {
+
+    const [ spinning, setSpinning ] = useState(false);
+    
+    const navigate = useNavigate();
 
     const handleLoginClick = async () => {
         const userid = (document?.getElementById("userid") as HTMLInputElement).value;
         const password = (document?.getElementById("password") as HTMLInputElement).value;
         console.log(userid, password);
 
+        setSpinning(true);
+
         await login(userid, password)
             .then(res => {
                 if (!res.result) {
-                    // throw new Error("Login failed");
-                    return(
-                        error()
-                    )
+                    throw new Error("Login failed");
                 }
                 // alert("Login success");
                 storeUserData(res.userId, res.userName);
@@ -37,15 +41,20 @@ export default function LoginPage () {
             })
             .catch(err => {
                 console.log(err);
-                alert(err.message);
+                // alert(err.message);
+                return(
+                    error()
+                )
             });
+            setSpinning(false);
     }
 
     function success() {
-        Modal.success({
-            content: 'ログイン成功しました',
-            okButtonProps: {},
-        });
+        // Modal.success({
+        //     content: 'ログイン成功しました',
+        //     okButtonProps: { onClick: () => navigate('/meeting/join') },
+        // });
+        navigate('/meeting/join')
     }
 
     function error() {
@@ -60,17 +69,18 @@ export default function LoginPage () {
     }
 
     return (
-        <div className='content___2zk1-'>
-            <div className='ant-pro-form-login-container'>
+        <Spin size='large' spinning={spinning}>
+            <div className='content___2zk1-'>
                 <div className='ant-pro-form-login-container'>
-                    <div className='ant-pro-form-login-top'>
-                        <div className='ant-pro-form-login-header'>
-                            <span className='ant-pro-form-login-header-title'>
-                                ○○システム
-                            </span>
+                    <div className='ant-pro-form-login-container' style={{marginTop:'10%'}}>
+                        <div className='ant-pro-form-login-top'>
+                            <div className='ant-pro-form-login-header'>
+                                <span className='ant-pro-form-login-header-title'>
+                                    ○○システム
+                                </span>
+                            </div>
+                            <div className='ant-pro-form-login-desc'>ログイン</div>
                         </div>
-                        <div className='ant-pro-form-login-desc'>ログイン</div>
-                    </div>
                         <div className='ant-pro-form-login-main'>
                             <ProFormText
                                 name="userid"
@@ -92,7 +102,7 @@ export default function LoginPage () {
                                 size: 'large',
                                 prefix: <LockOutlined className={'prefixIcon'} />,
                                 }}
-                                placeholder={'パスワード: ant.design'}
+                                placeholder={'パスワード'}
                                 rules={[
                                 {
                                     required: true,
@@ -111,8 +121,9 @@ export default function LoginPage () {
                                 </Link>
                             </Space>
                         </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </Spin>
     );
 };

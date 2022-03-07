@@ -9,11 +9,11 @@ function TestPage() {
   return (
     <div>
         {/* <TestButton /> */}
-        {/* <PdfViewerComponent /> */}
+        <PdfViewerComponent />
         {/* <WSTestComponent /> */}
         {/* <StoreTestComponent /> */}
         {/* <SpeechRecTestComponent /> */}
-        <Text2SpeechComponent />
+        {/* <Text2SpeechComponent /> */}
     </div>
   );
 }
