@@ -1,18 +1,10 @@
 
-import { Breadcrumb, Button, Card, Col, Divider, Input, Layout, List, Menu, Row, Tabs, Comment, Tooltip } from "antd";
+import { Button, Card, Col, Input, List, Tabs, Tooltip } from "antd";
 import {
-    UserOutlined,
-    ArrowUpOutlined,
-    CommentOutlined,
-    LikeOutlined,
-    LikeFilled
+    CommentOutlined
 } from '@ant-design/icons';
-import SubMenu from "antd/lib/menu/SubMenu";
-import { Typography } from 'antd';
 import "../../assets/css/Pages.css";
-import { Link } from "react-router-dom";
 import moment from "moment";
-import { createElement, useEffect, useState } from "react";
 import CommentItemComponent from "./CommentItemComponent"
 
 import Socket from '../../utils/webSocket';
