@@ -19,7 +19,7 @@ type Props = {
     question: questionType;
 }
 
-export default function CommentListComponent(props: Props) {
+export default function CommentItemComponent(props: Props) {
     const [isLiked, setIsLiked] = useState(props.question.isLiked)
     const [like, setLike] = useState(props.question.like)
 

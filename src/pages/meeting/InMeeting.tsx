@@ -1,17 +1,13 @@
-import { Breadcrumb, Button, Card, Col, Divider, Input, Layout, List, Menu, Row, Tabs, Comment, Tooltip } from "antd";
+import { Breadcrumb, Button, Card, Col, Divider, Layout, Menu, Row } from "antd";
 import {
     UserOutlined,
-    ArrowUpOutlined,
-    CommentOutlined,
-    LikeOutlined,
-    LikeFilled
+    ArrowUpOutlined
 } from '@ant-design/icons';
 import SubMenu from "antd/lib/menu/SubMenu";
 import { Typography } from 'antd';
 import "../../assets/css/Pages.css";
 import { Link } from "react-router-dom";
-import moment from "moment";
-import { createElement, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CommentListComponent from "../../components/meeting/CommentListComponent";
 
 import Socket from "../../utils/webSocket";
@@ -20,12 +16,6 @@ import { receiveData } from "../../utils/webSocketUtils";
 const { Header, Footer, Content } = Layout;
 
 const { Text } = Typography;
-
-const { TabPane } = Tabs;
-
-// function callback(key: any) {
-//     console.log(key);
-// }
 
 const URL = process.env.REACT_APP_WEBSOCKET_URL;
 const ws = new WebSocket(URL+"");
@@ -38,7 +28,7 @@ export default function InMeeting() {
     const [moderatorMsgSocket, setModeratorMsgSocket] = useState();
     const [documentSocket, setDocumentSocket] = useState();
 
-    function receiveData(e:any) {  
+    function setData(e:any) {  
         let data: any = receiveData(e.data);
         switch (data.messageType) {
             case "question":
@@ -63,7 +53,7 @@ export default function InMeeting() {
     useEffect(()=>{
         // 初回レンダリング時のみSocket Onにする
         console.log("socket on");
-        socket.on("message", receiveData);
+        socket.on("message", setData);
     },[])
 
     const { Title } = Typography;
