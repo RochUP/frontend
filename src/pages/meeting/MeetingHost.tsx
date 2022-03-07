@@ -16,10 +16,10 @@ import { meetingJoinAction } from "../../actions/meetingActions";
 
 const { Header, Footer, Content } = Layout;
 
-function onChange(value: any, dateString: any) {
-    console.log('Selected Time: ', value);
-    console.log('Formatted Selected Time: ', dateString);
-}
+// function onChange(value: any, dateString: any) {
+//     console.log('Selected Time: ', value);
+//     console.log('Formatted Selected Time: ', dateString);
+// }
 
 function onOk(value: any) {
     console.log('onOk: ', value);

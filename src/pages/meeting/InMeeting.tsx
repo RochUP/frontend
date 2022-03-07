@@ -1,130 +1,62 @@
-import { Breadcrumb, Button, Card, Col, Divider, Input, Layout, List, Menu, Row, Tabs, Comment, Tooltip } from "antd";
+import { Breadcrumb, Button, Card, Col, Divider, Layout, Menu, Row } from "antd";
 import {
     UserOutlined,
-    ArrowUpOutlined,
-    CommentOutlined,
-    LikeOutlined,
-    LikeFilled
+    ArrowUpOutlined
 } from '@ant-design/icons';
 import SubMenu from "antd/lib/menu/SubMenu";
 import { Typography } from 'antd';
 import "../../assets/css/Pages.css";
 import { Link } from "react-router-dom";
-import moment from "moment";
-import { createElement, useState } from "react";
+import { useEffect, useState } from "react";
+import CommentListComponent from "../../components/meeting/CommentListComponent";
+
+import Socket from "../../utils/webSocket";
+import { receiveData } from "../../utils/webSocketUtils";
 
 const { Header, Footer, Content } = Layout;
 
 const { Text } = Typography;
 
-const { TabPane } = Tabs;
-
-// function callback(key: any) {
-//     console.log(key);
-// }
+const URL = process.env.REACT_APP_WEBSOCKET_URL;
+const ws = new WebSocket(URL+"");
+let socket = new Socket(ws);
 
 export default function InMeeting() {
+    const [questionSocket, setQuestionSocket] = useState();
+    const [questionVoteSocket, setQuestionVoteSocket] = useState();
+    const [reactionSocket, setReactionSocket] = useState();
+    const [moderatorMsgSocket, setModeratorMsgSocket] = useState();
+    const [documentSocket, setDocumentSocket] = useState();
+
+    function setData(e:any) {  
+        let data: any = receiveData(e.data);
+        switch (data.messageType) {
+            case "question":
+                setQuestionSocket(data);
+                break;
+            case "question_vote":
+                setQuestionVoteSocket(data);
+                break;
+            case "reaction":
+                setReactionSocket(data);
+                break;
+            case "moderator_msg":
+                setModeratorMsgSocket(data);
+                break;
+            case "document":
+                setDocumentSocket(data);
+                break;
+            default:
+                break;
+        }
+    }
+    useEffect(()=>{
+        // 初回レンダリング時のみSocket Onにする
+        console.log("socket on");
+        socket.on("message", setData);
+    },[])
 
     const { Title } = Typography;
-
-
-    const [likes, setLikes] = useState(0);
-    const [action, setAction] : any[] = useState(null);
-    
-    const like = () => {
-        setLikes(1);
-        setAction('liked');
-    };
-
-    const likeActions = [
-        <Tooltip key="comment-basic-like" title="いいね！">
-            <span onClick={like}>
-                {createElement(action === 'liked' ? LikeFilled : LikeOutlined)}
-                <span className="comment-action">{likes}</span>
-            </span>
-        </Tooltip>
-    ]
-
-    const data = [
-        {
-            author: '匿名',
-            content: (
-            <p>
-                ここでコメントを表示する。
-            </p>
-            ),
-            datetime: (
-                <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-                    <span>{moment().subtract(1, 'days').fromNow()}</span>
-                </Tooltip>
-            ),
-        },
-        {
-            author: '匿名',
-            content: (
-            <p>
-                ここでコメントを表示する。
-            </p>
-            ),
-            datetime: (
-                <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-                    <span>{moment().subtract(1, 'days').fromNow()}</span>
-                </Tooltip>
-            ),
-        },
-        {
-            author: '匿名',
-            content: (
-            <p>
-                ここでコメントを表示する。
-            </p>
-            ),
-            datetime: (
-                <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-                    <span>{moment().subtract(1, 'days').fromNow()}</span>
-                </Tooltip>
-            ),
-        },
-        {
-            author: '匿名',
-            content: (
-            <p>
-                ここでコメントを表示する。
-            </p>
-            ),
-            datetime: (
-                <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-                    <span>{moment().subtract(1, 'days').fromNow()}</span>
-                </Tooltip>
-            ),
-        },
-        {
-            author: '匿名',
-            content: (
-            <p>
-                ここでコメントを表示する。
-            </p>
-            ),
-            datetime: (
-                <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-                    <span>{moment().subtract(1, 'days').fromNow()}</span>
-                </Tooltip>
-            ),
-        },
-        {
-            author: '匿名',
-            content: (
-            <p>
-                ここでコメントを表示する。
-            </p>
-            ),
-            datetime: (
-                <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-                    <span>{moment().subtract(1, 'days').fromNow()}</span>
-                </Tooltip>
-            ),
-        },
-    ];
 
     return (
         <Layout>
@@ -164,61 +96,21 @@ export default function InMeeting() {
                         <Divider />
                         {/* 左側のコンポーネント */}
                         <Col span={12} style={{padding:"8px 0", margin:'8px'}}>
-                            <Card style={{ width: '100%', minHeight: 341, maxHeight: 500 }}>
-                                <Title level={4}>ここで司会メッセージを表示する</Title>
-                                <Divider />
-                                <p style={{minHeight: 341}}>This area for slide show</p>
-                            </Card>
+                            <Col span={24}>
+                                <Card style={{ width: '100%', minHeight: 341, maxHeight: 500 }}>
+                                    <Title level={4}>ここで司会メッセージを表示する</Title>
+                                    <Divider />
+                                    <p style={{minHeight: 341}}>This area for slide show</p>
+                                </Card>
+                            </Col>
+                            <Col span={24} style={{padding:"8px 0", margin:'8px'}}>
+                                <Button type="primary" icon={<ArrowUpOutlined />} style={{width:'45%', marginLeft:'25%'}}>Hands up</Button>
+                            </Col>
                         </Col>
                         {/* 右側のコンポーネント */}
                         <Col span={11} style={{padding:"8px 0", margin:'8px'}}>
-                            <Card style={{ width: '100%', minHeight: 340, maxHeight: 500 }}>
-                                <Tabs defaultActiveKey="1">
-                                    <TabPane tab="発表者1" key="1" style={{maxHeight: 370, overflow:'scroll', overflowX:'hidden'}}>
-                                        <List
-                                            className="comment-list"
-                                            itemLayout="horizontal"
-                                            dataSource={data}
-                                            renderItem={item => (
-                                                <li>
-                                                    <Comment
-                                                        actions={likeActions}
-                                                        author={item.author}
-                                                        content={item.content}
-                                                        datetime={item.datetime}
-                                                    />
-                                                </li>
-                                            )}
-                                        />
-                                    </TabPane>
-                                    <TabPane tab="発表者2" key="2" style={{maxHeight: 370, overflow:'scroll', overflowX:'hidden'}}>
-                                        <List
-                                                className="comment-list"
-                                                itemLayout="horizontal"
-                                                dataSource={data}
-                                                renderItem={item => (
-                                                    <li>
-                                                        <Comment
-                                                            actions={likeActions}
-                                                            author={item.author}
-                                                            content={item.content}
-                                                            datetime={item.datetime}
-                                                        />
-                                                    </li>
-                                                )}
-                                        />
-                                    </TabPane>
-                                </Tabs>
-                            </Card>    
-                        </Col>
-                        {/* 左側操作エリア */}
-                        <Col span={12} style={{padding:"8px 0", margin:'8px'}}>
-                            <Button type="primary" icon={<ArrowUpOutlined />} style={{width:'45%', marginLeft:'25%'}}>Hands up</Button>
-                        </Col>
-                        {/* 右側操作エリア */}
-                        <Col span={11} style={{padding:"8px 0", margin:'8px'}}>
-                            <Input placeholder="ここでコメントを書いてください" style={{width:'70%', marginLeft:'5%'}}></Input>
-                            <Button type="primary" icon={<CommentOutlined />} style={{width:'20%'}}>Comment</Button>
+                            {/* コメント一覧 */}
+                            <CommentListComponent socket={socket} data={questionSocket}/>
                         </Col>
                     </Row>
                 </div>

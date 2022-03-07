@@ -4,16 +4,19 @@ import TestButton from '../components/testComponents/TestComponent';
 import WSTestComponent from '../components/testComponents/WSTestComponent';
 import SpeechRecTestComponent from '../components/testComponents/SpeechRecTestComponent';
 import AzureStorageComponent from '../components/testComponents/AzureStorageComponent';
+import Text2SpeechComponent from '../components/testComponents/Text2SpeechComponent';
+
 
 function TestPage() {
   return (
     <div>
         {/* <TestButton /> */}
-        <PdfViewerComponent />
+        {/* <PdfViewerComponent /> */}
         {/* <WSTestComponent /> */}
         {/* <StoreTestComponent /> */}
         {/* <SpeechRecTestComponent /> */}
         <AzureStorageComponent />
+        <Text2SpeechComponent />
     </div>
   );
 }
