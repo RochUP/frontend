@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import { meetingJoin } from "../../utils/api";
 import store from "../../store";
 import { meetingJoinAction } from "../../actions/meetingActions";
+import MeetingHeader from "../../components/meeting/MeetingHeader";
 
 const { Header, Footer, Content } = Layout;
 
@@ -44,21 +45,13 @@ export default function MeetingJoin() {
     }
 
     const storeMeetingData = (res: any) => {
-        store.dispatch(meetingJoinAction(res.meetingId, res.meetingName, res.meetingStartTime, res.presenterIds, res.presenterNames, res.documentIds));
+        const meetingId = +(document.getElementById("meetingId") as HTMLInputElement).value || 0;
+        store.dispatch(meetingJoinAction(meetingId, res.meetingName, res.meetingStartTime, res.presenterIds, res.presetnerNames, res.documentIds));
     }
 
     return (
         <Layout >
-            <Header style={{maxHeight: 60}}>
-                <Menu theme="dark" mode="horizontal" style={{maxHeight: 60}}>
-                    <SubMenu key="sub1" icon={<UserOutlined />} title='ユーザ' style={{paddingLeft:'90%'}}>
-                        <Menu.Item key="1">プロファイル</Menu.Item>
-                        <Link to={'../login'}>
-                            <Menu.Item key="2">ログアウト</Menu.Item>
-                        </Link>
-                    </SubMenu>
-                </Menu>
-            </Header>
+            <MeetingHeader />
             <Content style={{padding:'0 50px', margin:'16px 0', height:'100%',}}>
                 <Title style={{margin:'16px 0'}}>
                     ○○システム

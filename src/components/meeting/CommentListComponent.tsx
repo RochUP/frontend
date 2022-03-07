@@ -1,24 +1,20 @@
 
-import { Breadcrumb, Button, Card, Col, Divider, Input, Layout, List, Menu, Row, Tabs, Comment, Tooltip } from "antd";
+import { Button, Card, Col, Input, List, Tabs, Tooltip } from "antd";
 import {
-    UserOutlined,
-    ArrowUpOutlined,
-    CommentOutlined,
-    LikeOutlined,
-    LikeFilled
+    CommentOutlined
 } from '@ant-design/icons';
-import SubMenu from "antd/lib/menu/SubMenu";
-import { Typography } from 'antd';
 import "../../assets/css/Pages.css";
-import { Link } from "react-router-dom";
 import moment from "moment";
-import { createElement, useEffect, useState } from "react";
 import CommentItemComponent from "./CommentItemComponent"
 
 import Socket from '../../utils/webSocket';
+
 import { getDocument } from "../../utils/api";
 import { sendQuestion } from "../../utils/webSocketUtils";
 import { useSelector } from 'react-redux';
+
+import Title from "antd/lib/typography/Title";
+
 
 const { TabPane } = Tabs;
 
@@ -88,6 +84,7 @@ export default function CommentListComponent(props: Props) {
                 voteNum: 3,
                 isVote: false,
             },
+            
         ],
         [
             // presenters[1]への質問
@@ -178,14 +175,15 @@ export default function CommentListComponent(props: Props) {
     }
 
     return (
-        <div>
-            <Col span={24}>
-            <Card style={{ width: '100%', minHeight: 481, maxHeight: 500 }}>
+        <div style={{ width:'100%' }}>
+            <Col span={24} style={{ width:'100%' }}>
+            <Card style={{ width: '100%', minHeight: 500, maxHeight: 500 }}>
+                <Title level={5}>コメント一覧</Title>
                 <Tabs defaultActiveKey="1">
                     {
                         questionList.map((questions, idx) => {
                             return (
-                                <TabPane tab={presenters[idx]} key={"presenter"+idx} style={{maxHeight: 370, overflow:'scroll', overflowX:'hidden'}}>
+                                <TabPane tab={presenters[idx]} key={"presenter"+idx} style={{maxHeight: 370, overflowY:'auto', overflowX:'hidden'}}>
                                     <List
                                         className="comment-list"
                                         itemLayout="horizontal"
@@ -208,7 +206,7 @@ export default function CommentListComponent(props: Props) {
                                             })
                                         }
                                         renderItem={(item, idx)=> (
-                                            <li id={"comment"+idx}>
+                                            <li id={"comment"+idx} style={{maxWidth:'100%'}}>
                                                 <CommentItemComponent question={item}/>
                                             </li>
                                         )}
@@ -221,8 +219,8 @@ export default function CommentListComponent(props: Props) {
             </Card>
             </Col>
             <Col span={24} style={{padding:"8px 0", margin:'8px'}}>
-                <Input placeholder="ここでコメントを書いてください" style={{width:'70%', marginLeft:'5%'}} id="question" value={questionform} onChange={handleChange}></Input>
-                <Button type="primary" icon={<CommentOutlined />} style={{width:'20%'}} onClick={()=>{handleClick()}}>Comment</Button>
+                <Input placeholder="ここでコメントを書いてください" style={{width:'60%', marginLeft:'5%'}} id="question" value={questionform} onChange={handleChange}></Input>
+                <Button type="primary" icon={<CommentOutlined />} style={{width:'30%'}} onClick={()=>{handleClick()}}>Comment</Button>
             </Col>
         </div>
     )
