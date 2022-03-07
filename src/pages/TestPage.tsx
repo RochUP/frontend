@@ -13,7 +13,7 @@ function TestPage() {
         {/* <TestButton /> */}
         <PdfViewerComponent />
         {/* <WSTestComponent /> */}
-        {/* <StoreTestComponent /> */}
+        <StoreTestComponent />
         {/* <SpeechRecTestComponent /> */}
         {/* <AzureStorageComponent /> */}
         <Text2SpeechComponent />

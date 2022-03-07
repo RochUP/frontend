@@ -14,6 +14,8 @@ import CommentListComponent from "../../components/meeting/CommentListComponent"
 import Socket from "../../utils/webSocket";
 import { receiveData } from "../../utils/webSocketUtils";
 import PdfViewerComponent from "../../components/testComponents/PdfViewerComponent";
+import MeetingHeader from "../../components/meeting/MeetingHeader";
+import { useSelector } from "react-redux";
 
 const { Header, Footer, Content } = Layout;
 
@@ -24,6 +26,8 @@ const ws = new WebSocket(URL+"");
 let socket = new Socket(ws);
 
 export default function InMeeting() {
+    const meetingId = useSelector((state: any) => state.meetingReducer.meetingId);
+
     const [questionSocket, setQuestionSocket] = useState();
     const [questionVoteSocket, setQuestionVoteSocket] = useState();
     const [reactionSocket, setReactionSocket] = useState();
@@ -75,16 +79,7 @@ export default function InMeeting() {
 
     return (
         <Layout>
-            <Header style={{maxHeight: 60}}>
-                <Menu theme="dark" mode="horizontal" style={{maxHeight: 60}}>
-                    <SubMenu key="sub1" icon={<UserOutlined />} title='ユーザ' style={{paddingLeft:'90%'}}>
-                        <Menu.Item key="1">プロファイル</Menu.Item>
-                        <Link to={'../login'}>
-                            <Menu.Item key="2">ログアウト</Menu.Item>
-                        </Link>
-                    </SubMenu>
-                </Menu>
-            </Header>
+            <MeetingHeader />
             <Content style={{padding:'0 50px'}}>
                 <Title style={{margin:'16px 0'}}>
                     ○○システム
@@ -99,7 +94,7 @@ export default function InMeeting() {
                             {/* style={{background:'#DD2248'}}> */}
                             <Title level={3} style={{marginLeft:'5%'}}>○○会議進行中</Title>
                             <Text type="secondary" style={{marginLeft:'5%'}}>会議ID:</Text>
-                            <Text type="secondary" style={{marginLeft: 5}}>ABCD1234567890</Text>
+                            <Text type="secondary" style={{marginLeft: 5}}>{meetingId}</Text>
                         </Col>
                         <Col span={12} style={{maxHeight: 50}}>
                             {/* style={{background:'#DD2248'}}> */}
