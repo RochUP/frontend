@@ -26,14 +26,15 @@ export function receiveData(data: string) {
 function receiveQuestion(data: any) {
     const res = {
         messageType: "question",
-        meetingId: data.meetingId,
         questionId: data.questionId,
+        meetingId: data.meetingId,
         questionBody: data.questionBody,
         documentId: data.documentId,
         documentPage: data.documentPage,
         questionTime: data.questionTime,
         presenterId: data.presenterId,
     }
+    console.log(res)
     return res;
 }
 
