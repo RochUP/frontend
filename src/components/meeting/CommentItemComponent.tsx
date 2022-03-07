@@ -3,7 +3,7 @@ import {
     LikeOutlined,
     LikeFilled
 } from '@ant-design/icons';
-import { createElement, useEffect, useState } from "react";
+import { createElement, useState } from "react";
 
 
 type questionType = {
