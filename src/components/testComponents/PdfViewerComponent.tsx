@@ -19,7 +19,7 @@ function PdfViewerComponent() {
     return (
         <div>
             <Document
-                file={"https://arxiv.org/pdf/2110.05086.pdf"}
+                file={"https://hacku.blob.core.windows.net/pdfcontainer/react_newblob1646585180049"}
                 onLoadSuccess={onDocumentLoadSuccess}
             >
                 <Page pageNumber={pageNumber} />
