@@ -64,6 +64,7 @@ export default function MeetingHost() {
         // TODO:
         // - レスポンスが帰ってくるまでロード画面にする
         // - 作成完了したら画面遷移
+        // - 返ってくるのはidだけになったのでどこかでjoinリクエストを投げる
 
         await meetingCreate(meetingName, meetingDate, presenterIds)
             .then(res => {
@@ -71,7 +72,7 @@ export default function MeetingHost() {
                 if (!res.result){
                     throw new Error("Meeting Create Failed");
                 }
-                storeMeetingData(res);
+                // storeMeetingData(res);
                 alert("meeting ID: "+res.meetingId+" created");
             })
             .catch(err => {
@@ -80,9 +81,9 @@ export default function MeetingHost() {
             });
     }
 
-    const storeMeetingData = (res: any) => {
-        store.dispatch(meetingJoinAction(res.meetingId, res.meetingName, res.meetingStartTime, res.presenterIds, res.documentIds));
-    }
+    // const storeMeetingData = (res: any) => {
+    //     store.dispatch(meetingJoinAction(res.meetingId, res.meetingName, res.meetingStartTime, res.presenterIds, res.documentIds));
+    // }
 
     return (
         <Layout >

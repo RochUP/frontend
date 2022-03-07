@@ -64,7 +64,7 @@ export async function login(userId:string, userPassword:string) {
             const res_data = {
                 result: res.result,
                 userId: userId, //res.userId,
-                userName: "unknown", //res.userName,
+                userName: res.userName,
             }
             return res_data;
         })
@@ -88,9 +88,6 @@ export async function meetingCreate(meetingName:string, meetingStartTime:string,
                 result: (res.meetingId!=-1),
                 meetingId: res.meetingId,
                 meetingName: res.meetingName,
-                meetingStartTime: res.meetingStartTime,
-                presenters: res.presenters,
-                documentIds: res.documentIds,
             }
             return res_data;
         })
@@ -112,10 +109,10 @@ export async function meetingJoin(userId:string, meetingId:number){
         .then(res => {
             const res_data = {
                 result: res.result,
-                meetingId: res.meetingId,
                 meetingName: res.meetingName,
                 meetingStartTime: res.meetingStartTime,
-                presenters: res.presenters,
+                presenterNames: res.presenterNames,
+                presenterIds: res.presenterIds,
                 documentIds: res.documentIds,
             }
             return res_data;
@@ -125,18 +122,17 @@ export async function meetingJoin(userId:string, meetingId:number){
         });
 }
 
-export async function postDocument(documentId: number, documentFile:string="", script:string=""){
-    // TODO:
-    // - fileの扱い(ファイルのパスを受け取って，ここでBase64エンコードするか)
+export async function registerDocument(documentId: number, documentUrl:string|null=null, script:string|null=null){
     const data = {
         documentId: documentId,
-        documentFile: documentFile,
+        documentUrl: documentUrl,
         script: script,
     }
 
     return await post("/document/register", data)
     .then(res => {
         const res_data = {
+            result: res.result,
         }
         return res_data;
     })
@@ -153,7 +149,8 @@ export async function getDocument(documentId:string){
     return await post("/document/get", data)
     .then(res => {
         const res_data = {
-            documentFile: res.documentFile,
+            result: res.result,
+            documentUrl: res.documentUrl,
             script: res.script,
         }
         return res_data;

@@ -44,7 +44,7 @@ export default function MeetingJoin() {
     }
 
     const storeMeetingData = (res: any) => {
-        store.dispatch(meetingJoinAction(res.meetingId, res.meetingName, res.meetingStartTime, res.presenterIds, res.documentIds));
+        store.dispatch(meetingJoinAction(res.meetingId, res.meetingName, res.meetingStartTime, res.presenterIds, res.presetnerNames, res.documentIds));
     }
 
     return (

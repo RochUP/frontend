@@ -3,7 +3,9 @@ import StoreTestComponent from '../components/testComponents/StoreTestComponent'
 import TestButton from '../components/testComponents/TestComponent';
 import WSTestComponent from '../components/testComponents/WSTestComponent';
 import SpeechRecTestComponent from '../components/testComponents/SpeechRecTestComponent';
+import AzureStorageComponent from '../components/testComponents/AzureStorageComponent';
 import Text2SpeechComponent from '../components/testComponents/Text2SpeechComponent';
+
 
 function TestPage() {
   return (
@@ -13,7 +15,8 @@ function TestPage() {
         {/* <WSTestComponent /> */}
         {/* <StoreTestComponent /> */}
         {/* <SpeechRecTestComponent /> */}
-        {/* <Text2SpeechComponent /> */}
+        {/* <AzureStorageComponent /> */}
+        <Text2SpeechComponent />
     </div>
   );
 }
