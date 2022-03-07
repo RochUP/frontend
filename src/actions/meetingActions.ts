@@ -1,11 +1,12 @@
 export const MEETING_JOIN = "MEETING_JOIN";
-export const meetingJoinAction = (meetingId: number, meetingName: string, meetingStartTime: string, presenters: Array<string>, documentIds: Array<string>) => ({
+export const meetingJoinAction = (meetingId: number, meetingName: string, meetingStartTime: string, presenterIds: Array<string>, presenterNames: Array<string>, documentIds: Array<string>) => ({
     type: MEETING_JOIN,
     payload: {
         meetingId,
         meetingName,
         meetingStartTime,
-        presenters,
+        presenterIds,
+        presenterNames,
         documentIds,
     }
 });

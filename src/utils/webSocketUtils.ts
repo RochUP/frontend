@@ -11,12 +11,14 @@ export function receiveData(data: string) {
             return receiveReaction(data_json);
         case "moderator_msg":
             return receiveModeratorMsg(data_json);
-        case "document":
-            return receiveDocument(data_json);
+        case "handsup":
+            return receiveHandsup(data_json);
+        case "document_update":
+            return receiveDocumentUpdate(data_json);
         case "message":
             return receiveMessage(data_json);
         default:
-            return;
+            return data_json;
     }
 }
 
@@ -26,10 +28,12 @@ function receiveQuestion(data: any) {
         messageType: "question",
         questionId: data.questionId,
         meetingId: data.meetingId,
+        questionId: data.questionId,
         questionBody: data.questionBody,
         documentId: data.documentId,
         documentPage: data.documentPage,
         questionTime: data.questionTime,
+        presenterId: data.presenterId,
     }
     console.log(res)
     return res;
@@ -61,13 +65,26 @@ function receiveModeratorMsg(data: any) {
         messageType: "moderator_msg",
         meetingId: data.meetingId,
         moderatorMsgBody: data.moderatorMsgBody,
+        isStartPresen: data.isStartPresen,
+        questionId: data.questionId,
+        userId: data.userId,
+        presenterOrder: data.presenterOrder,
     }
     return res;
 }
 
-function receiveDocument(data: any) {
+function receiveHandsup(data: any) {
     const res = {
-        messageType: "document",
+        messageType: "handsup",
+        meetingId: data.meetingId,
+        userId: data.userId,
+    }
+    return res;
+}
+
+function receiveDocumentUpdate(data: any) {
+    const res = {
+        messageType: "document_update",
         meetingId: data.meetingId,
         documentId: data.documentId,
     }
@@ -143,7 +160,6 @@ export function sendReaction (
 
 export function sendHandsup (
     socket: Socket,
-    meetingId: number,
     userId: string,
     documentId: number,
     documentPage: number,
@@ -152,7 +168,6 @@ export function sendHandsup (
     console.log("sendHandsup");
     const data = {
         messageType: "handsup",
-        meetingId: meetingId,
         userId: userId,
         documentId: documentId,
         documentPage: documentPage,
@@ -166,7 +181,6 @@ export function sendFinishword (
     socket: Socket,
     meetingId: number,
     presenterId: string,
-    documentId: number,
     finishType: string,
 ){
     console.log("sendFinishword");
@@ -174,7 +188,6 @@ export function sendFinishword (
         messageType: "finishword",
         meetingId: meetingId,
         presenterId: presenterId,
-        documentId: documentId,
         finishType: finishType,
     };
     const data_str = JSON.stringify(data);
