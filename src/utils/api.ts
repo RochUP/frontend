@@ -73,13 +73,13 @@ export async function login(userId:string, userPassword:string) {
         });
 }
 
-export async function meetingCreate(meetingName:string, meetingStartTime:string, presenters:string[]){
+export async function meetingCreate(meetingName:string, meetingStartTime:string, presenterIds:string[]){
     // TODO: 
     // - startTimeのフォーマット
     const data = {
         meetingName: meetingName,
         meetingStartTime: meetingStartTime,
-        presenters: presenters,
+        presenterIds: presenterIds,
     }
 
     return await post("/meeting/create", data)
