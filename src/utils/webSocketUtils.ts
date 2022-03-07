@@ -24,12 +24,14 @@ export function receiveData(data: string) {
 function receiveQuestion(data: any) {
     const res = {
         messageType: "question",
+        questionId: data.questionId,
         meetingId: data.meetingId,
         questionBody: data.questionBody,
         documentId: data.documentId,
         documentPage: data.documentPage,
         questionTime: data.questionTime,
     }
+    console.log(res)
     return res;
 }
 
