@@ -1,4 +1,4 @@
-import { Button, Space } from 'antd';
+import { Button, Slider, Space } from 'antd';
 import { useEffect, useState } from 'react';
 import {
     RightOutlined,
@@ -40,8 +40,17 @@ function PdfViewerComponent(props: Props) {
         }
     }
 
+    function onWheelPageChange(event: any) {
+        if(event.deltaY > 0) {
+            changePage(1);
+        } else {
+            changePage(-1);
+        }
+    }
+
+
     return (
-        <Space direction='vertical' style={{width:'100%'}}>
+        <Space direction='vertical' style={{width:'100%'}} onWheel={onWheelPageChange}>
             <Document
                 file={props.documentUrl}
                 onLoadSuccess={onDocumentLoadSuccess}
@@ -54,6 +63,7 @@ function PdfViewerComponent(props: Props) {
                     // rotate={90}
                     />
             </Document>
+            <Slider defaultValue={pageNumber} min={1} max={numPages} onChange={(value) => {setPageNumber(value);}} value={pageNumber}></Slider>
             <Space style={{display:'flex', justifyContent:'center'}}>
                 <Button shape='circle' icon={<LeftOutlined />} onClick={() => changePage(-1)}></Button>
                 <p>Page {pageNumber} of {numPages}</p>
