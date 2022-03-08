@@ -90,6 +90,13 @@ export default function InMeeting() {
     const { Title } = Typography;
 
     /* 資料アップロード処理 *************************************/
+    const scripts = useSelector((state: any) => state.meetingReducer.scripts);
+    const idx = presenterIds.indexOf(userId);
+    let script_default = ""
+    if (idx !== -1) {
+        script_default = scripts[idx];
+    }
+
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [filesList, setFilesList] = useState<UploadFile[]>([]);
 
@@ -113,8 +120,11 @@ export default function InMeeting() {
             return;
         }
         const documentId = documentIds[idx];
-        const file = filesList[0].originFileObj;
-        const documentUrl = await uploadFile2AzureStorage(file);
+        let documentUrl = null;
+        if (filesList.length !== 0) {
+            const file = filesList[0].originFileObj;
+            documentUrl = await uploadFile2AzureStorage(file);
+        }
         const script = (document.getElementById("script_form") as HTMLFormElement).value;
         
         await registerDocument(documentId, documentUrl, script)
@@ -184,7 +194,7 @@ export default function InMeeting() {
                                                 >
                                                 <Button icon={<UploadOutlined />} style={{width:'100%'}}>原稿アップロード</Button>
                                             </Upload>
-                                            <TextArea id="script_form" showCount />
+                                            <TextArea id="script_form" showCount defaultValue={script_default}/>
                                         </Space>
                                     </Modal>
                                 </Tooltip>
