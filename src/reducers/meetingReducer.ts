@@ -1,4 +1,4 @@
-import { CHANGE_DOCUMENT_PAGE, GET_DOCUMENT, MEETING_EXIT, MEETING_JOIN } from "../actions/meetingActions";
+import { ADD_QUESTION, CHANGE_DOCUMENT_PAGE, GET_DOCUMENT, MEETING_EXIT, MEETING_JOIN } from "../actions/meetingActions";
 
 const initialState = {
     meetingId: 0,
@@ -11,6 +11,7 @@ const initialState = {
     scripts: ["",],
     presenterIdNow: 0,
     documentPageNow: 1,
+    questionList: [[{}],],
 }
 
 export default function reducer(state=initialState, action: any) {
@@ -24,10 +25,11 @@ export default function reducer(state=initialState, action: any) {
                 presenterIds: action.payload.presenterIds,
                 presenterNames: action.payload.presenterNames,
                 documentIds: action.payload.documentIds,
-                documentUrls: ["https://hacku.blob.core.windows.net/pdfcontainer/react_newblob1646585180049", "https://hacku.blob.core.windows.net/pdfcontainer/react_newblob1646585610962"],//Array(action.payload.documentIds.length).fill(""),
+                documentUrls: Array(action.payload.documentIds.length).fill(""),
                 scripts: ["A", "B"], //Array(action.payload.documentIds.length).fill(""),
                 presenterIdNow: action.payload.presenterIds[0],
                 documentPageNow: 1,
+                questionList: Array(action.payload.presenterIds.length).fill(null).map(item => new Array()),
             };
         
         case MEETING_EXIT:
@@ -43,6 +45,7 @@ export default function reducer(state=initialState, action: any) {
                 scripts: ["",],
                 presenterIdNow: [""],
                 documentPageNow: 1,
+                questionList: Array(action.payload.presenterIds.length).fill(null).map(item => new Array()),
             };
 
         case GET_DOCUMENT:
@@ -63,6 +66,29 @@ export default function reducer(state=initialState, action: any) {
                 presenterIdNow: action.payload.presenterIdNow,
                 documentPageNow: action.payload.documentPageNow,
             };
+
+        case ADD_QUESTION:
+            const index = state.presenterIds.indexOf(action.payload.question.presenterId)
+            if (index !== -1) {
+                var questionList = state.questionList.slice();
+                const question = {
+                    meetingId: action.payload.question.meetingId,
+                    questionId: action.payload.question.questionId,
+                    questionBody: action.payload.question.questionBody,
+                    documentId: action.payload.question.documentId,
+                    documentPage: action.payload.question.documentPage,
+                    questionTime: action.payload.question.questionTime,
+                    voteNum: 0,
+                    isVote: false,
+                }
+                questionList[index].push(question);
+                return {
+                    ...state,
+                    questionList: questionList,
+                };
+            }else{
+                return state;
+            }
         
         default:
             break;

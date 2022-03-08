@@ -16,7 +16,7 @@ import { useSelector } from "react-redux";
 import DocumentComponent from "../../components/meeting/DocumentComponent";
 import ModeratorMsgComponent from "../../components/meeting/ModeratorMsgComponent";
 import store from "../../store";
-import { meetingExitAction } from "../../actions/meetingActions";
+import { addQuestionAction, meetingExitAction } from "../../actions/meetingActions";
 import TextArea from "antd/lib/input/TextArea";
 import { UploadChangeParam, UploadFile } from "antd/lib/upload/interface";
 import { uploadFile2AzureStorage } from "../../utils/azureStorage";
@@ -61,6 +61,7 @@ export default function InMeeting() {
             switch (data.messageType) {
                 case "question":
                     setQuestionSocket(data);
+                    store.dispatch(addQuestionAction(data))
                     break;
                 case "question_vote":
                     setQuestionVoteSocket(data);
