@@ -5,26 +5,26 @@ import { useSelector } from "react-redux";
 import PdfViewerComponent from "../../components/meeting/PdfViewerComponent";
 
 
-export default function DocumentComponent() {
+type Props = {
+    presenterId: string;
+}
 
-    const documentIds = useSelector((state: any) => state.meetingReducer.documentIds);
-    const documentIdNow = useSelector((state: any) => state.meetingReducer.documentIdNow);
+export default function DocumentComponent(props: Props) {
+
+    const presenterIds = useSelector((state: any) => state.meetingReducer.presenterIds);
+    const documentUrls = useSelector((state: any) => state.meetingReducer.documentUrls);
     const scripts = useSelector((state: any) => state.meetingReducer.scripts);
     
-    const [script, setScript] = useState("");
-
-    useEffect(()=>{
-        setScript(scripts[documentIds.indexOf(documentIdNow)]);
-    },[documentIdNow]);
+    const script = scripts[presenterIds.indexOf(props.presenterId)];
 
     return (
         <Card style={{width: '100%', minHeight: 500, maxHeight: 500,}}>
             <Space direction="horizontal" style={{maxHeight: 480}}>
                 {/* <Card type="inner" style={{height: 450, width: '100%'}}> */}
-                    <PdfViewerComponent />
+                    <PdfViewerComponent documentUrl={documentUrls[presenterIds.indexOf(props.presenterId)]}/>
                 {/* </Card> */}
                 {/* <Card type="inner" style={{height: 450, width:'100%'}}> */}
-                    <p style={{width: '100%', minHeight: 350, textAlign:'left', marginLeft:'10%'}}>This area for 原稿</p>
+                    <p style={{width: '100%', minHeight: 350, textAlign:'left', marginLeft:'10%'}}>{script}</p>
                 {/* </Card> */}
             </Space>
         </Card>

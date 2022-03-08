@@ -39,6 +39,9 @@ export default function InMeeting() {
         }
     }, [])
 
+    const presenterIds = useSelector((state: any) => state.meetingReducer.presenterIds);
+    const presenterNames = useSelector((state: any) => state.meetingReducer.presenterNames);
+
     const [questionSocket, setQuestionSocket] = useState();
     const [questionVoteSocket, setQuestionVoteSocket] = useState();
     const [reactionSocket, setReactionSocket] = useState();
@@ -142,28 +145,32 @@ export default function InMeeting() {
                         </Col>
                         <ModeratorMsgComponent />
                         <Tabs type="card" defaultActiveKey="1" style={{width:'100%'}}>
-                            <TabPane tab="1" key="1">
-                                <Row>
-                                    {/* 左側のコンポーネント */}
-                                    {/* <Col span={12} style={{padding:"8px 0", margin:'8px'}}> */}
-                                    <Col flex={4} style={{width:'30%'}}>
-                                        <Col span={24}>
-                                            <DocumentComponent />
-                                        </Col>
-                                        <Col span={24} style={{padding:"8px 0", margin:'8px'}}>
-                                            <Button type="primary" icon={<ArrowUpOutlined />} style={{width:'45%', marginLeft:'25%'}}>Hands up</Button>
-                                        </Col>
-                                    </Col>
-                                    {/* 右側のコンポーネント */}
-                                    {/* <Col span={11} style={{padding:"8px 0", margin:'8px'}}> */}
-                                    <Col flex={1} style={{marginLeft:'8px', maxWidth:'30%'}}>
-                                        {/* コメント一覧 */}
-                                        <CommentListComponent socket={socket} data={questionSocket}/>
-                                    </Col>
-                                </Row>
-                            </TabPane>
-                            <TabPane tab="2" key="2">   
-                            </TabPane>
+                            {
+                                presenterIds.map((presenterId:string, index:number) => {
+                                    return (
+                                        <TabPane tab={presenterNames[presenterIds.indexOf(presenterId)]} key={presenterId} >
+                                            <Row>
+                                                {/* 左側のコンポーネント */}
+                                                {/* <Col span={12} style={{padding:"8px 0", margin:'8px'}}> */}
+                                                <Col flex={4} style={{width:'30%'}}>
+                                                    <Col span={24}>
+                                                        <DocumentComponent presenterId={presenterId}/>
+                                                    </Col>
+                                                    <Col span={24} style={{padding:"8px 0", margin:'8px'}}>
+                                                        <Button type="primary" icon={<ArrowUpOutlined />} style={{width:'45%', marginLeft:'25%'}}>Hands up</Button>
+                                                    </Col>
+                                                </Col>
+                                                {/* 右側のコンポーネント */}
+                                                {/* <Col span={11} style={{padding:"8px 0", margin:'8px'}}> */}
+                                                <Col flex={1} style={{marginLeft:'8px', maxWidth:'30%'}}>
+                                                    {/* コメント一覧 */}
+                                                    <CommentListComponent socket={socket} data={questionSocket} presenterId={presenterId}/>
+                                                </Col>
+                                            </Row>
+                                        </TabPane>
+                                    )
+                                })
+                            }
                         </Tabs>
                     </Row>
                 </div>

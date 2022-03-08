@@ -26,6 +26,7 @@ import { useEffect, useState } from "react";
 type Props = {
     socket: Socket;
     data: any;
+    presenterId: string;
 }
 
 export default function CommentListComponent(props: Props) {
@@ -61,7 +62,7 @@ export default function CommentListComponent(props: Props) {
                 // userId: "test01",
                 meetingId: 324,
                 questionId: 1,
-                questionBody: "good!",
+                questionBody: "Plithosって何？",
                 documentId: 4,
                 documentPage:3,
                 questionTime:"2022/03/03 16:50:00",
@@ -72,7 +73,7 @@ export default function CommentListComponent(props: Props) {
                 // userId: "test01",
                 meetingId: 324,
                 questionId: 2,
-                questionBody: "good!",
+                questionBody: "どうやってるの？",
                 documentId: 4,
                 documentPage:3,
                 questionTime:"2022/03/03 16:50:00",
@@ -177,7 +178,7 @@ export default function CommentListComponent(props: Props) {
                         className="comment-list"
                         itemLayout="horizontal"
                         dataSource={
-                            questionList[0].map((question, idx) => {
+                            questionList[presenterIds.indexOf(props.presenterId)].map((question, idx) => {
                                 return(
                                     {
                                         id: question.questionId,
