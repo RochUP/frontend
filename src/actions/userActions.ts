@@ -6,3 +6,10 @@ export const userLogin = (userid: string, username: string) => ({
         username,
     }
 });
+
+export const USER_LOGOUT = "USER_LOGOUT";
+export const userLogout = () => ({
+    type: USER_LOGOUT,
+    payload: {
+    }
+});

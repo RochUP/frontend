@@ -1,34 +1,43 @@
-import { Breadcrumb, Button, Card, Col, Divider, Layout, Menu, Row, Space, Modal, Tooltip, Upload } from "antd";
+import { Breadcrumb, Button, Col, Layout, Row, Space, Modal, Tooltip, Upload, Tabs } from "antd";
 import {
-    UserOutlined,
     ArrowUpOutlined,
     UploadOutlined
 } from '@ant-design/icons';
-import SubMenu from "antd/lib/menu/SubMenu";
 import { Typography } from 'antd';
 import "../../assets/css/Pages.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import CommentListComponent from "../../components/meeting/CommentListComponent";
 
 import Socket from "../../utils/webSocket";
 import { receiveData } from "../../utils/webSocketUtils";
-import PdfViewerComponent from "../../components/testComponents/PdfViewerComponent";
 import MeetingHeader from "../../components/meeting/MeetingHeader";
 import { useSelector } from "react-redux";
 import DocumentComponent from "../../components/meeting/DocumentComponent";
 import ModeratorMsgComponent from "../../components/meeting/ModeratorMsgComponent";
+import store from "../../store";
+import { meetingExitAction } from "../../actions/meetingActions";
 
-const { Header, Footer, Content } = Layout;
+const { Footer, Content } = Layout;
 
 const { Text } = Typography;
+const { TabPane } = Tabs;
 
 const URL = process.env.REACT_APP_WEBSOCKET_URL;
 const ws = new WebSocket(URL+"");
 let socket = new Socket(ws);
 
 export default function InMeeting() {
+    const navigate = useNavigate();
+
     const meetingId = useSelector((state: any) => state.meetingReducer.meetingId);
+    
+    useEffect (() => {
+        if(meetingId == 0){ //joinしてなかったら戻る
+            console.log("NOT join")
+            navigate("/meeting/join");
+        }
+    }, [])
 
     const [questionSocket, setQuestionSocket] = useState();
     const [questionVoteSocket, setQuestionVoteSocket] = useState();
@@ -51,24 +60,26 @@ export default function InMeeting() {
 
     function setData(e:any) {  
         let data: any = receiveData(e.data);
-        switch (data.messageType) {
-            case "question":
-                setQuestionSocket(data);
-                break;
-            case "question_vote":
-                setQuestionVoteSocket(data);
-                break;
-            case "reaction":
-                setReactionSocket(data);
-                break;
-            case "moderator_msg":
-                setModeratorMsgSocket(data);
-                break;
-            case "document":
-                setDocumentSocket(data);
-                break;
-            default:
-                break;
+        if (data.meetingId == meetingId) { // 別のmeetingIdのデータを受け取った場合は無視する
+            switch (data.messageType) {
+                case "question":
+                    setQuestionSocket(data);
+                    break;
+                case "question_vote":
+                    setQuestionVoteSocket(data);
+                    break;
+                case "reaction":
+                    setReactionSocket(data);
+                    break;
+                case "moderator_msg":
+                    setModeratorMsgSocket(data);
+                    break;
+                case "document":
+                    setDocumentSocket(data);
+                    break;
+                default:
+                    break;
+            }
         }
     }
     useEffect(()=>{
@@ -79,12 +90,17 @@ export default function InMeeting() {
 
     const { Title } = Typography;
 
+    const onClickExit = () => {
+        console.log('exit');
+        store.dispatch(meetingExitAction());
+    }
+
     return (
         <Layout>
             <MeetingHeader />
             <Content style={{padding:'0 50px'}}>
                 <Title style={{margin:'16px 0'}}>
-                    ○○システム
+                    ○○会議進行中
                 </Title>
                 <Breadcrumb style={{margin:'16px 0'}}>
                     <Breadcrumb.Item>会議</Breadcrumb.Item>
@@ -94,8 +110,7 @@ export default function InMeeting() {
                     <Row>
                         <Col span={12} style={{maxHeight: 50}}> 
                             {/* style={{background:'#DD2248'}}> */}
-                            <Title level={3} style={{marginLeft:'5%'}}>○○会議進行中</Title>
-                            <Text type="secondary" style={{marginLeft:'5%'}}>会議ID:</Text>
+                            <Text type="secondary">会議ID:</Text>
                             <Text type="secondary" style={{marginLeft: 5}}>{meetingId}</Text>
                         </Col>
                         <Col span={12} style={{maxHeight: 50}}>
@@ -120,29 +135,36 @@ export default function InMeeting() {
                                 </Tooltip>
                                 <Tooltip placement="topRight" title={'会議を退出します'}>
                                     <Link to={'../meeting/join'} style={{marginLeft:'90%'}}>
-                                        <Button type="primary" danger>退出</Button>
+                                        <Button type="primary" danger onClick={onClickExit}>退出</Button>
                                     </Link>
                                 </Tooltip>
                             </Space>
                         </Col>
-                        <Divider />
-                        {/* 左側のコンポーネント */}
-                        {/* <Col span={12} style={{padding:"8px 0", margin:'8px'}}> */}
-                        <Col flex={4} style={{width:'30%'}}>
-                            <Col span={24}>
-                                <ModeratorMsgComponent />
-                                <DocumentComponent />
-                            </Col>
-                            <Col span={24} style={{padding:"8px 0", margin:'8px'}}>
-                                <Button type="primary" icon={<ArrowUpOutlined />} style={{width:'45%', marginLeft:'25%'}}>Hands up</Button>
-                            </Col>
-                        </Col>
-                        {/* 右側のコンポーネント */}
-                        {/* <Col span={11} style={{padding:"8px 0", margin:'8px'}}> */}
-                        <Col flex={1} style={{marginLeft:'8px', maxWidth:'30%'}}>
-                            {/* コメント一覧 */}
-                            <CommentListComponent socket={socket} data={questionSocket}/>
-                        </Col>
+                        <ModeratorMsgComponent />
+                        <Tabs type="card" defaultActiveKey="1" style={{width:'100%'}}>
+                            <TabPane tab="1" key="1">
+                                <Row>
+                                    {/* 左側のコンポーネント */}
+                                    {/* <Col span={12} style={{padding:"8px 0", margin:'8px'}}> */}
+                                    <Col flex={4} style={{width:'30%'}}>
+                                        <Col span={24}>
+                                            <DocumentComponent />
+                                        </Col>
+                                        <Col span={24} style={{padding:"8px 0", margin:'8px'}}>
+                                            <Button type="primary" icon={<ArrowUpOutlined />} style={{width:'45%', marginLeft:'25%'}}>Hands up</Button>
+                                        </Col>
+                                    </Col>
+                                    {/* 右側のコンポーネント */}
+                                    {/* <Col span={11} style={{padding:"8px 0", margin:'8px'}}> */}
+                                    <Col flex={1} style={{marginLeft:'8px', maxWidth:'30%'}}>
+                                        {/* コメント一覧 */}
+                                        <CommentListComponent socket={socket} data={questionSocket}/>
+                                    </Col>
+                                </Row>
+                            </TabPane>
+                            <TabPane tab="2" key="2">   
+                            </TabPane>
+                        </Tabs>
                     </Row>
                 </div>
             </Content>
