@@ -9,7 +9,6 @@ import CommentItemComponent from "./CommentItemComponent"
 
 import Socket from '../../utils/webSocket';
 
-import { getDocument } from "../../utils/api";
 import { sendQuestion } from "../../utils/webSocketUtils";
 import { useSelector } from 'react-redux';
 
@@ -182,14 +181,14 @@ export default function CommentListComponent(props: Props) {
                 <Title level={5}>コメント一覧</Title>
                 <Tabs defaultActiveKey="1">
                     {
-                        questionList.map((questions, idx) => {
-                            return (
-                                <TabPane tab={presenters[idx]} key={"presenter"+idx} style={{maxHeight: 370, overflowY:'auto', overflowX:'hidden'}}>
+                        // questionList.map((questions, idx) => {
+                        //     return (
+                        //         <TabPane tab={presenters[idx]} key={"presenter"+idx} style={{maxHeight: 370}}>
                                     <List
                                         className="comment-list"
                                         itemLayout="horizontal"
                                         dataSource={
-                                            questions.map((question, idx) => {
+                                            questionList[0].map((question, idx) => {
                                                 return(
                                                     {
                                                         id: question.questionId,
@@ -206,15 +205,16 @@ export default function CommentListComponent(props: Props) {
                                                 )
                                             })
                                         }
+                                        style={{overflowY:'auto', overflowX:'hidden'}}
                                         renderItem={(item, idx)=> (
                                             <li id={"comment"+idx} style={{maxWidth:'100%'}}>
                                                 <CommentItemComponent question={item}/>
                                             </li>
                                         )}
                                     />
-                                </TabPane>
-                            )
-                        })
+                        //         </TabPane>
+                        //     )
+                        // })
                     }
                 </Tabs>
             </Card>

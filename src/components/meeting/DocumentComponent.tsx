@@ -18,14 +18,14 @@ export default function DocumentComponent() {
     },[documentIdNow]);
 
     return (
-        <Card style={{width: '100%', minHeight: 420, maxHeight: 420,}}>
-            <Space direction="horizontal" style={{maxHeight: 380}}>
-                <Card type="inner" style={{maxHeight: 380, width: 600}}>
+        <Card style={{width: '100%', minHeight: 500, maxHeight: 500,}}>
+            <Space direction="horizontal" style={{maxHeight: 480}}>
+                {/* <Card type="inner" style={{height: 450, width: '100%'}}> */}
                     <PdfViewerComponent />
-                </Card>
-                <Card type="inner" style={{maxHeight: 380}}>
-                    <p style={{width: 550, minHeight: 350, textAlign:'left'}}>This area for 原稿</p>
-                </Card>
+                {/* </Card> */}
+                {/* <Card type="inner" style={{height: 450, width:'100%'}}> */}
+                    <p style={{width: '100%', minHeight: 350, textAlign:'left', marginLeft:'10%'}}>This area for 原稿</p>
+                {/* </Card> */}
             </Space>
         </Card>
     )
