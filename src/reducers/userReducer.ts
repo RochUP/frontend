@@ -1,7 +1,7 @@
-import { USER_LOGIN } from "../actions/userActions"
+import { USER_LOGIN, USER_LOGOUT } from "../actions/userActions"
 
 const initialState = {
-    userid: "0",
+    userid: "",
     username: "nanasi",
 }
 
@@ -13,7 +13,12 @@ export default function reducer(state=initialState, action: any) {
                 userid: action.payload.userid,
                 username: action.payload.username,
             };
-        
+        case USER_LOGOUT:
+            return{
+                ...state,
+                userid: "",
+                username: "nanasi",
+            };
         default:
             break;
     }

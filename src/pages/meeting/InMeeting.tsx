@@ -5,7 +5,7 @@ import {
 } from '@ant-design/icons';
 import { Typography } from 'antd';
 import "../../assets/css/Pages.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import CommentListComponent from "../../components/meeting/CommentListComponent";
 
@@ -15,6 +15,8 @@ import MeetingHeader from "../../components/meeting/MeetingHeader";
 import { useSelector } from "react-redux";
 import DocumentComponent from "../../components/meeting/DocumentComponent";
 import ModeratorMsgComponent from "../../components/meeting/ModeratorMsgComponent";
+import store from "../../store";
+import { meetingExitAction } from "../../actions/meetingActions";
 
 const { Footer, Content } = Layout;
 
@@ -26,7 +28,16 @@ const ws = new WebSocket(URL+"");
 let socket = new Socket(ws);
 
 export default function InMeeting() {
+    const navigate = useNavigate();
+
     const meetingId = useSelector((state: any) => state.meetingReducer.meetingId);
+    
+    useEffect (() => {
+        if(meetingId == 0){ //joinしてなかったら戻る
+            console.log("NOT join")
+            navigate("/meeting/join");
+        }
+    }, [])
 
     const [questionSocket, setQuestionSocket] = useState();
     const [questionVoteSocket, setQuestionVoteSocket] = useState();
@@ -49,24 +60,26 @@ export default function InMeeting() {
 
     function setData(e:any) {  
         let data: any = receiveData(e.data);
-        switch (data.messageType) {
-            case "question":
-                setQuestionSocket(data);
-                break;
-            case "question_vote":
-                setQuestionVoteSocket(data);
-                break;
-            case "reaction":
-                setReactionSocket(data);
-                break;
-            case "moderator_msg":
-                setModeratorMsgSocket(data);
-                break;
-            case "document":
-                setDocumentSocket(data);
-                break;
-            default:
-                break;
+        if (data.meetingId == meetingId) { // 別のmeetingIdのデータを受け取った場合は無視する
+            switch (data.messageType) {
+                case "question":
+                    setQuestionSocket(data);
+                    break;
+                case "question_vote":
+                    setQuestionVoteSocket(data);
+                    break;
+                case "reaction":
+                    setReactionSocket(data);
+                    break;
+                case "moderator_msg":
+                    setModeratorMsgSocket(data);
+                    break;
+                case "document":
+                    setDocumentSocket(data);
+                    break;
+                default:
+                    break;
+            }
         }
     }
     useEffect(()=>{
@@ -76,6 +89,11 @@ export default function InMeeting() {
     },[])
 
     const { Title } = Typography;
+
+    const onClickExit = () => {
+        console.log('exit');
+        store.dispatch(meetingExitAction());
+    }
 
     return (
         <Layout>
@@ -117,7 +135,7 @@ export default function InMeeting() {
                                 </Tooltip>
                                 <Tooltip placement="topRight" title={'会議を退出します'}>
                                     <Link to={'../meeting/join'} style={{marginLeft:'90%'}}>
-                                        <Button type="primary" danger>退出</Button>
+                                        <Button type="primary" danger onClick={onClickExit}>退出</Button>
                                     </Link>
                                 </Tooltip>
                             </Space>

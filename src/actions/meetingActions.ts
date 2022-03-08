@@ -11,6 +11,13 @@ export const meetingJoinAction = (meetingId: number, meetingName: string, meetin
     }
 });
 
+export const MEETING_EXIT = "MEETING_EXIT";
+export const meetingExitAction = () => ({
+    type: MEETING_EXIT,
+    payload: {
+    }
+});
+
 export const GET_DOCUMENT = "GET_DOCUMENT";
 export const getDocumentAction = (documentId: number, documentUrl: string, script: string) => ({
     type: GET_DOCUMENT,
