@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, Col, Layout, Row, Space, Modal, Tooltip, Upload, Tabs } from "antd";
+import { Breadcrumb, Button, Col, Layout, Row, Space, Modal, Tooltip, Upload, Tabs, message } from "antd";
 import {
     ArrowUpOutlined,
     UploadOutlined
@@ -17,6 +17,8 @@ import DocumentComponent from "../../components/meeting/DocumentComponent";
 import ModeratorMsgComponent from "../../components/meeting/ModeratorMsgComponent";
 import store from "../../store";
 import { meetingExitAction } from "../../actions/meetingActions";
+import TextArea from "antd/lib/input/TextArea";
+import { UploadChangeParam, UploadFile } from "antd/lib/upload/interface";
 
 const { Footer, Content } = Layout;
 
@@ -33,7 +35,7 @@ export default function InMeeting() {
     const meetingId = useSelector((state: any) => state.meetingReducer.meetingId);
     
     useEffect (() => {
-        if(meetingId == 0){ //joinしてなかったら戻る
+        if(meetingId === 0){ //joinしてなかったら戻る
             console.log("NOT join")
             navigate("/meeting/join");
         }
@@ -45,12 +47,20 @@ export default function InMeeting() {
     const [moderatorMsgSocket, setModeratorMsgSocket] = useState();
     const [documentSocket, setDocumentSocket] = useState();
     const [isModalVisible, setIsModalVisible] = useState(false);
-    
+    const [filesList, setFilesList] = useState<UploadFile[]>([]);
+
+    //アップロードのonChange関連
+    const handleChange = (info: UploadChangeParam) => {
+        console.log(info.fileList);
+        console.log(info.file);
+        setFilesList(info.fileList);
+    }
+
     const showModal = () => {
         setIsModalVisible(true);
     };
     //ポップアップのokボタンを押した時の処理
-    const handleOk = () => {
+    const handleOk = (file:any) => {
         setIsModalVisible(false);
     };
     //ポップアップのcancelボタンを押した時の処理
@@ -60,7 +70,7 @@ export default function InMeeting() {
 
     function setData(e:any) {  
         let data: any = receiveData(e.data);
-        if (data.meetingId == meetingId) { // 別のmeetingIdのデータを受け取った場合は無視する
+        if (data.meetingId === meetingId) { // 別のmeetingIdのデータを受け取った場合は無視する
             switch (data.messageType) {
                 case "question":
                     setQuestionSocket(data);
@@ -120,16 +130,28 @@ export default function InMeeting() {
                                 <Tooltip placement="topRight" title={'発表者は原稿を登録してください'}>
                                     <Button onClick={showModal}  style={{marginLeft:'60%'}}>原稿登録</Button>
                                     {/* ここのonOKはポップアップのokボタン */}
-                                    <Modal title = "原稿登録" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} okText={"アップロード"} cancelText={"キャンセル"}>
+                                    <Modal title = "原稿登録" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} okText={"登録"} cancelText={"キャンセル"}>
                                         <Space direction="vertical" style={{width:'100%'}}>
                                             <Text>原稿を登録しますか？</Text>
                                             <Upload
                                                 action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                                                 listType="picture"
+                                                data={file => ({ file })}
+                                                fileList={filesList}
+                                                onChange={handleChange}
                                                 maxCount={1}
+                                                accept=".pdf"
+                                                beforeUpload={(file) => {
+                                                    const isPdf = file.type === 'application/pdf';
+                                                    if(!isPdf){
+                                                        message.error('PDFファイルを選択してください!');
+                                                        return Upload.LIST_IGNORE;
+                                                    }
+                                                    return false;}}
                                                 >
                                                 <Button icon={<UploadOutlined />} style={{width:'100%'}}>原稿アップロード</Button>
                                             </Upload>
+                                            <TextArea showCount />
                                         </Space>
                                     </Modal>
                                 </Tooltip>
