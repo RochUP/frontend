@@ -71,7 +71,7 @@ export default function InMeeting() {
                 case "moderator_msg":
                     setModeratorMsgSocket(data);
                     break;
-                case "document":
+                case "document_update":
                     setDocumentSocket(data);
                     break;
                 default:
@@ -205,7 +205,7 @@ export default function InMeeting() {
                                                 {/* <Col span={12} style={{padding:"8px 0", margin:'8px'}}> */}
                                                 <Col flex={4} style={{width:'30%'}}>
                                                     <Col span={24}>
-                                                        <DocumentComponent presenterId={presenterId}/>
+                                                        <DocumentComponent socket={documentSocket} presenterId={presenterId}/>
                                                     </Col>
                                                     <Col span={24} style={{padding:"8px 0", margin:'8px'}}>
                                                         <Button type="primary" icon={<ArrowUpOutlined />} style={{width:'45%', marginLeft:'25%'}}>Hands up</Button>

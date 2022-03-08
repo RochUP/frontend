@@ -9,6 +9,7 @@ import { getDocument } from "../../utils/api";
 
 
 type Props = {
+    socket: any;
     presenterId: string;
 }
 
@@ -32,7 +33,7 @@ export default function DocumentComponent(props: Props) {
                     console.log(err);
                 });
         })();
-    }, [])
+    }, [props.socket]);
     
     const documentUrls = useSelector((state: any) => state.meetingReducer.documentUrls);
     const scripts = useSelector((state: any) => state.meetingReducer.scripts);
