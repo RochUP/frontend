@@ -22,7 +22,7 @@ function App() {
   return (
     <div className="App" >
       <Provider store={store}>
-        <Router>
+        <Router basename={process.env.PUBLIC_URL}>
           <Routes>
             {/* <Route path="/chat" element={<Chat socket={socket} data={data}/>} /> */}
             <Route path="/test" element={<TestPage />} />
