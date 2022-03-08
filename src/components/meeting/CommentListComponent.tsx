@@ -1,5 +1,5 @@
 
-import { Button, Card, Col, Input, List, Tabs, Tooltip } from "antd";
+import { Button, Card, Col, Input, List, Tooltip } from "antd";
 import {
     CommentOutlined
 } from '@ant-design/icons';
@@ -12,12 +12,7 @@ import Socket from '../../utils/webSocket';
 import { sendQuestion } from "../../utils/webSocketUtils";
 import { useSelector } from 'react-redux';
 
-import Title from "antd/lib/typography/Title";
 import { useEffect, useState } from "react";
-
-
-const { TabPane } = Tabs;
-
 
 // type SocketData = {
 //     messageType: string;
