@@ -180,7 +180,7 @@ export function sendFinishword (
     socket: Socket,
     meetingId: number,
     presenterId: string,
-    finishType: string,
+    finishType: string, //"present" or "question"
 ){
     console.log("sendFinishword");
     const data = {

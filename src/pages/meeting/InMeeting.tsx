@@ -16,6 +16,8 @@ import { receiveData } from "../../utils/webSocketUtils";
 import PdfViewerComponent from "../../components/testComponents/PdfViewerComponent";
 import MeetingHeader from "../../components/meeting/MeetingHeader";
 import { useSelector } from "react-redux";
+import DocumentComponent from "../../components/meeting/DocumentComponent";
+import ModeratorMsgComponent from "../../components/meeting/ModeratorMsgComponent";
 
 const { Header, Footer, Content } = Layout;
 
@@ -128,19 +130,8 @@ export default function InMeeting() {
                         {/* <Col span={12} style={{padding:"8px 0", margin:'8px'}}> */}
                         <Col flex={4} style={{width:'30%'}}>
                             <Col span={24}>
-                                <Card title="ここで司会メッセージを表示する" style={{ width: '100%', minHeight: 500, maxHeight: 500, textAlign: 'center' }}>
-                                    {/* <Title level={4}>ここで司会メッセージを表示する</Title> */}
-                                    {/* <Divider /> */}
-                                    {/* <p style={{minHeight: 360, textAlign:'left'}}>This area for slide show</p> */}
-                                    <Space direction="horizontal" style={{maxHeight: 500, width:'100%'}}>
-                                        <Card type="inner" style={{maxHeight: 500, width: 600}}>
-                                            <PdfViewerComponent></PdfViewerComponent>
-                                        </Card>
-                                        <Card type="inner" style={{maxHeight: 500}}>
-                                            <p style={{width: 550, minHeight: 350, textAlign:'left'}}>This area for 原稿</p>
-                                        </Card>
-                                    </Space>
-                                </Card>
+                                <ModeratorMsgComponent />
+                                <DocumentComponent />
                             </Col>
                             <Col span={24} style={{padding:"8px 0", margin:'8px'}}>
                                 <Button type="primary" icon={<ArrowUpOutlined />} style={{width:'45%', marginLeft:'25%'}}>Hands up</Button>

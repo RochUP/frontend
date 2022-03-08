@@ -10,3 +10,22 @@ export const meetingJoinAction = (meetingId: number, meetingName: string, meetin
         documentIds,
     }
 });
+
+export const GET_DOCUMENT = "GET_DOCUMENT";
+export const getDocumentAction = (documentId: number, documentUrl: string, script: string) => ({
+    type: GET_DOCUMENT,
+    payload: {
+        documentId,
+        documentUrl,
+        script,
+    }
+});
+
+export const CHANGE_DOCUMENT_PAGE = "CHANGE_DOCUMENT_PAGE";
+export const changeDocumentPageAction = (presenterIdNow: number, documentPageNow: number) => ({
+    type: CHANGE_DOCUMENT_PAGE,
+    payload: {
+        presenterIdNow,
+        documentPageNow,
+    }
+});
