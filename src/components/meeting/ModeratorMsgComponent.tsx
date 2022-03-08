@@ -1,12 +1,14 @@
-import { Card } from "antd";
+import { Card, Col } from "antd";
+import { Typography } from "antd";
 
+const { Title } = Typography;
 
 
 export default function ModeratorMsgComponent() {
 
     return (
-        <div>
-            <Card style={{ width: '100%', minHeight: 80, maxHeight: 80, textAlign: 'center' }}>"ここで司会メッセージを表示する"</Card>
-        </div>
+        <Col span={24}>
+            <Title level={4} style={{width:'100%', textAlign:'center'}}>"ここで司会メッセージを表示する"</Title>
+        </Col>
     )
 }
