@@ -15,10 +15,10 @@ function PdfViewerComponent() {
     const [numPages, setNumPages] = useState<number>(0);
     const [pageNumber, setPageNumber] = useState(1);
 
-    const documentIds = useSelector((state: any) => state.meetingReducer.documentIds);
+    const presenterIds = useSelector((state: any) => state.meetingReducer.presenterIds);
     const documentUrls = useSelector((state: any) => state.meetingReducer.documentUrls);
-    const documentIdNow = useSelector((state: any) => state.meetingReducer.documentIdNow);
-    const documentUrlNow = documentUrls[documentIds.indexOf(documentIdNow)];
+    const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow);
+    const documentUrlNow = documentUrls[presenterIds.indexOf(presenterIdNow)];
     const documentPageNow = useSelector((state: any) => state.meetingReducer.documentPageNow);
 
     useEffect(() => {
@@ -32,7 +32,7 @@ function PdfViewerComponent() {
     function changePage(offset: number) {
         if(pageNumber + offset > 0 && pageNumber + offset <= numPages) {
             setPageNumber(prevPageNumber => prevPageNumber + offset);
-            store.dispatch(changeDocumentPageAction(documentIdNow, pageNumber + offset));
+            store.dispatch(changeDocumentPageAction(presenterIdNow, pageNumber + offset));
         }
     }
 

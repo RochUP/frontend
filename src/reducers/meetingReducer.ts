@@ -9,7 +9,7 @@ const initialState = {
     documentIds: [0,],
     documentUrls: ["",],
     scripts: ["",],
-    documentIdNow: 0,
+    presenterIdNow: 0,
     documentPageNow: 1,
 }
 
@@ -26,7 +26,7 @@ export default function reducer(state=initialState, action: any) {
                 documentIds: action.payload.documentIds,
                 documentUrls: ["https://hacku.blob.core.windows.net/pdfcontainer/react_newblob1646585180049", "https://www.kansaigaidai.ac.jp/asp/img/pdf/82/7a79c35f7ce0704dec63be82440c8182.pdf"],//Array(action.payload.documentIds.length).fill(""),
                 scripts: Array(action.payload.documentIds.length).fill(""),
-                documentIdNow: action.payload.documentIds[0],
+                presenterIdNow: action.payload.presenterIds[0],
                 documentPageNow: 1,
             };
 
@@ -45,7 +45,7 @@ export default function reducer(state=initialState, action: any) {
         case CHANGE_DOCUMENT_PAGE:
             return {
                 ...state,
-                documentIdNow: action.payload.documentIdNow,
+                presenterIdNow: action.payload.presenterIdNow,
                 documentPageNow: action.payload.documentPageNow,
             };
         

@@ -22,10 +22,10 @@ export const getDocumentAction = (documentId: number, documentUrl: string, scrip
 });
 
 export const CHANGE_DOCUMENT_PAGE = "CHANGE_DOCUMENT_PAGE";
-export const changeDocumentPageAction = (documentIdNow: number, documentPageNow: number) => ({
+export const changeDocumentPageAction = (presenterIdNow: number, documentPageNow: number) => ({
     type: CHANGE_DOCUMENT_PAGE,
     payload: {
-        documentIdNow,
+        presenterIdNow,
         documentPageNow,
     }
 });
