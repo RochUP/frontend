@@ -102,7 +102,7 @@ export default function CommentListComponent(props: Props) {
         setquestion((document.getElementById("question")as HTMLInputElement).value);
 
         //documentIdの取得
-        let indexnum = presenterIds.indexOf(presenterIdNow);
+        let indexnum = presenterIds.indexOf(props.presenterId);
         let documentId = documentIds[indexnum];
 
         //日付の取得

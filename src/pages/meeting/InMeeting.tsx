@@ -19,6 +19,8 @@ import store from "../../store";
 import { meetingExitAction } from "../../actions/meetingActions";
 import TextArea from "antd/lib/input/TextArea";
 import { UploadChangeParam, UploadFile } from "antd/lib/upload/interface";
+import { uploadFile2AzureStorage } from "../../utils/azureStorage";
+import { registerDocument } from "../../utils/api";
 
 const { Footer, Content } = Layout;
 
@@ -32,6 +34,7 @@ let socket = new Socket(ws);
 export default function InMeeting() {
     const navigate = useNavigate();
 
+    const userId = useSelector((state: any) => state.userReducer.userid);
     const meetingId = useSelector((state: any) => state.meetingReducer.meetingId);
     
     useEffect (() => {
@@ -43,33 +46,14 @@ export default function InMeeting() {
 
     const presenterIds = useSelector((state: any) => state.meetingReducer.presenterIds);
     const presenterNames = useSelector((state: any) => state.meetingReducer.presenterNames);
+    const documentIds = useSelector((state: any) => state.meetingReducer.documentIds);
 
+    /* websocket系 *************************************/
     const [questionSocket, setQuestionSocket] = useState();
     const [questionVoteSocket, setQuestionVoteSocket] = useState();
     const [reactionSocket, setReactionSocket] = useState();
     const [moderatorMsgSocket, setModeratorMsgSocket] = useState();
     const [documentSocket, setDocumentSocket] = useState();
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [filesList, setFilesList] = useState<UploadFile[]>([]);
-
-    //アップロードのonChange関連
-    const handleChange = (info: UploadChangeParam) => {
-        console.log(info.fileList);
-        console.log(info.file);
-        setFilesList(info.fileList);
-    }
-
-    const showModal = () => {
-        setIsModalVisible(true);
-    };
-    //ポップアップのokボタンを押した時の処理
-    const handleOk = (file:any) => {
-        setIsModalVisible(false);
-    };
-    //ポップアップのcancelボタンを押した時の処理
-    const handleCancel = () => {
-        setIsModalVisible(false);
-    };
 
     function setData(e:any) {  
         let data: any = receiveData(e.data);
@@ -100,8 +84,53 @@ export default function InMeeting() {
         console.log("socket on");
         socket.on("message", setData);
     },[])
+    /**************************************************** */
 
     const { Title } = Typography;
+
+    /* 資料アップロード処理 *************************************/
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [filesList, setFilesList] = useState<UploadFile[]>([]);
+
+    //アップロードのonChange関連
+    const handleChange = (info: UploadChangeParam) => {
+        console.log(info.fileList);
+        console.log(info.file);
+        setFilesList(info.fileList);
+    }
+
+    const showModal = () => {
+        setIsModalVisible(true);
+    };
+
+    //ポップアップのokボタンを押した時の処理
+    const handleOk = async () => {
+        const idx = presenterIds.indexOf(userId);
+        if(idx === -1){
+            alert("You are not presenter");
+            setIsModalVisible(false);
+            return;
+        }
+        const documentId = documentIds[idx];
+        const file = filesList[0].originFileObj;
+        const documentUrl = await uploadFile2AzureStorage(file);
+        const script = (document.getElementById("script_form") as HTMLFormElement).value;
+        
+        await registerDocument(documentId, documentUrl, script)
+            .then(res => {
+                console.log(res);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+
+        setIsModalVisible(false);
+    };
+    //ポップアップのcancelボタンを押した時の処理
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
+    /**************************************************** */
 
     const onClickExit = () => {
         console.log('exit');
@@ -154,7 +183,7 @@ export default function InMeeting() {
                                                 >
                                                 <Button icon={<UploadOutlined />} style={{width:'100%'}}>原稿アップロード</Button>
                                             </Upload>
-                                            <TextArea showCount />
+                                            <TextArea id="script_form" showCount />
                                         </Space>
                                     </Modal>
                                 </Tooltip>
