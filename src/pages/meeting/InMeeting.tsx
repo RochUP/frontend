@@ -199,13 +199,13 @@ export default function InMeeting() {
                             {
                                 presenterIds.map((presenterId:string, index:number) => {
                                     return (
-                                        <TabPane tab={presenterNames[presenterIds.indexOf(presenterId)]} key={presenterId} >
+                                        <TabPane tab={presenterNames[index]} key={presenterId} >
                                             <Row>
                                                 {/* 左側のコンポーネント */}
                                                 {/* <Col span={12} style={{padding:"8px 0", margin:'8px'}}> */}
                                                 <Col flex={4} style={{width:'30%'}}>
                                                     <Col span={24}>
-                                                        <DocumentComponent socket={documentSocket} presenterId={presenterId}/>
+                                                        <DocumentComponent socket={documentSocket} presenterId={presenterId} index={index}/>
                                                     </Col>
                                                     <Col span={24} style={{padding:"8px 0", margin:'8px'}}>
                                                         <Button type="primary" icon={<ArrowUpOutlined />} style={{width:'45%', marginLeft:'25%'}}>Hands up</Button>
