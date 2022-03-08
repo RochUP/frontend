@@ -28,6 +28,7 @@ type Props = {
     data: any;
 }
 
+
 export default function CommentListComponent(props: Props) {
     let data: any;
     if (!props.data){
@@ -44,93 +45,38 @@ export default function CommentListComponent(props: Props) {
         data = props.data;
     }
 
-    // const presenters = [
-    //     "発表者1",
-    //     "発表者2",
-    // ]
-
     const presenters = useSelector((state: any) => state.meetingReducer.presenterNames);
     const presenterIds = useSelector((state: any)=> state.meetingReducer.presenterIds);
     const userId = useSelector((state: any) => state.userReducer.userid);
     const meetingId = useSelector((state: any) => state.meetingReducer.meetingId);
+    const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow);
+    const documentPageNow = useSelector((state: any) => state.meetingReducer.documentPageNow);
+    
+    const [questionList,updateQuestionList] = useState(Array(presenters.length).fill(null).map(e=>(new Array())))
 
-    const [questionList, updateQuestionList] = useState([
-        [
-            // presenters[0]への質問
-            {
-                // userId: "test01",
-                meetingId: 324,
-                questionId: 1,
-                questionBody: "good!",
-                documentId: 4,
-                documentPage:3,
-                questionTime:"2022/03/03 16:50:00",
-                voteNum: 1,
-                isVote: true,
-            },
-            {
-                // userId: "test01",
-                meetingId: 324,
-                questionId: 2,
-                questionBody: "good!",
-                documentId: 4,
-                documentPage:3,
-                questionTime:"2022/03/03 16:50:00",
-                voteNum: 3,
-                isVote: false,
-            },
-            
-        ],
-        [
-            // presenters[1]への質問
-            {
-                // userId: "test01",
-                meetingId: 324,
-                questionId: 2,
-                questionBody: "good!",
-                documentId: 4,
-                documentPage:3,
-                questionTime:"2022/03/03 16:50:00",
-                voteNum: 2,
-                isVote: true,
-            },
-        ],
-    ]
-    )
-    // const [questionlist,updateQuestionList] = useState<{
-    //     userId: "",
-    //     meetingId: 324,
-    //     questionId: 1,
-    //     questionBody: "good!",
-    //     documentId: 4,
-    //     documentPage:3,
-    //     questionTime:"",
-    //     voteNum: 0,
-    //     isVote: false,
-    // }>();
 
     useEffect(()=>{
         let question =
         {
-            // userId: "test01",
-            meetingId: 324,
-            questionId: 1,
-            questionBody: "test!",
-            documentId: 4,
-            documentPage:3,
-            questionTime:"2022/03/03 16:50:00",
+            meetingId: 0,
+            questionId: 0,
+            questionBody: "!",
+            documentId: 0,
+            documentPage: 0,
+            questionTime:"",
             voteNum: 0,
             isVote: false,
         }
         console.log("ques add");
-        console.log(data)
+        console.log(data);
 
-        question.questionBody = data.questionBody
-        question.questionTime = data.questionTime
+        question.questionBody = data.questionBody;
+        question.questionTime = data.questionTime;
+        question.documentId = data.documentId;
+        question.documentPage = data.documentPage;
+        question.questionId = data.questionId;
 
-        // questionList = questionList[0].push(props.data.questionBody)
         //発表者のind0exにquestionを追加
-        // questionList[0].push(props.data);
         if (props.data){
 
             //発表者が何番目であるかを取得
@@ -149,17 +95,20 @@ export default function CommentListComponent(props: Props) {
 
     const [questionform, setquestion] = useState<string>('');//質問チャットを書き込む用
 
+
+
     function handleClick() {
-        // let message={"messagetype":"question","userId":userId,"meetingId":meetingId,"questionBody":question,"documentId":documentId,"documentpages":documentpages,"questionTime"}
-        
-        // let question = (document.getElementById("question")as HTMLInputElement).value;
         setquestion((document.getElementById("question")as HTMLInputElement).value);
+
+        //documentIdの取得
+        let indexnum = presenterIds.indexOf(presenterIdNow);
+        let documentId = indexnum
 
         //日付の取得
         var date = new Date();
         var qtime = date.toLocaleString();
 
-        sendQuestion(props.socket, userId, meetingId, questionform, 4, 1, qtime)
+        sendQuestion(props.socket, userId, meetingId, questionform, documentId, documentPageNow, qtime)
 
         //書き込み欄のクリア
         setquestion('');
@@ -177,7 +126,7 @@ export default function CommentListComponent(props: Props) {
                         className="comment-list"
                         itemLayout="horizontal"
                         dataSource={
-                            questionList[0].map((question, idx) => {
+                            questionList[0].map((question:any, idx:number) => {
                                 return(
                                     {
                                         id: question.questionId,
@@ -195,7 +144,7 @@ export default function CommentListComponent(props: Props) {
                             })
                         }
                         style={{overflowY:'auto', overflowX:'hidden', textAlign:'left'}}
-                        renderItem={(item, idx)=> (
+                        renderItem={(item:any, idx:number)=> (
                             <li id={"comment"+idx} style={{maxWidth:'100%'}}>
                                 <CommentItemComponent question={item}/>
                             </li>
