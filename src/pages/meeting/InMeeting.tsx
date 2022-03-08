@@ -19,6 +19,10 @@ import store from "../../store";
 import { meetingExitAction } from "../../actions/meetingActions";
 import TextArea from "antd/lib/input/TextArea";
 import { UploadChangeParam, UploadFile } from "antd/lib/upload/interface";
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import React from 'react';
+
+import { sendFinishword } from "../../utils/webSocketUtils";
 
 const { Footer, Content } = Layout;
 
@@ -39,10 +43,12 @@ export default function InMeeting() {
             console.log("NOT join")
             navigate("/meeting/join");
         }
+        SpeechRecognition.startListening({ language: 'ja', continuous: true})
     }, [])
 
     const presenterIds = useSelector((state: any) => state.meetingReducer.presenterIds);
     const presenterNames = useSelector((state: any) => state.meetingReducer.presenterNames);
+    const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow)
 
     const [questionSocket, setQuestionSocket] = useState();
     const [questionVoteSocket, setQuestionVoteSocket] = useState();
@@ -51,6 +57,31 @@ export default function InMeeting() {
     const [documentSocket, setDocumentSocket] = useState();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [filesList, setFilesList] = useState<UploadFile[]>([]);
+
+    //発表，質問の終了判定
+    // const componentDidMount=SpeechRecognition.startListening({ language: 'ja', continuous: true})
+
+    const commands = [
+        {
+            command: "*発表を終わ*",
+            callback: ()=> {sendFinishword(socket, meetingId, presenterIdNow, "present")}
+            // callback: () => {setMessage('発表終了')}
+        },
+        {
+            command: "*質問を終わ*",
+            callback: ()=>{sendFinishword(socket, meetingId, presenterIdNow, "question")}
+            // callback: () => {setMessage('質問終了')}
+        }
+    ]
+
+    setTimeout(()=>resetTranscript,5000); 
+
+    const {
+        transcript,
+        listening,
+        resetTranscript,
+        browserSupportsSpeechRecognition
+    } = useSpeechRecognition({ commands });
 
     //アップロードのonChange関連
     const handleChange = (info: UploadChangeParam) => {
@@ -112,6 +143,7 @@ export default function InMeeting() {
         <Layout>
             <MeetingHeader />
             <Content style={{padding:'0 50px'}}>
+                <p>{transcript}</p>
                 <Title style={{margin:'16px 0'}}>
                     ○○会議進行中
                 </Title>
@@ -147,7 +179,7 @@ export default function InMeeting() {
                                                 beforeUpload={(file) => {
                                                     const isPdf = file.type === 'application/pdf';
                                                     if(!isPdf){
-                                                        message.error('PDFファイルを選択してください!');
+                                                        // message.error('PDFファイルを選択してください!');
                                                         return Upload.LIST_IGNORE;
                                                     }
                                                     return false;}}
