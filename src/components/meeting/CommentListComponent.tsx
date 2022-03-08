@@ -26,6 +26,7 @@ import { useEffect, useState } from "react";
 type Props = {
     socket: Socket;
     data: any;
+    presenterId: string;
 }
 
 
@@ -54,7 +55,6 @@ export default function CommentListComponent(props: Props) {
     const documentPageNow = useSelector((state: any) => state.meetingReducer.documentPageNow);
     
     const [questionList,updateQuestionList] = useState(Array(presenters.length).fill(null).map(e=>(new Array())))
-
 
     useEffect(()=>{
         let question =
@@ -127,7 +127,7 @@ export default function CommentListComponent(props: Props) {
                         className="comment-list"
                         itemLayout="horizontal"
                         dataSource={
-                            questionList[0].map((question:any, idx:number) => {
+                            questionList[presenterIds.indexOf(props.presenterId)].map((question:any, idx:number) => {
                                 return(
                                     {
                                         id: question.questionId,

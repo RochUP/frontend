@@ -11,7 +11,11 @@ import { changeDocumentPageAction } from '../../actions/meetingActions';
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 
-function PdfViewerComponent() {
+type Props = {
+    documentUrl: string;
+}
+
+function PdfViewerComponent(props: Props) {
     const [numPages, setNumPages] = useState<number>(0);
     const [pageNumber, setPageNumber] = useState(1);
 
@@ -39,7 +43,7 @@ function PdfViewerComponent() {
     return (
         <Space direction='vertical' style={{width:'100%'}}>
             <Document
-                file={documentUrlNow}
+                file={props.documentUrl}
                 onLoadSuccess={onDocumentLoadSuccess}
             >
                 <Page 

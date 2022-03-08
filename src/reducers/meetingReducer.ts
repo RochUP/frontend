@@ -24,8 +24,8 @@ export default function reducer(state=initialState, action: any) {
                 presenterIds: action.payload.presenterIds,
                 presenterNames: action.payload.presenterNames,
                 documentIds: action.payload.documentIds,
-                documentUrls: ["https://hacku.blob.core.windows.net/pdfcontainer/react_newblob1646585180049", "https://www.kansaigaidai.ac.jp/asp/img/pdf/82/7a79c35f7ce0704dec63be82440c8182.pdf"],//Array(action.payload.documentIds.length).fill(""),
-                scripts: Array(action.payload.documentIds.length).fill(""),
+                documentUrls: ["https://hacku.blob.core.windows.net/pdfcontainer/react_newblob1646585180049", "https://hacku.blob.core.windows.net/pdfcontainer/react_newblob1646585610962"],//Array(action.payload.documentIds.length).fill(""),
+                scripts: ["A", "B"], //Array(action.payload.documentIds.length).fill(""),
                 presenterIdNow: action.payload.presenterIds[0],
                 documentPageNow: 1,
             };
