@@ -16,15 +16,13 @@ type Props = {
 }
 
 function PdfViewerComponent(props: Props) {
-    const [numPages, setNumPages] = useState<number>(0);
-    const [pageNumber, setPageNumber] = useState(1);
+
 
     const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow);
     const documentPageNow = useSelector((state: any) => state.meetingReducer.documentPageNow);
 
-    useEffect(() => {
-        setPageNumber(documentPageNow);
-    }, [documentPageNow]);
+    const [numPages, setNumPages] = useState<number>(0);
+    const [pageNumber, setPageNumber] = useState(documentPageNow);
 
     useEffect(() => {
         store.dispatch(changeDocumentPageAction(presenterIdNow, pageNumber));
@@ -36,7 +34,7 @@ function PdfViewerComponent(props: Props) {
 
     function changePage(offset: number) {
         if(pageNumber + offset > 0 && pageNumber + offset <= numPages) {
-            setPageNumber(prevPageNumber => prevPageNumber + offset);
+            setPageNumber(pageNumber + offset);
         }
     }
 
