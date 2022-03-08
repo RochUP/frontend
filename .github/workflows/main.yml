@@ -17,10 +17,13 @@ jobs:
         with:
           node-version: "14.x"
 
-      - run: npm install
-      - run: npm run build
-      - env:
-        CI: false
+      - name: Install
+        run: npm install
+
+      - name: Build
+        run: npm run build
+        env:
+          CI: false
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
