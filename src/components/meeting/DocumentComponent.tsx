@@ -1,8 +1,11 @@
 import { Card, Space } from "antd";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { getDocumentAction } from "../../actions/meetingActions";
 
 import PdfViewerComponent from "../../components/meeting/PdfViewerComponent";
+import store from "../../store";
+import { getDocument } from "../../utils/api";
 
 
 type Props = {
@@ -10,12 +13,33 @@ type Props = {
 }
 
 export default function DocumentComponent(props: Props) {
-
+    
     const presenterIds = useSelector((state: any) => state.meetingReducer.presenterIds);
+    const documentIds = useSelector((state: any) => state.meetingReducer.documentIds);
+
+    useEffect(() => {
+        const documentId = documentIds[presenterIds.indexOf(props.presenterId)];
+        (async () => {
+            await getDocument(documentId)
+                .then((res: any) => {
+                    console.log(res);
+                    if (!res.result){
+                        throw new Error("Document not found");
+                    }
+                    store.dispatch(getDocumentAction(documentId, res.documentUrl, res.script));
+                })
+                .catch((err: any) => {
+                    console.log(err);
+                });
+        })();
+    }, [])
+    
     const documentUrls = useSelector((state: any) => state.meetingReducer.documentUrls);
     const scripts = useSelector((state: any) => state.meetingReducer.scripts);
     
     const script = scripts[presenterIds.indexOf(props.presenterId)];
+
+    
 
     return (
         <Card style={{width: '100%', minHeight: 500, maxHeight: 500,}}>
