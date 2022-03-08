@@ -49,6 +49,7 @@ export default function CommentListComponent(props: Props) {
     const presenterIds = useSelector((state: any)=> state.meetingReducer.presenterIds);
     const userId = useSelector((state: any) => state.userReducer.userid);
     const meetingId = useSelector((state: any) => state.meetingReducer.meetingId);
+    const documentIds = useSelector((state: any) => state.meetingReducer.documentIds);
     const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow);
     const documentPageNow = useSelector((state: any) => state.meetingReducer.documentPageNow);
     
@@ -102,7 +103,7 @@ export default function CommentListComponent(props: Props) {
 
         //documentIdの取得
         let indexnum = presenterIds.indexOf(presenterIdNow);
-        let documentId = indexnum
+        let documentId = documentIds[indexnum];
 
         //日付の取得
         var date = new Date();
