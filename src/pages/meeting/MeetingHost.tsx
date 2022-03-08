@@ -9,7 +9,7 @@ import { Typography } from 'antd';
 import { Link, useNavigate } from "react-router-dom";
 // import jaJP from 'antd/es/locale/ja_JP';
 import "../../assets/css/Pages.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { meetingCreate, meetingJoin } from "../../utils/api";
 import store from "../../store";
 import { meetingJoinAction } from "../../actions/meetingActions";
@@ -33,6 +33,12 @@ export default function MeetingHost() {
     const navigate = useNavigate();
 
     const userid = useSelector((state: any) => state.userReducer.userid);
+
+    useEffect(() => {
+        if( userid == "" ) {
+            navigate("/login");
+        }
+    }, []);
 
     const [spinning, setSpinning] = useState(false);
     const [presenters, setPresenters] = useState<string[]>([""]);
@@ -87,6 +93,7 @@ export default function MeetingHost() {
             .catch(err => {
                 console.log(err);
                 alert(err.message);
+                setSpinning(false);
             });
     }
 

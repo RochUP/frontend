@@ -1,4 +1,4 @@
-import { CHANGE_DOCUMENT_PAGE, GET_DOCUMENT, MEETING_JOIN } from "../actions/meetingActions";
+import { CHANGE_DOCUMENT_PAGE, GET_DOCUMENT, MEETING_EXIT, MEETING_JOIN } from "../actions/meetingActions";
 
 const initialState = {
     meetingId: 0,
@@ -27,6 +27,21 @@ export default function reducer(state=initialState, action: any) {
                 documentUrls: ["https://hacku.blob.core.windows.net/pdfcontainer/react_newblob1646585180049", "https://www.kansaigaidai.ac.jp/asp/img/pdf/82/7a79c35f7ce0704dec63be82440c8182.pdf"],//Array(action.payload.documentIds.length).fill(""),
                 scripts: Array(action.payload.documentIds.length).fill(""),
                 presenterIdNow: action.payload.presenterIds[0],
+                documentPageNow: 1,
+            };
+        
+        case MEETING_EXIT:
+            return{
+                ...state,
+                meetingId: 0,
+                meetingName: "",
+                meetingStartTime: "1998/06/10 00:00:00",
+                presenterIds: ["",],
+                presenterNames: ["",],
+                documentIds: [0,],
+                documentUrls: ["",],
+                scripts: ["",],
+                presenterIdNow: [""],
                 documentPageNow: 1,
             };
 

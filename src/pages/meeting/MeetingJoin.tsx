@@ -11,7 +11,7 @@ import { meetingJoin } from "../../utils/api";
 import store from "../../store";
 import { meetingJoinAction } from "../../actions/meetingActions";
 import MeetingHeader from "../../components/meeting/MeetingHeader";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const { Header, Footer, Content } = Layout;
 
@@ -21,6 +21,12 @@ export default function MeetingJoin() {
     const navigate = useNavigate();
 
     const userid = useSelector((state: any) => state.userReducer.userid);
+
+    useEffect(() => {
+        if( userid == "" ) {
+            navigate("/login");
+        }
+    }, []);
 
     const [spinning, setSpinning] = useState(false);
 
