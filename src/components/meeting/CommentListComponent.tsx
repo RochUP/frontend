@@ -177,47 +177,36 @@ export default function CommentListComponent(props: Props) {
     return (
         <div style={{ width:'100%' }}>
             <Col span={24} style={{ width:'100%' }}>
-            <Card style={{ width: '100%', minHeight: 500, maxHeight: 500 }}>
-                <Title level={5}>コメント一覧</Title>
-                <Tabs defaultActiveKey="1">
-                    {
-                        // questionList.map((questions, idx) => {
-                        //     return (
-                        //         <TabPane tab={presenters[idx]} key={"presenter"+idx} style={{maxHeight: 370}}>
-                                    <List
-                                        className="comment-list"
-                                        itemLayout="horizontal"
-                                        dataSource={
-                                            questionList[0].map((question, idx) => {
-                                                return(
-                                                    {
-                                                        id: question.questionId,
-                                                        author: '匿名',
-                                                        content: (<p>{question.questionBody}</p>),
-                                                        datetime: (
-                                                            <Tooltip title={question.questionTime}>
-                                                                <span>{moment(question.questionTime).fromNow()}</span>
-                                                            </Tooltip>
-                                                        ),
-                                                        like: question.voteNum,
-                                                        isLiked: question.isVote,
-                                                    }
-                                                )
-                                            })
-                                        }
-                                        style={{overflowY:'auto', overflowX:'hidden'}}
-                                        renderItem={(item, idx)=> (
-                                            <li id={"comment"+idx} style={{maxWidth:'100%'}}>
-                                                <CommentItemComponent question={item}/>
-                                            </li>
-                                        )}
-                                    />
-                        //         </TabPane>
-                        //     )
-                        // })
-                    }
-                </Tabs>
-            </Card>
+                <Card title="コメント一覧" style={{ width: '100%', minHeight: 500, maxHeight: 500, textAlign:'center' }}>
+                    <List
+                        className="comment-list"
+                        itemLayout="horizontal"
+                        dataSource={
+                            questionList[0].map((question, idx) => {
+                                return(
+                                    {
+                                        id: question.questionId,
+                                        author: '匿名',
+                                        content: (<p>{question.questionBody}</p>),
+                                        datetime: (
+                                            <Tooltip title={question.questionTime}>
+                                                <span>{moment(question.questionTime).fromNow()}</span>
+                                            </Tooltip>
+                                        ),
+                                        like: question.voteNum,
+                                        isLiked: question.isVote,
+                                    }
+                                )
+                            })
+                        }
+                        style={{overflowY:'auto', overflowX:'hidden', textAlign:'left'}}
+                        renderItem={(item, idx)=> (
+                            <li id={"comment"+idx} style={{maxWidth:'100%'}}>
+                                <CommentItemComponent question={item}/>
+                            </li>
+                        )}
+                    />
+                </Card>
             </Col>
             <Col span={24} style={{padding:"8px 0", margin:'8px'}}>
                 <Input placeholder="ここでコメントを書いてください" style={{width:'60%', marginLeft:'5%'}} id="question" value={questionform} onChange={handleChange}></Input>
