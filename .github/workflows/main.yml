@@ -32,4 +32,4 @@ jobs:
           publish_dir: ./build
       
       - name: Create 404.html
-        run: cp index.html 404.html
+        run: cp ./public/404.html ./public/404.html
