@@ -50,3 +50,12 @@ export const addQuestionAction = (question: any) => ({
         question,
     },
 });
+
+export const ADD_QUESTION_VOTE = 'ADD_QUESTION_VOTE';
+export const addQuestionVoteAction = (questionId: number, voteNum: number) => ({
+    type: ADD_QUESTION_VOTE,
+    payload: {
+        questionId,
+        voteNum,
+    },
+});

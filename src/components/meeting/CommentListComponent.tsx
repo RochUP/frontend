@@ -9,7 +9,7 @@ import Socket from '../../utils/webSocket';
 import { sendQuestion } from '../../utils/webSocketUtils';
 import { useSelector } from 'react-redux';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 // type SocketData = {
 //     messageType: string;
@@ -89,7 +89,6 @@ export default function CommentListComponent(props: Props) {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setquestion(e.target.value);
-        // console.log(questionform);
     };
 
     return (
@@ -126,7 +125,7 @@ export default function CommentListComponent(props: Props) {
                         }}
                         renderItem={(item: any, idx: number) => (
                             <li id={'comment' + idx} style={{ maxWidth: '100%' }}>
-                                <CommentItemComponent question={item} />
+                                <CommentItemComponent socket={props.socket} question={item} />
                             </li>
                         )}
                     />
@@ -134,7 +133,7 @@ export default function CommentListComponent(props: Props) {
             </Col>
             <Col span={24} style={{ padding: '8px 0', margin: '8px' }}>
                 <Input
-                    placeholder="ここでコメントを書いてください"
+                    placeholder="ここにコメントを書いてください"
                     style={{ width: '60%', marginLeft: '5%' }}
                     id={'question' + props.presenterId}
                     value={questionform}

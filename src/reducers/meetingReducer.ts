@@ -1,23 +1,37 @@
 import {
     ADD_QUESTION,
+    ADD_QUESTION_VOTE,
     CHANGE_DOCUMENT_PAGE,
     GET_DOCUMENT,
     MEETING_EXIT,
     MEETING_JOIN,
 } from '../actions/meetingActions';
 
+type Question = {
+    meetingId: number;
+    questionId: number;
+    questionBody: string;
+    documentId: number;
+    documentPage: number;
+    questionTime: string;
+    voteNum: number;
+    isVote: boolean;
+};
+
 const initialState = {
     meetingId: 0,
-    meetingName: 'meeting',
+    meetingName: '',
     meetingStartTime: '1998/06/10 00:00:00',
-    presenterIds: ['ishikawa1', 'yoshida1'],
-    presenterNames: ['a', 'b'],
+    presenterIds: [''],
+    presenterNames: [''],
     documentIds: [0],
     documentUrls: [''],
     scripts: [''],
     presenterIdNow: 0,
     documentPageNow: 1,
-    questionList: [[{}]],
+    questionList: Array(0)
+        .fill(null)
+        .map((_) => new Array<Question>(0)),
 };
 
 export default function reducer(state = initialState, action: any) {
@@ -37,24 +51,11 @@ export default function reducer(state = initialState, action: any) {
                 documentPageNow: 1,
                 questionList: Array(action.payload.presenterIds.length)
                     .fill(null)
-                    .map((item) => new Array()),
+                    .map((_) => new Array<Question>(action.payload.presenterIds.length)),
             };
 
         case MEETING_EXIT:
-            return {
-                ...state,
-                meetingId: 0,
-                meetingName: '',
-                meetingStartTime: '1998/06/10 00:00:00',
-                presenterIds: [''],
-                presenterNames: [''],
-                documentIds: [0],
-                documentUrls: [''],
-                scripts: [''],
-                presenterIdNow: [''],
-                documentPageNow: 1,
-                questionList: [[{}]],
-            };
+            return initialState;
 
         case GET_DOCUMENT:
             var documentUrls = state.documentUrls.slice();
@@ -78,7 +79,7 @@ export default function reducer(state = initialState, action: any) {
         case ADD_QUESTION:
             const index = state.presenterIds.indexOf(action.payload.question.presenterId);
             if (index !== -1) {
-                var questionList = state.questionList.slice();
+                const questionList = state.questionList.slice();
                 const question = {
                     meetingId: action.payload.question.meetingId,
                     questionId: action.payload.question.questionId,
@@ -97,6 +98,20 @@ export default function reducer(state = initialState, action: any) {
             } else {
                 return state;
             }
+
+        case ADD_QUESTION_VOTE:
+            const questionList = state.questionList.slice();
+            questionList.map((questions) => {
+                return questions.map((q) => {
+                    q.questionId === action.payload.questionId &&
+                        (q.voteNum = action.payload.voteNum);
+                    return q;
+                });
+            });
+            return {
+                ...state,
+                questionList: questionList,
+            };
 
         default:
             break;

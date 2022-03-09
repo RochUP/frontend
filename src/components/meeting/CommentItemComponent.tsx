@@ -2,7 +2,10 @@ import { Comment, Tooltip } from 'antd';
 import { LikeOutlined, LikeFilled } from '@ant-design/icons';
 import { createElement, useState } from 'react';
 
-type questionType = {
+import Socket from '../../utils/webSocket';
+import { sendQuestionVote } from '../../utils/webSocketUtils';
+
+type Question = {
     id: number;
     author: string;
     content: any;
@@ -12,25 +15,17 @@ type questionType = {
 };
 
 type Props = {
-    question: questionType;
+    socket: Socket;
+    question: Question;
 };
 
 export default function CommentItemComponent(props: Props) {
     const [isLiked, setIsLiked] = useState(props.question.isLiked);
-    const [like, setLike] = useState(props.question.like);
 
-    const onClickLike = (questionId: number, isLiked: boolean) => {
-        if (isLiked) {
-            // クリックを外す
-            // sendQuestionVote(questionId, false);
-            setIsLiked(false);
-            setLike(like - 1);
-        } else {
-            // クリック
-            // sendQuestionVote(questionId, true);
-            setIsLiked(true);
-            setLike(like + 1);
-        }
+    const onClickLike = (questionId: number) => {
+        const vote = !isLiked;
+        setIsLiked(vote);
+        sendQuestionVote(props.socket, questionId, vote);
     };
 
     return (
@@ -39,11 +34,11 @@ export default function CommentItemComponent(props: Props) {
                 <Tooltip key="comment-basic-like" title="いいね！">
                     <span
                         onClick={() => {
-                            onClickLike(props.question.id, isLiked);
+                            onClickLike(props.question.id);
                         }}
                     >
                         {createElement(isLiked ? LikeFilled : LikeOutlined)}
-                        <span className="comment-action">{like}</span>
+                        <span className="comment-action">{props.question.like}</span>
                     </span>
                 </Tooltip>,
             ]}
