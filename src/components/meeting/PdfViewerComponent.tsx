@@ -13,7 +13,7 @@ import { useSelector } from 'react-redux';
 import store from '../../store';
 import { changeDocumentPageAction } from '../../actions/meetingActions';
 import Socket from '../../utils/webSocket';
-import { sendHandsup } from '../../utils/webSocketUtils';
+import { sendHandsup, sendReaction } from '../../utils/webSocketUtils';
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const { Text } = Typography;
@@ -79,15 +79,15 @@ function PdfViewerComponent(props: Props) {
     const onClickHansup = () => {
         if (!isHandsup) {
             // 手を挙げたら
-            handleHandsup(props.documentId);
+            handleHandsup();
         } else {
             handleHandsdown(true);
         }
     };
 
-    const handleHandsup = (documentId: number) => {
-        sendHandsup(props.socket, userId, documentId, documentPageNow, true);
-        setHandsupDocumentIdNow(documentId);
+    const handleHandsup = () => {
+        sendHandsup(props.socket, userId, props.documentId, documentPageNow, true);
+        setHandsupDocumentIdNow(props.documentId);
         setHandsupDocumentPageNow(documentPageNow);
 
         setIsHandsup(true);
@@ -113,6 +113,49 @@ function PdfViewerComponent(props: Props) {
             handleHandsdown(false);
         }
     }, [props.ModeratorMsgSocket]);
+
+    /*****************************************************/
+
+    /* わからないボタン ********************************************************/
+
+    const [isReactedPage, setIsReactedPage] = useState(Array(numPages).fill(false)); //どのページにリアクションしているか
+    const [reactionBottonType, setReactionBottonType] = useState<
+        'primary' | 'default' | 'link' | 'text' | 'ghost' | 'dashed' | undefined
+    >('primary');
+
+    const onClickReaction = () => {
+        if (!isReactedPage[pageNumber - 1]) {
+            handleReactionOn();
+        } else {
+            handleReactionOff();
+        }
+    };
+
+    const handleReactionOn = () => {
+        sendReaction(props.socket, props.documentId, pageNumber, true);
+        const isReactedPage_copy = isReactedPage.slice();
+        isReactedPage_copy[pageNumber - 1] = true;
+        setIsReactedPage(isReactedPage_copy);
+
+        setReactionBottonType('ghost');
+    };
+
+    const handleReactionOff = () => {
+        sendReaction(props.socket, props.documentId, pageNumber, false);
+        const isReactedPage_copy = isReactedPage.slice();
+        isReactedPage_copy[pageNumber - 1] = false;
+        setIsReactedPage(isReactedPage_copy);
+
+        setReactionBottonType('primary');
+    };
+
+    useEffect(() => {
+        if (isReactedPage[pageNumber - 1]) {
+            setReactionBottonType('ghost');
+        } else {
+            setReactionBottonType('primary');
+        }
+    }, [pageNumber]);
 
     /*****************************************************/
 
@@ -175,10 +218,11 @@ function PdfViewerComponent(props: Props) {
                 <Col flex={7}>
                     {/* ここはページ分け疑問ボタン */}
                     <Button
-                        type="default"
+                        type={reactionBottonType}
                         style={{ width: 140 }}
                         icon={<QuestionOutlined />}
                         shape="round"
+                        onClick={onClickReaction}
                     >
                         わからない
                     </Button>
