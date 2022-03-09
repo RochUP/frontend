@@ -1,16 +1,19 @@
 import { ProFormText } from '@ant-design/pro-form';
 import { LockOutlined, IdcardOutlined } from '@ant-design/icons';
 import '@ant-design/pro-form/dist/form.css';
-import { Button, Space, Modal, Spin } from 'antd';
+import { Alert, Button, Space, Modal, Spin } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { login } from '../../utils/api';
 import store from '../../store';
 import { userLogin } from '../../actions/userActions';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 export default function LoginPage() {
     const [spinning, setSpinning] = useState(false);
+    const [inputOk, setInputOk] = useState(true);
+
+    const checkInputOk = useCallback((str: string): boolean => /^[\w]+$/.test(str), []);
 
     const navigate = useNavigate();
 
@@ -19,23 +22,27 @@ export default function LoginPage() {
         const password = (document?.getElementById('password') as HTMLInputElement).value;
         console.log(userid, password);
 
-        setSpinning(true);
+        if (checkInputOk(userid) && checkInputOk(password)) {
+            setInputOk(true);
+            setSpinning(true);
 
-        await login(userid, password)
-            .then((res) => {
-                if (!res.result) {
-                    throw new Error('Login failed');
-                }
-                storeUserData(res.userId, res.userName);
-                // TODO:
-                // - ローディング表示
-                return success();
-            })
-            .catch((err) => {
-                console.log(err);
-                return error();
-            });
-        setSpinning(false);
+            await login(userid, password)
+                .then((res) => {
+                    if (!res.result) {
+                        throw new Error('Login failed');
+                    }
+                    storeUserData(res.userId, res.userName);
+                    return success();
+                })
+                .catch((err) => {
+                    console.log(err);
+                    return error();
+                });
+            setSpinning(false);
+        } else {
+            setInputOk(false);
+            return;
+        }
     };
 
     function success() {
@@ -64,7 +71,7 @@ export default function LoginPage() {
                     <div className="ant-pro-form-login-container" style={{ marginTop: '10%' }}>
                         <div className="ant-pro-form-login-top">
                             <div className="ant-pro-form-login-header">
-                                <span className="ant-pro-form-login-header-title">○○システム</span>
+                                <span className="ant-pro-form-login-header-title">Plithos</span>
                             </div>
                             <div className="ant-pro-form-login-desc">ログイン</div>
                         </div>
@@ -98,6 +105,14 @@ export default function LoginPage() {
                                 ]}
                             />
                             <Space direction="vertical" style={{ width: 330 }}>
+                                {!inputOk && (
+                                    <Alert
+                                        message="ユーザIDとパスワードは半角英数字で入力してください"
+                                        type="error"
+                                        showIcon
+                                    />
+                                )}
+                                {/* TODO: 下コンポーネントとのスペースを調整 */}
                                 <Button
                                     type="primary"
                                     block
