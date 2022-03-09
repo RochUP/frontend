@@ -154,6 +154,10 @@ export default function InMeeting() {
         setIsModalVisible(true);
     };
 
+    const finishOn = ()=>{
+        sendFinishword(socket, meetingId, presenterIdNow, "present")
+    }
+
     //ポップアップのokボタンを押した時の処理
     const handleOk = async () => {
         const idx = presenterIds.indexOf(userId);
@@ -236,6 +240,7 @@ export default function InMeeting() {
         <Layout>
             <MeetingHeader />
             <Content style={{padding:'0 50px'}}>
+            <Button onClick={finishOn}>終了</Button>
             <p>{transcript}</p>
                 <Title style={{margin:'16px 0'}}>
                     ○○会議進行中
@@ -290,7 +295,7 @@ export default function InMeeting() {
                                 </Tooltip>
                             </Space>
                         </Col>
-                        <ModeratorMsgComponent />
+                        <ModeratorMsgComponent data={moderatorMsgSocket}/>
                         <Tabs type="card" defaultActiveKey="1" style={{width:'100%'}}>
                             {
                                 presenterIds.map((presenterId:string, index:number) => {
