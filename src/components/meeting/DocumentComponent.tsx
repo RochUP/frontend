@@ -19,6 +19,22 @@ export default function DocumentComponent(props: Props) {
     const documentIds = useSelector((state: any) => state.meetingReducer.documentIds);
     const documentPageNow = useSelector((state: any) => state.meetingReducer.documentPageNow);
 
+    const documentUrls = useSelector((state: any) => state.meetingReducer.documentUrls);
+    const scripts = useSelector((state: any) => state.meetingReducer.scripts);
+    
+    const script = scripts[props.index];
+
+    const scriptEachPage = script.split(/\n\n\n+/);
+    const [scriptPageNow, setScriptPageNow] = useState(scriptEachPage[documentPageNow-1]);
+    
+    useEffect(() => {
+        setScriptPageNow(scriptEachPage[documentPageNow-1]);
+    }, [script])
+    
+    useEffect(() => {
+        setScriptPageNow(scriptEachPage[documentPageNow-1]);
+    }, [documentPageNow]);
+
     useEffect(() => {
         const documentId = documentIds[props.index];
         (async () => {
@@ -36,16 +52,7 @@ export default function DocumentComponent(props: Props) {
         })();
     }, [props.socket]);
     
-    const documentUrls = useSelector((state: any) => state.meetingReducer.documentUrls);
-    const scripts = useSelector((state: any) => state.meetingReducer.scripts);
-    
-    const script = scripts[props.index];
 
-    const scriptEachPage = script.split(/\n\n\n+/);
-    const [scriptPageNow, setScriptPageNow] = useState(scriptEachPage[documentPageNow-1]);
-    useEffect(() => {
-        setScriptPageNow(scriptEachPage[documentPageNow-1]);
-    }, [documentPageNow]);
 
     return (
         <Card style={{width: '100%', minHeight: 500, maxHeight: 500,}}>

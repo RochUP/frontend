@@ -26,7 +26,7 @@ export default function reducer(state=initialState, action: any) {
                 presenterNames: action.payload.presenterNames,
                 documentIds: action.payload.documentIds,
                 documentUrls: Array(action.payload.documentIds.length).fill(""),
-                scripts: ["A", "B"], //Array(action.payload.documentIds.length).fill(""),
+                scripts: Array(action.payload.documentIds.length).fill(""),
                 presenterIdNow: action.payload.presenterIds[0],
                 documentPageNow: 1,
                 questionList: Array(action.payload.presenterIds.length).fill(null).map(item => new Array()),
