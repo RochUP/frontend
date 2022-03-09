@@ -8,7 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import CommentListComponent from "../../components/meeting/CommentListComponent";
 import Socket from "../../utils/webSocket";
-import { receiveData } from "../../utils/webSocketUtils";
+import { receiveData, sendFinishword } from "../../utils/webSocketUtils";
 import MeetingHeader from "../../components/meeting/MeetingHeader";
 import { useSelector } from "react-redux";
 import DocumentComponent from "../../components/meeting/DocumentComponent";
@@ -17,8 +17,11 @@ import store from "../../store";
 import { addQuestionAction, meetingExitAction } from "../../actions/meetingActions";
 import TextArea from "antd/lib/input/TextArea";
 import { UploadChangeParam, UploadFile } from "antd/lib/upload/interface";
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import React from 'react';
 import { uploadFile2AzureStorage } from "../../utils/azureStorage";
 import { registerDocument } from "../../utils/api";
+
 
 const { Footer, Content } = Layout;
 const { Text } = Typography;
@@ -40,10 +43,14 @@ export default function InMeeting() {
             console.log("NOT join")
             navigate("/meeting/join");
         }
+
+        //音声認識開始
+        SpeechRecognition.startListening({ language: 'ja', continuous: true})
     }, [])
 
     const presenterIds = useSelector((state: any) => state.meetingReducer.presenterIds);
     const presenterNames = useSelector((state: any) => state.meetingReducer.presenterNames);
+    const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow)
     const documentIds = useSelector((state: any) => state.meetingReducer.documentIds);
 
     /* websocket系 *************************************/
@@ -84,7 +91,42 @@ export default function InMeeting() {
         socket.on("message", setData);
     },[])
     /**************************************************** */
+  
+    /* 発表，質問の終了判定 *************************************/
+    const commands = [
+        {
+            command: "*発表を終わ*",
+            callback: ()=> {sendFinishword(socket, meetingId, presenterIdNow, "present")}
+            // callback: () => {sendPresenFinish()}
+        },
+        {
+            command: "*質問を終わ*",
+            callback: ()=>{sendFinishword(socket, meetingId, presenterIdNow, "question")}
+            // callback: () => {sendQuestionFinish()}
+        }
+    ]
 
+    const {
+        transcript,
+        listening,
+        resetTranscript,
+        browserSupportsSpeechRecognition
+    } = useSpeechRecognition({ commands });
+
+    // function sendPresenFinish(){
+    //     resetTranscript;
+    //     sendFinishword(socket, meetingId, presenterIdNow, "present");
+    // }
+
+    // function sendQuestionFinish(){
+    //     resetTranscript;
+    //     sendFinishword(socket, meetingId, presenterIdNow, "question")
+    // }
+
+    setTimeout(()=>resetTranscript,5000); 
+  
+    /**************************************************** */
+  
     const { Title } = Typography;
 
     /* 資料アップロード処理 *************************************/
@@ -150,6 +192,7 @@ export default function InMeeting() {
         <Layout>
             <MeetingHeader />
             <Content style={{padding:'0 50px'}}>
+            {/* <p>{transcript}</p> */}
                 <Title style={{margin:'16px 0'}}>
                     ○○会議進行中
                 </Title>
@@ -185,7 +228,7 @@ export default function InMeeting() {
                                                 beforeUpload={(file) => {
                                                     const isPdf = file.type === 'application/pdf';
                                                     if(!isPdf){
-                                                        message.error('PDFファイルを選択してください!');
+                                                        // message.error('PDFファイルを選択してください!');
                                                         return Upload.LIST_IGNORE;
                                                     }
                                                     return false;}}
