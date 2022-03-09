@@ -43,6 +43,8 @@ export default function InMeeting() {
             console.log("NOT join")
             navigate("/meeting/join");
         }
+
+        //音声認識開始
         SpeechRecognition.startListening({ language: 'ja', continuous: true})
     }, [])
 
@@ -59,22 +61,18 @@ export default function InMeeting() {
     const [filesList, setFilesList] = useState<UploadFile[]>([]);
 
     //発表，質問の終了判定
-    // const componentDidMount=SpeechRecognition.startListening({ language: 'ja', continuous: true})
-
     const commands = [
         {
             command: "*発表を終わ*",
             callback: ()=> {sendFinishword(socket, meetingId, presenterIdNow, "present")}
-            // callback: () => {setMessage('発表終了')}
+            // callback: () => {sendPresenFinish()}
         },
         {
             command: "*質問を終わ*",
             callback: ()=>{sendFinishword(socket, meetingId, presenterIdNow, "question")}
-            // callback: () => {setMessage('質問終了')}
+            // callback: () => {sendQuestionFinish()}
         }
     ]
-
-    setTimeout(()=>resetTranscript,5000); 
 
     const {
         transcript,
@@ -82,6 +80,18 @@ export default function InMeeting() {
         resetTranscript,
         browserSupportsSpeechRecognition
     } = useSpeechRecognition({ commands });
+
+    // function sendPresenFinish(){
+    //     resetTranscript;
+    //     sendFinishword(socket, meetingId, presenterIdNow, "present");
+    // }
+
+    // function sendQuestionFinish(){
+    //     resetTranscript;
+    //     sendFinishword(socket, meetingId, presenterIdNow, "question")
+    // }
+
+    setTimeout(()=>resetTranscript,5000); 
 
     //アップロードのonChange関連
     const handleChange = (info: UploadChangeParam) => {
