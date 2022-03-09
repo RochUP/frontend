@@ -106,9 +106,6 @@ export default function InMeeting() {
                             changeDocumentPageAction(presenterIds[data.presenterOrder], 1)
                         );
                     }
-                    if (data.userId === userId) {
-                        handleHandsdown(false);
-                    }
                     break;
                 case 'document_update':
                     setDocumentSocket(data);
@@ -219,50 +216,6 @@ export default function InMeeting() {
         setIsModalVisible(false);
     };
     /**************************************************** */
-
-    /* 挙手ボタン ********************************************************/
-
-    const [isHandsup, setIsHandsup] = useState(false);
-    const [handsupDocumentIdNow, setHandsupDocumentIdNow] = useState(0); // 今あげている挙手のdocumentId
-    const [handsupDocumentPageNow, setHandsupDocumentPageNow] = useState(0); // 今あげている挙手のdocumentPage
-    const [handsupBottonType, setHandsupBottonType] = useState<
-        'primary' | 'default' | 'link' | 'text' | 'ghost' | 'dashed' | undefined
-    >('primary');
-    const [handsupBottonIcon, setHandsupBottonIcon] = useState(<ArrowUpOutlined />);
-    const [handsupText, setHandsupText] = useState('手を挙げる');
-
-    const onClickHansup = (documentId: number) => {
-        if (!isHandsup) {
-            // 手を挙げたら
-            handleHandsup(documentId);
-        } else {
-            handleHandsdown(true);
-        }
-    };
-
-    const handleHandsup = (documentId: number) => {
-        sendHandsup(socket, userId, documentId, documentPageNow, true);
-        setHandsupDocumentIdNow(documentId);
-        setHandsupDocumentPageNow(documentPageNow);
-
-        setIsHandsup(true);
-        setHandsupBottonType('ghost');
-        setHandsupBottonIcon(<ArrowDownOutlined />);
-        setHandsupText('手を下ろす');
-    };
-
-    const handleHandsdown = (send: boolean) => {
-        if (send) {
-            sendHandsup(socket, userId, handsupDocumentIdNow, handsupDocumentPageNow, false);
-        }
-
-        setIsHandsup(false);
-        setHandsupBottonType('primary');
-        setHandsupBottonIcon(<ArrowUpOutlined />);
-        setHandsupText('手を挙げる');
-    };
-
-    /*****************************************************/
 
     const onClickExit = () => {
         console.log('exit');
@@ -411,25 +364,12 @@ export default function InMeeting() {
                                             <Col flex={4} style={{ width: '30%' }}>
                                                 <Col span={24}>
                                                     <DocumentComponent
-                                                        socket={documentSocket}
+                                                        socket={socket}
+                                                        documentSocket={documentSocket}
+                                                        ModeratorMsgSocket={moderatorMsgSocket}
                                                         presenterId={presenterId}
                                                         index={index}
                                                     />
-                                                </Col>
-                                                <Col
-                                                    span={24}
-                                                    style={{ padding: '8px 0', margin: '8px' }}
-                                                >
-                                                    <Button
-                                                        type={handsupBottonType}
-                                                        icon={handsupBottonIcon}
-                                                        style={{ width: '45%', marginLeft: '25%' }}
-                                                        onClick={() =>
-                                                            onClickHansup(documentIds[index])
-                                                        }
-                                                    >
-                                                        {handsupText}
-                                                    </Button>
                                                 </Col>
                                             </Col>
                                             {/* 右側のコンポーネント */}
