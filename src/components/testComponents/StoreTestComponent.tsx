@@ -16,8 +16,7 @@ export default function StoreTestComponent() {
 
         // データの登録
         store.dispatch(userLogin(input_userid.value, input_username.value));
-
-    }
+    };
 
     // データの受け取り
     const meetingId = useSelector((state: any) => state.meetingReducer.meetingId);
@@ -30,26 +29,45 @@ export default function StoreTestComponent() {
         console.log(input_meetingName.value);
 
         // データの登録
-        store.dispatch(meetingJoinAction(+input_meetingId.value, input_meetingName.value, "1990/01/01 00:00:00", [], [], []));
-
-    }
+        store.dispatch(
+            meetingJoinAction(
+                +input_meetingId.value,
+                input_meetingName.value,
+                '1990/01/01 00:00:00',
+                [],
+                [],
+                []
+            )
+        );
+    };
 
     return (
         <div>
-            <input id="userid" type="text"/>
-            <input id="username" type="text"/>
-            <button onClick={() => {handleClick()} }>Store</button>
+            <input id="userid" type="text" />
+            <input id="username" type="text" />
+            <button
+                onClick={() => {
+                    handleClick();
+                }}
+            >
+                Store
+            </button>
 
             <p>{userid}</p>
             <p>{username}</p>
 
-            <input id="meetingId" type="number"/>
-            <input id="meetingName" type="text"/>
-            <button onClick={() => {handleClick2()} }>Store</button>
+            <input id="meetingId" type="number" />
+            <input id="meetingName" type="text" />
+            <button
+                onClick={() => {
+                    handleClick2();
+                }}
+            >
+                Store
+            </button>
 
             <p>{meetingId}</p>
             <p>{meetingName}</p>
-
         </div>
     );
 }
