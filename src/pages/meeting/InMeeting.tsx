@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import {
@@ -18,7 +18,14 @@ import {
 } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import { UploadChangeParam, UploadFile } from 'antd/lib/upload/interface';
-import { ArrowUpOutlined, UploadOutlined, ArrowDownOutlined } from '@ant-design/icons';
+import {
+    ArrowUpOutlined,
+    UploadOutlined,
+    ArrowDownOutlined,
+    MessageOutlined,
+    CheckCircleOutlined,
+    FormOutlined,
+} from '@ant-design/icons';
 
 import '../../assets/css/Pages.css';
 import {
@@ -283,9 +290,6 @@ export default function InMeeting() {
         <Layout>
             <MeetingHeader />
             <Content style={{ padding: '0 50px' }}>
-                <Button onClick={() => finishOn('present')}>発表終了</Button>
-                <Button onClick={() => finishOn('question')}>質問終了</Button>
-
                 <p>{transcript}</p>
                 <Title style={{ margin: '16px 0' }}>○○会議進行中</Title>
                 <Breadcrumb style={{ margin: '16px 0' }}>
@@ -308,15 +312,35 @@ export default function InMeeting() {
                             {/* 右側操作ボタン */}
                             <Space
                                 align="baseline"
+                                size={15}
                                 style={{ display: 'flex', justifyContent: 'right' }}
                             >
-                                {/* <Text type="secondary">会議ID:</Text>
-                        <Text type="secondary" style={{marginLeft: 5}}>{meetingId}</Text> */}
+                                <Button
+                                    danger
+                                    icon={<MessageOutlined />}
+                                    onClick={() => finishOn('question')}
+                                >
+                                    質問終了
+                                </Button>
+                                <Button
+                                    danger
+                                    icon={<CheckCircleOutlined />}
+                                    onClick={() => finishOn('present')}
+                                >
+                                    発表終了
+                                </Button>
                                 <Tooltip
                                     placement="topRight"
                                     title={'発表者は原稿を登録してください'}
                                 >
-                                    <Button onClick={showModal}>原稿登録</Button>
+                                    <Button
+                                        type="primary"
+                                        ghost
+                                        icon={<FormOutlined />}
+                                        onClick={showModal}
+                                    >
+                                        原稿登録
+                                    </Button>
                                     {/* ここのonOKはポップアップのokボタン */}
                                     <Modal
                                         title="原稿登録"
