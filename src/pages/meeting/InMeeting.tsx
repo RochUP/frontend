@@ -325,6 +325,51 @@ export default function InMeeting() {
                 return (
                   <TabPane tab={presenterNames[index]} key={presenterId}>
                     <Row>
+                        <Col span={12} style={{maxHeight: 50}}> 
+                            {/* style={{background:'#DD2248'}} */}
+                            <Text type="secondary" style={{marginLeft: 20}}>会議ID:</Text>
+                            <Text type="secondary" style={{marginLeft: 5}}>{meetingId}</Text>
+                        </Col>
+                        <Col span={11} style={{maxHeight: 50, width:'100%'}}>
+                            {/* style={{background:'#DD2248'}}> */}
+                            {/* 右側操作ボタン */}
+                            <Space align="baseline" style={{display:'flex', justifyContent:'right'}}>
+                                {/* <Text type="secondary">会議ID:</Text>
+                                <Text type="secondary" style={{marginLeft: 5}}>{meetingId}</Text> */}
+                                <Tooltip placement="topRight" title={'発表者は原稿を登録してください'}>
+                                    <Button onClick={showModal}>原稿登録</Button>
+                                    {/* ここのonOKはポップアップのokボタン */}
+                                    <Modal title = "原稿登録" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} okText={"登録"} cancelText={"キャンセル"}>
+                                        <Space direction="vertical" style={{width:'100%'}}>
+                                            <Text>原稿を登録しますか？</Text>
+                                            <Upload
+                                                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                                                listType="picture"
+                                                data={file => ({ file })}
+                                                fileList={filesList}
+                                                onChange={handleChange}
+                                                maxCount={1}
+                                                accept=".pdf"
+                                                beforeUpload={(file) => {
+                                                    const isPdf = file.type === 'application/pdf';
+                                                    if(!isPdf){
+                                                        message.error('PDFファイルを選択してください!');
+                                                        return Upload.LIST_IGNORE;
+                                                    }
+                                                    return false;}}
+                                                >
+                                                <Button icon={<UploadOutlined />} style={{width:'100%'}}>原稿アップロード</Button>
+                                            </Upload>
+                                            <TextArea id="script_form" showCount defaultValue={script_default}/>
+                                        </Space>
+                                    </Modal>
+                                </Tooltip>
+                                <Tooltip placement="topRight" title={'会議を退出します'}>
+                                    <Link to={'../meeting/join'}>
+                                        <Button type="primary" danger onClick={onClickExit}>退出</Button>
+                                    </Link>
+                                </Tooltip>
+                            </Space>
                       {/* 左側のコンポーネント */}
                       {/* <Col span={12} style={{padding:"8px 0", margin:'8px'}}> */}
                       <Col flex={4} style={{ width: '30%' }}>
