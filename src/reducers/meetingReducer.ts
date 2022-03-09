@@ -51,7 +51,7 @@ export default function reducer(state = initialState, action: any) {
                 documentPageNow: 1,
                 questionList: Array(action.payload.presenterIds.length)
                     .fill(null)
-                    .map((_) => new Array<Question>(action.payload.presenterIds.length)),
+                    .map((_) => new Array<Question>(0)),
             };
 
         case MEETING_EXIT:
