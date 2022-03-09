@@ -73,10 +73,19 @@ export default function MeetingHost() {
         });
     }
 
+    function destoryAll() {
+        Modal.destroyAll();
+    }
+
     function success() {
         Modal.success({
             content: '会議を作成しました。',
-            okButtonProps: { href: '/meeting/join' },
+            okButtonProps: {
+                onClick: () => {
+                    navigate('/meeting/in');
+                    destoryAll();
+                },
+            },
         });
     }
 
