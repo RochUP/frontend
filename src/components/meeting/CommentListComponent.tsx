@@ -48,7 +48,23 @@ export default function CommentListComponent(props: Props) {
 
         //日付の取得
         var date = new Date();
-        var qtime = date.toLocaleString();
+        // var qtime = date.toLocaleString();
+
+        const qyear = String(date.getFullYear());
+        let qmonth = String(date.getMonth() + 1);
+        let qday = String(date.getDay());
+        let qhours = String(date.getHours());
+        let qminutes = String(date.getMinutes());
+        let qseconds = String(date.getSeconds());
+
+        qmonth = setTime(qmonth);
+        qday = setTime(qday);
+        qhours = setTime(qhours);
+        qminutes = setTime(qminutes);
+        qseconds = setTime(qseconds);
+
+        const qtime =
+            qyear + '/' + qmonth + '/' + qday + ' ' + qhours + ':' + qminutes + ':' + qseconds;
 
         sendQuestion(
             props.socket,
@@ -63,6 +79,13 @@ export default function CommentListComponent(props: Props) {
         //書き込み欄のクリア
         setquestion('');
     }
+
+    const setTime = (date: string) => {
+        if (Number(date) < 10) {
+            date = '0' + date;
+        }
+        return date;
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setquestion(e.target.value);
