@@ -2,6 +2,7 @@ import Socket from "./webSocket";
 
 export function receiveData(data: string) {
     const data_json = JSON.parse(data);
+    console.log("receiveData", data_json);
     switch(data_json.messageType){
         case "question":
             return receiveQuestion(data_json);
