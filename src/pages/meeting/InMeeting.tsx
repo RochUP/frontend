@@ -1,31 +1,29 @@
-import { Breadcrumb, Button, Col, Layout, Row, Space, Modal, Tooltip, Upload, Tabs, message } from "antd";
+import { Breadcrumb, Button, Col, Layout, Row, Space, Modal, Tooltip, Upload, Tabs, message, Typography } from "antd";
 import {
     ArrowUpOutlined,
     UploadOutlined
 } from '@ant-design/icons';
-import { Typography } from 'antd';
 import "../../assets/css/Pages.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import CommentListComponent from "../../components/meeting/CommentListComponent";
-
 import Socket from "../../utils/webSocket";
-import { receiveData } from "../../utils/webSocketUtils";
+import { receiveData, sendFinishword } from "../../utils/webSocketUtils";
 import MeetingHeader from "../../components/meeting/MeetingHeader";
 import { useSelector } from "react-redux";
 import DocumentComponent from "../../components/meeting/DocumentComponent";
 import ModeratorMsgComponent from "../../components/meeting/ModeratorMsgComponent";
 import store from "../../store";
-import { meetingExitAction } from "../../actions/meetingActions";
+import { addQuestionAction, meetingExitAction } from "../../actions/meetingActions";
 import TextArea from "antd/lib/input/TextArea";
 import { UploadChangeParam, UploadFile } from "antd/lib/upload/interface";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import React from 'react';
+import { uploadFile2AzureStorage } from "../../utils/azureStorage";
+import { registerDocument } from "../../utils/api";
 
-import { sendFinishword } from "../../utils/webSocketUtils";
 
 const { Footer, Content } = Layout;
-
 const { Text } = Typography;
 const { TabPane } = Tabs;
 
@@ -34,8 +32,10 @@ const ws = new WebSocket(URL+"");
 let socket = new Socket(ws);
 
 export default function InMeeting() {
+    
     const navigate = useNavigate();
 
+    const userId = useSelector((state: any) => state.userReducer.userid);
     const meetingId = useSelector((state: any) => state.meetingReducer.meetingId);
     
     useEffect (() => {
@@ -51,16 +51,48 @@ export default function InMeeting() {
     const presenterIds = useSelector((state: any) => state.meetingReducer.presenterIds);
     const presenterNames = useSelector((state: any) => state.meetingReducer.presenterNames);
     const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow)
+    const documentIds = useSelector((state: any) => state.meetingReducer.documentIds);
 
+    /* websocket系 *************************************/
     const [questionSocket, setQuestionSocket] = useState();
     const [questionVoteSocket, setQuestionVoteSocket] = useState();
     const [reactionSocket, setReactionSocket] = useState();
     const [moderatorMsgSocket, setModeratorMsgSocket] = useState();
     const [documentSocket, setDocumentSocket] = useState();
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [filesList, setFilesList] = useState<UploadFile[]>([]);
 
-    //発表，質問の終了判定
+    function setData(e:any) {  
+        let data: any = receiveData(e.data);
+        if (data.meetingId === meetingId) { // 別のmeetingIdのデータを受け取った場合は無視する
+            switch (data.messageType) {
+                case "question":
+                    setQuestionSocket(data);
+                    store.dispatch(addQuestionAction(data))
+                    break;
+                case "question_vote":
+                    setQuestionVoteSocket(data);
+                    break;
+                case "reaction":
+                    setReactionSocket(data);
+                    break;
+                case "moderator_msg":
+                    setModeratorMsgSocket(data);
+                    break;
+                case "document_update":
+                    setDocumentSocket(data);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    useEffect(()=>{
+        // 初回レンダリング時のみSocket Onにする
+        console.log("socket on");
+        socket.on("message", setData);
+    },[])
+    /**************************************************** */
+  
+    /* 発表，質問の終了判定 *************************************/
     const commands = [
         {
             command: "*発表を終わ*",
@@ -92,6 +124,21 @@ export default function InMeeting() {
     // }
 
     setTimeout(()=>resetTranscript,5000); 
+  
+    /**************************************************** */
+  
+    const { Title } = Typography;
+
+    /* 資料アップロード処理 *************************************/
+    const scripts = useSelector((state: any) => state.meetingReducer.scripts);
+    const idx = presenterIds.indexOf(userId);
+    let script_default = ""
+    if (idx !== -1) {
+        script_default = scripts[idx];
+    }
+
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [filesList, setFilesList] = useState<UploadFile[]>([]);
 
     //アップロードのonChange関連
     const handleChange = (info: UploadChangeParam) => {
@@ -103,46 +150,38 @@ export default function InMeeting() {
     const showModal = () => {
         setIsModalVisible(true);
     };
+
     //ポップアップのokボタンを押した時の処理
-    const handleOk = (file:any) => {
+    const handleOk = async () => {
+        const idx = presenterIds.indexOf(userId);
+        if(idx === -1){
+            alert("You are not presenter");
+            setIsModalVisible(false);
+            return;
+        }
+        const documentId = documentIds[idx];
+        let documentUrl = null;
+        if (filesList.length !== 0) {
+            const file = filesList[0].originFileObj;
+            documentUrl = await uploadFile2AzureStorage(file);
+        }
+        const script = (document.getElementById("script_form") as HTMLFormElement).value;
+        
+        await registerDocument(documentId, documentUrl, script)
+            .then(res => {
+                console.log(res);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+
         setIsModalVisible(false);
     };
     //ポップアップのcancelボタンを押した時の処理
     const handleCancel = () => {
         setIsModalVisible(false);
     };
-
-    function setData(e:any) {  
-        let data: any = receiveData(e.data);
-        if (data.meetingId === meetingId) { // 別のmeetingIdのデータを受け取った場合は無視する
-            switch (data.messageType) {
-                case "question":
-                    setQuestionSocket(data);
-                    break;
-                case "question_vote":
-                    setQuestionVoteSocket(data);
-                    break;
-                case "reaction":
-                    setReactionSocket(data);
-                    break;
-                case "moderator_msg":
-                    setModeratorMsgSocket(data);
-                    break;
-                case "document":
-                    setDocumentSocket(data);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-    useEffect(()=>{
-        // 初回レンダリング時のみSocket Onにする
-        console.log("socket on");
-        socket.on("message", setData);
-    },[])
-
-    const { Title } = Typography;
+    /**************************************************** */
 
     const onClickExit = () => {
         console.log('exit');
@@ -153,7 +192,7 @@ export default function InMeeting() {
         <Layout>
             <MeetingHeader />
             <Content style={{padding:'0 50px'}}>
-                <p>{transcript}</p>
+            {/* <p>{transcript}</p> */}
                 <Title style={{margin:'16px 0'}}>
                     ○○会議進行中
                 </Title>
@@ -196,7 +235,7 @@ export default function InMeeting() {
                                                 >
                                                 <Button icon={<UploadOutlined />} style={{width:'100%'}}>原稿アップロード</Button>
                                             </Upload>
-                                            <TextArea showCount />
+                                            <TextArea id="script_form" showCount defaultValue={script_default}/>
                                         </Space>
                                     </Modal>
                                 </Tooltip>
@@ -212,13 +251,13 @@ export default function InMeeting() {
                             {
                                 presenterIds.map((presenterId:string, index:number) => {
                                     return (
-                                        <TabPane tab={presenterNames[presenterIds.indexOf(presenterId)]} key={presenterId} >
+                                        <TabPane tab={presenterNames[index]} key={presenterId} >
                                             <Row>
                                                 {/* 左側のコンポーネント */}
                                                 {/* <Col span={12} style={{padding:"8px 0", margin:'8px'}}> */}
                                                 <Col flex={4} style={{width:'30%'}}>
                                                     <Col span={24}>
-                                                        <DocumentComponent presenterId={presenterId}/>
+                                                        <DocumentComponent socket={documentSocket} presenterId={presenterId} index={index}/>
                                                     </Col>
                                                     <Col span={24} style={{padding:"8px 0", margin:'8px'}}>
                                                         <Button type="primary" icon={<ArrowUpOutlined />} style={{width:'45%', marginLeft:'25%'}}>Hands up</Button>

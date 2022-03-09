@@ -11,12 +11,12 @@ function TestPage() {
   return (
     <div>
         {/* <TestButton /> */}
-        <PdfViewerComponent />
+        {/* <PdfViewerComponent /> */}
         {/* <WSTestComponent /> */}
-        <StoreTestComponent />
+        {/* <StoreTestComponent /> */}
         {/* <SpeechRecTestComponent /> */}
-        {/* <AzureStorageComponent /> */}
-        <Text2SpeechComponent />
+        <AzureStorageComponent />
+        {/* <Text2SpeechComponent /> */}
     </div>
   );
 }
