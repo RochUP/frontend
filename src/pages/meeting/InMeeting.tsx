@@ -1,14 +1,15 @@
 import { Breadcrumb, Button, Col, Layout, Row, Space, Modal, Tooltip, Upload, Tabs, message, Typography } from "antd";
 import {
     ArrowUpOutlined,
-    UploadOutlined
+    UploadOutlined,
+    ArrowDownOutlined
 } from '@ant-design/icons';
 import "../../assets/css/Pages.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import CommentListComponent from "../../components/meeting/CommentListComponent";
 import Socket from "../../utils/webSocket";
-import { receiveData } from "../../utils/webSocketUtils";
+import { receiveData, sendFinishword, sendHandsup } from "../../utils/webSocketUtils";
 import MeetingHeader from "../../components/meeting/MeetingHeader";
 import { useSelector } from "react-redux";
 import DocumentComponent from "../../components/meeting/DocumentComponent";
@@ -17,8 +18,11 @@ import store from "../../store";
 import { addQuestionAction, meetingExitAction } from "../../actions/meetingActions";
 import TextArea from "antd/lib/input/TextArea";
 import { UploadChangeParam, UploadFile } from "antd/lib/upload/interface";
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import React from 'react';
 import { uploadFile2AzureStorage } from "../../utils/azureStorage";
 import { registerDocument } from "../../utils/api";
+
 
 const { Footer, Content } = Layout;
 const { Text } = Typography;
@@ -40,11 +44,16 @@ export default function InMeeting() {
             console.log("NOT join")
             navigate("/meeting/join");
         }
+
+        //音声認識開始
+        SpeechRecognition.startListening({ language: 'ja', continuous: true})
     }, [])
 
     const presenterIds = useSelector((state: any) => state.meetingReducer.presenterIds);
     const presenterNames = useSelector((state: any) => state.meetingReducer.presenterNames);
     const documentIds = useSelector((state: any) => state.meetingReducer.documentIds);
+    const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow);
+    const documentPageNow = useSelector((state: any) => state.meetingReducer.documentPageNow);
 
     /* websocket系 *************************************/
     const [questionSocket, setQuestionSocket] = useState();
@@ -84,7 +93,42 @@ export default function InMeeting() {
         socket.on("message", setData);
     },[])
     /**************************************************** */
+  
+    /* 発表，質問の終了判定 *************************************/
+    const commands = [
+        {
+            command: "*発表を終わ*",
+            callback: ()=> {sendFinishword(socket, meetingId, presenterIdNow, "present")}
+            // callback: () => {sendPresenFinish()}
+        },
+        {
+            command: "*質問を終わ*",
+            callback: ()=>{sendFinishword(socket, meetingId, presenterIdNow, "question")}
+            // callback: () => {sendQuestionFinish()}
+        }
+    ]
 
+    const {
+        transcript,
+        listening,
+        resetTranscript,
+        browserSupportsSpeechRecognition
+    } = useSpeechRecognition({ commands });
+
+    // function sendPresenFinish(){
+    //     resetTranscript;
+    //     sendFinishword(socket, meetingId, presenterIdNow, "present");
+    // }
+
+    // function sendQuestionFinish(){
+    //     resetTranscript;
+    //     sendFinishword(socket, meetingId, presenterIdNow, "question")
+    // }
+
+    // setTimeout(()=>resetTranscript,5000); 
+  
+    /**************************************************** */
+  
     const { Title } = Typography;
 
     /* 資料アップロード処理 *************************************/
@@ -141,15 +185,57 @@ export default function InMeeting() {
     };
     /**************************************************** */
 
+    /* 挙手ボタン ********************************************************/
+
+    const [isHandsup, setIsHandsup] = useState(false);
+    const [handsupDocumentIdNow, setHandsupDocumentIdNow] = useState(0); // 今あげている挙手のdocumentId
+    const [handsupDocumentPageNow, setHandsupDocumentPageNow] = useState(0); // 今あげている挙手のdocumentPage
+    const [handsupBottonType, setHandsupBottonType] = useState<"primary" | "default" | "link" | "text" | "ghost" | "dashed" | undefined>("primary");
+    const [handsupBottonIcon, setHandsupBottonIcon] = useState(<ArrowUpOutlined />);
+    const [handsupText, setHandsupText] = useState("手を挙げる");
+
+    const onClickHansup = (documentId: number) => {
+        if (!isHandsup) {
+            // 手を挙げたら
+            handleHandsup(documentId);
+        }else{
+            handleHandsdown();
+        }
+    }
+
+    const handleHandsup = (documentId: number) => {
+        sendHandsup(socket, userId, documentId, documentPageNow, true);
+        setHandsupDocumentIdNow(documentId);
+        setHandsupDocumentPageNow(documentPageNow);
+
+        setIsHandsup(true);
+        setHandsupBottonType("ghost");
+        setHandsupBottonIcon(<ArrowDownOutlined />);
+        setHandsupText("手を下ろす");
+    }
+
+    const handleHandsdown = () => {
+        sendHandsup(socket, userId, handsupDocumentIdNow, handsupDocumentPageNow, false);
+
+        setIsHandsup(false);
+        setHandsupBottonType("primary");
+        setHandsupBottonIcon(<ArrowUpOutlined />);
+        setHandsupText("手を挙げる");
+    }
+
+    /**************************************************** */
+
     const onClickExit = () => {
         console.log('exit');
         store.dispatch(meetingExitAction());
+        SpeechRecognition.stopListening();
     }
 
     return (
         <Layout>
             <MeetingHeader />
             <Content style={{padding:'0 50px'}}>
+            <p>{transcript}</p>
                 <Title style={{margin:'16px 0'}}>
                     ○○会議進行中
                 </Title>
@@ -185,7 +271,7 @@ export default function InMeeting() {
                                                 beforeUpload={(file) => {
                                                     const isPdf = file.type === 'application/pdf';
                                                     if(!isPdf){
-                                                        message.error('PDFファイルを選択してください!');
+                                                        // message.error('PDFファイルを選択してください!');
                                                         return Upload.LIST_IGNORE;
                                                     }
                                                     return false;}}
@@ -217,7 +303,7 @@ export default function InMeeting() {
                                                         <DocumentComponent socket={documentSocket} presenterId={presenterId} index={index}/>
                                                     </Col>
                                                     <Col span={24} style={{padding:"8px 0", margin:'8px'}}>
-                                                        <Button type="primary" icon={<ArrowUpOutlined />} style={{width:'45%', marginLeft:'25%'}}>Hands up</Button>
+                                                        <Button type={handsupBottonType} icon={handsupBottonIcon} style={{width:'45%', marginLeft:'25%'}} onClick={() => onClickHansup(documentIds[index])}>{handsupText}</Button>
                                                     </Col>
                                                 </Col>
                                                 {/* 右側のコンポーネント */}
