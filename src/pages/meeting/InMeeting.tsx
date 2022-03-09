@@ -123,7 +123,7 @@ export default function InMeeting() {
     //     sendFinishword(socket, meetingId, presenterIdNow, "question")
     // }
 
-    setTimeout(()=>resetTranscript,5000); 
+    // setTimeout(()=>resetTranscript,5000); 
   
     /**************************************************** */
   
@@ -192,7 +192,7 @@ export default function InMeeting() {
         <Layout>
             <MeetingHeader />
             <Content style={{padding:'0 50px'}}>
-            {/* <p>{transcript}</p> */}
+            <p>{transcript}</p>
                 <Title style={{margin:'16px 0'}}>
                     ○○会議進行中
                 </Title>
