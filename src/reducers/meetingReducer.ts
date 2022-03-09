@@ -20,16 +20,18 @@ type Question = {
 
 const initialState = {
     meetingId: 0,
-    meetingName: 'meeting',
+    meetingName: '',
     meetingStartTime: '1998/06/10 00:00:00',
-    presenterIds: ['ishikawa1', 'yoshida1'],
-    presenterNames: ['a', 'b'],
+    presenterIds: [''],
+    presenterNames: [''],
     documentIds: [0],
     documentUrls: [''],
     scripts: [''],
     presenterIdNow: 0,
     documentPageNow: 1,
-    questionList: Array<Array<Question>>(),
+    questionList: Array(0)
+        .fill(null)
+        .map((_) => new Array<Question>(0)),
 };
 
 export default function reducer(state = initialState, action: any) {
@@ -53,20 +55,7 @@ export default function reducer(state = initialState, action: any) {
             };
 
         case MEETING_EXIT:
-            return {
-                ...state,
-                meetingId: 0,
-                meetingName: '',
-                meetingStartTime: '1998/06/10 00:00:00',
-                presenterIds: [''],
-                presenterNames: [''],
-                documentIds: [0],
-                documentUrls: [''],
-                scripts: [''],
-                presenterIdNow: [''],
-                documentPageNow: 1,
-                questionList: Array<Array<Question>>(),
-            };
+            return initialState;
 
         case GET_DOCUMENT:
             var documentUrls = state.documentUrls.slice();
