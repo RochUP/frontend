@@ -1,12 +1,9 @@
 {
-	"name": "node app",
-	"dockerComposeFile": [
-	  "./docker-compose.yml",
-	],
-	"service": "node",
-	// "context": "..",
-	"workspaceFolder": "/usr/src/app",
-	"extensions": [
-	],
-	"settings": {}
+    "name": "node app",
+    "dockerComposeFile": ["./docker-compose.yml"],
+    "service": "node",
+    // "context": "..",
+    "workspaceFolder": "/usr/src/app",
+    "extensions": [],
+    "settings": {}
 }

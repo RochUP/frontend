@@ -1,23 +1,29 @@
-import { ADD_QUESTION, CHANGE_DOCUMENT_PAGE, GET_DOCUMENT, MEETING_EXIT, MEETING_JOIN } from "../actions/meetingActions";
+import {
+    ADD_QUESTION,
+    CHANGE_DOCUMENT_PAGE,
+    GET_DOCUMENT,
+    MEETING_EXIT,
+    MEETING_JOIN,
+} from '../actions/meetingActions';
 
 const initialState = {
     meetingId: 0,
-    meetingName: "meeting",
-    meetingStartTime: "1998/06/10 00:00:00",
+    meetingName: 'meeting',
+    meetingStartTime: '1998/06/10 00:00:00',
     presenterIds: ['ishikawa1', 'yoshida1'],
-    presenterNames: ["a","b"],
-    documentIds: [0,],
-    documentUrls: ["",],
-    scripts: ["",],
+    presenterNames: ['a', 'b'],
+    documentIds: [0],
+    documentUrls: [''],
+    scripts: [''],
     presenterIdNow: 0,
     documentPageNow: 1,
-    questionList: [[{}],],
-}
+    questionList: [[{}]],
+};
 
-export default function reducer(state=initialState, action: any) {
+export default function reducer(state = initialState, action: any) {
     switch (action.type) {
         case MEETING_JOIN:
-            return{
+            return {
                 ...state,
                 meetingId: action.payload.meetingId,
                 meetingName: action.payload.meetingName,
@@ -25,27 +31,29 @@ export default function reducer(state=initialState, action: any) {
                 presenterIds: action.payload.presenterIds,
                 presenterNames: action.payload.presenterNames,
                 documentIds: action.payload.documentIds,
-                documentUrls: Array(action.payload.documentIds.length).fill(""),
-                scripts: Array(action.payload.documentIds.length).fill(""),
+                documentUrls: Array(action.payload.documentIds.length).fill(''),
+                scripts: Array(action.payload.documentIds.length).fill(''),
                 presenterIdNow: action.payload.presenterIds[0],
                 documentPageNow: 1,
-                questionList: Array(action.payload.presenterIds.length).fill(null).map(item => new Array()),
+                questionList: Array(action.payload.presenterIds.length)
+                    .fill(null)
+                    .map((item) => new Array()),
             };
-        
+
         case MEETING_EXIT:
-            return{
+            return {
                 ...state,
                 meetingId: 0,
-                meetingName: "",
-                meetingStartTime: "1998/06/10 00:00:00",
-                presenterIds: ["",],
-                presenterNames: ["",],
-                documentIds: [0,],
-                documentUrls: ["",],
-                scripts: ["",],
-                presenterIdNow: [""],
+                meetingName: '',
+                meetingStartTime: '1998/06/10 00:00:00',
+                presenterIds: [''],
+                presenterNames: [''],
+                documentIds: [0],
+                documentUrls: [''],
+                scripts: [''],
+                presenterIdNow: [''],
                 documentPageNow: 1,
-                questionList: [[{}],],
+                questionList: [[{}]],
             };
 
         case GET_DOCUMENT:
@@ -68,7 +76,7 @@ export default function reducer(state=initialState, action: any) {
             };
 
         case ADD_QUESTION:
-            const index = state.presenterIds.indexOf(action.payload.question.presenterId)
+            const index = state.presenterIds.indexOf(action.payload.question.presenterId);
             if (index !== -1) {
                 var questionList = state.questionList.slice();
                 const question = {
@@ -80,16 +88,16 @@ export default function reducer(state=initialState, action: any) {
                     questionTime: action.payload.question.questionTime,
                     voteNum: 0,
                     isVote: false,
-                }
+                };
                 questionList[index].push(question);
                 return {
                     ...state,
                     questionList: questionList,
                 };
-            }else{
+            } else {
                 return state;
             }
-        
+
         default:
             break;
     }
