@@ -1,14 +1,15 @@
 import { Breadcrumb, Button, Col, Layout, Row, Space, Modal, Tooltip, Upload, Tabs, message, Typography } from "antd";
 import {
     ArrowUpOutlined,
-    UploadOutlined
+    UploadOutlined,
+    ArrowDownOutlined
 } from '@ant-design/icons';
 import "../../assets/css/Pages.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import CommentListComponent from "../../components/meeting/CommentListComponent";
 import Socket from "../../utils/webSocket";
-import { receiveData, sendFinishword } from "../../utils/webSocketUtils";
+import { receiveData, sendFinishword, sendHandsup } from "../../utils/webSocketUtils";
 import MeetingHeader from "../../components/meeting/MeetingHeader";
 import { useSelector } from "react-redux";
 import DocumentComponent from "../../components/meeting/DocumentComponent";
@@ -52,6 +53,8 @@ export default function InMeeting() {
     const presenterNames = useSelector((state: any) => state.meetingReducer.presenterNames);
     const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow)
     const documentIds = useSelector((state: any) => state.meetingReducer.documentIds);
+    const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow);
+    const documentPageNow = useSelector((state: any) => state.meetingReducer.documentPageNow);
 
     /* websocket系 *************************************/
     const [questionSocket, setQuestionSocket] = useState();
@@ -183,9 +186,50 @@ export default function InMeeting() {
     };
     /**************************************************** */
 
+    /* 挙手ボタン ********************************************************/
+
+    const [isHandsup, setIsHandsup] = useState(false);
+    const [handsupDocumentIdNow, setHandsupDocumentIdNow] = useState(0); // 今あげている挙手のdocumentId
+    const [handsupDocumentPageNow, setHandsupDocumentPageNow] = useState(0); // 今あげている挙手のdocumentPage
+    const [handsupBottonType, setHandsupBottonType] = useState<"primary" | "default" | "link" | "text" | "ghost" | "dashed" | undefined>("primary");
+    const [handsupBottonIcon, setHandsupBottonIcon] = useState(<ArrowUpOutlined />);
+    const [handsupText, setHandsupText] = useState("手を挙げる");
+
+    const onClickHansup = (documentId: number) => {
+        if (!isHandsup) {
+            // 手を挙げたら
+            handleHandsup(documentId);
+        }else{
+            handleHandsdown();
+        }
+    }
+
+    const handleHandsup = (documentId: number) => {
+        sendHandsup(socket, userId, documentId, documentPageNow, true);
+        setHandsupDocumentIdNow(documentId);
+        setHandsupDocumentPageNow(documentPageNow);
+
+        setIsHandsup(true);
+        setHandsupBottonType("ghost");
+        setHandsupBottonIcon(<ArrowDownOutlined />);
+        setHandsupText("手を下ろす");
+    }
+
+    const handleHandsdown = () => {
+        sendHandsup(socket, userId, handsupDocumentIdNow, handsupDocumentPageNow, false);
+
+        setIsHandsup(false);
+        setHandsupBottonType("primary");
+        setHandsupBottonIcon(<ArrowUpOutlined />);
+        setHandsupText("手を挙げる");
+    }
+
+    /**************************************************** */
+
     const onClickExit = () => {
         console.log('exit');
         store.dispatch(meetingExitAction());
+        SpeechRecognition.stopListening();
     }
 
     return (
@@ -260,7 +304,7 @@ export default function InMeeting() {
                                                         <DocumentComponent socket={documentSocket} presenterId={presenterId} index={index}/>
                                                     </Col>
                                                     <Col span={24} style={{padding:"8px 0", margin:'8px'}}>
-                                                        <Button type="primary" icon={<ArrowUpOutlined />} style={{width:'45%', marginLeft:'25%'}}>Hands up</Button>
+                                                        <Button type={handsupBottonType} icon={handsupBottonIcon} style={{width:'45%', marginLeft:'25%'}} onClick={() => onClickHansup(documentIds[index])}>{handsupText}</Button>
                                                     </Col>
                                                 </Col>
                                                 {/* 右側のコンポーネント */}
