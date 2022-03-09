@@ -112,7 +112,6 @@ export default function LoginPage() {
                                         showIcon
                                     />
                                 )}
-                                {/* TODO: 下コンポーネントとのスペースを調整 */}
                                 <Button
                                     type="primary"
                                     block
