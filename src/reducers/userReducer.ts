@@ -1,23 +1,23 @@
-import { USER_LOGIN, USER_LOGOUT } from "../actions/userActions"
+import { USER_LOGIN, USER_LOGOUT } from '../actions/userActions';
 
 const initialState = {
-    userid: "",
-    username: "nanasi",
-}
+    userid: '',
+    username: 'nanasi',
+};
 
-export default function reducer(state=initialState, action: any) {
+export default function reducer(state = initialState, action: any) {
     switch (action.type) {
         case USER_LOGIN:
-            return{
+            return {
                 ...state,
                 userid: action.payload.userid,
                 username: action.payload.username,
             };
         case USER_LOGOUT:
-            return{
+            return {
                 ...state,
-                userid: "",
-                username: "nanasi",
+                userid: '',
+                username: 'nanasi',
             };
         default:
             break;
