@@ -6,7 +6,7 @@ import {
 } from '@ant-design/icons';
 import '@ant-design/pro-form/dist/form.css';
 import { Button, Space, Modal, Spin } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { signup } from '../../utils/api';
 import store from '../../store';
@@ -14,6 +14,8 @@ import { userLogin } from '../../actions/userActions';
 import { useState } from 'react';
 
 export default function RegisterPage () {
+
+    const navigate = useNavigate();
 
     const [ spinning, setSpinning ] = useState(false);
 
@@ -53,10 +55,17 @@ export default function RegisterPage () {
         store.dispatch(userLogin(userId, userName));
     }
 
+    function destoryAll() {
+        Modal.destroyAll();
+    }
+
     function success() {
         Modal.success({
             content: '新規登録成功しました',
-            okButtonProps: { href: '/login' },
+            okButtonProps: { onClick: () => {
+                navigate("/login");
+                destoryAll();
+            } },
         });
     }
 
@@ -71,7 +80,6 @@ export default function RegisterPage () {
     return (
         <Spin size='large' spinning={spinning}>
             <div className='content___2zk1-'>
-                <Spin spinning={spinning} />
                 <div className='ant-pro-form-login-container'>
                     <div className='ant-pro-form-login-container' style={{marginTop:'10%'}}>
                         <div className='ant-pro-form-login-top'>

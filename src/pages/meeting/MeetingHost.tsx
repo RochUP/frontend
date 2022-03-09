@@ -1,13 +1,10 @@
-import { Breadcrumb, Button, Card, Row, DatePicker, Input, Layout, Menu, Space, Col, Spin, } from "antd";
+import { Breadcrumb, Button, Card, Row, DatePicker, Input, Layout, Space, Col, Spin, Modal, } from "antd";
 import {
-    UserOutlined,
     PlusOutlined,
     MinusOutlined
 } from '@ant-design/icons';
-import SubMenu from "antd/lib/menu/SubMenu";
 import { Typography } from 'antd';
 import { Link, useNavigate } from "react-router-dom";
-// import jaJP from 'antd/es/locale/ja_JP';
 import "../../assets/css/Pages.css";
 import { useEffect, useState } from "react";
 import { meetingCreate, meetingJoin } from "../../utils/api";
@@ -16,7 +13,7 @@ import { meetingJoinAction } from "../../actions/meetingActions";
 import MeetingHeader from "../../components/meeting/MeetingHeader";
 import { useSelector } from "react-redux";
 
-const { Header, Footer, Content } = Layout;
+const { Footer, Content } = Layout;
 
 // function onChange(value: any, dateString: any) {
 //     console.log('Selected Time: ', value);
@@ -35,7 +32,7 @@ export default function MeetingHost() {
     const userid = useSelector((state: any) => state.userReducer.userid);
 
     useEffect(() => {
-        if( userid == "" ) {
+        if( userid === "" ) {
             navigate("/login");
         }
     }, []);
@@ -59,6 +56,20 @@ export default function MeetingHost() {
     function onChange(value: any, dateString: any) {
         console.log('Selected Time: ', value);
         console.log('Formatted Selected Time: ', dateString);
+    }
+
+    function error(){
+        Modal.error({
+            title: 'エラー',
+            content: 'ミーティング作成できませんでした。',
+        });
+    }
+
+    function success(){
+        Modal.success({
+            content: '会議を作成しました。',
+            okButtonProps: { href: '/meeting/join' },
+        });
     }
 
     const createMeeting = async () => {
@@ -92,7 +103,8 @@ export default function MeetingHost() {
             })
             .catch(err => {
                 console.log(err);
-                alert(err.message);
+                // alert(err.message);
+                error();
                 setSpinning(false);
             });
     }
@@ -115,7 +127,8 @@ export default function MeetingHost() {
                 }
                 storeMeetingData(meetingId, res);
                 // alert("join success");
-                navigate("/meeting/in");
+                success();
+                // navigate("/meeting/in");
             })
             .catch((err: any) => {
                 console.log(err);

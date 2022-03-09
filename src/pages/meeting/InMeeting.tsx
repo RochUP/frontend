@@ -160,16 +160,18 @@ export default function InMeeting() {
                 <div className="site-layout-content" style={{background: '#fff'}}>
                     <Row>
                         <Col span={12} style={{maxHeight: 50}}> 
-                            {/* style={{background:'#DD2248'}}> */}
-                            <Text type="secondary">会議ID:</Text>
+                            {/* style={{background:'#DD2248'}} */}
+                            <Text type="secondary" style={{marginLeft: 20}}>会議ID:</Text>
                             <Text type="secondary" style={{marginLeft: 5}}>{meetingId}</Text>
                         </Col>
-                        <Col span={12} style={{maxHeight: 50}}>
+                        <Col span={11} style={{maxHeight: 50, width:'100%'}}>
                             {/* style={{background:'#DD2248'}}> */}
                             {/* 右側操作ボタン */}
-                            <Space align="baseline" style={{marginLeft:'70%'}}>
+                            <Space align="baseline" style={{display:'flex', justifyContent:'right'}}>
+                                {/* <Text type="secondary">会議ID:</Text>
+                                <Text type="secondary" style={{marginLeft: 5}}>{meetingId}</Text> */}
                                 <Tooltip placement="topRight" title={'発表者は原稿を登録してください'}>
-                                    <Button onClick={showModal}  style={{marginLeft:'60%'}}>原稿登録</Button>
+                                    <Button onClick={showModal}>原稿登録</Button>
                                     {/* ここのonOKはポップアップのokボタン */}
                                     <Modal title = "原稿登録" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} okText={"登録"} cancelText={"キャンセル"}>
                                         <Space direction="vertical" style={{width:'100%'}}>
@@ -197,7 +199,7 @@ export default function InMeeting() {
                                     </Modal>
                                 </Tooltip>
                                 <Tooltip placement="topRight" title={'会議を退出します'}>
-                                    <Link to={'../meeting/join'} style={{marginLeft:'90%'}}>
+                                    <Link to={'../meeting/join'}>
                                         <Button type="primary" danger onClick={onClickExit}>退出</Button>
                                     </Link>
                                 </Tooltip>
