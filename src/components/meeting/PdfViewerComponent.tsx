@@ -33,6 +33,16 @@ function PdfViewerComponent(props: Props) {
     const [numPages, setNumPages] = useState<number>(0);
     const [pageNumber, setPageNumber] = useState(documentPageNow);
 
+    const [width, setWidth] = useState<number | undefined>(0);
+
+    useEffect(() => {
+        setWidth(document.getElementById('document_row')?.clientWidth);
+    }, []);
+
+    window.addEventListener('resize', () => {
+        setWidth(document.getElementById('document_row')?.clientWidth);
+    });
+
     useEffect(() => {
         store.dispatch(changeDocumentPageAction(presenterIdNow, pageNumber));
     }, [pageNumber]);
@@ -105,16 +115,27 @@ function PdfViewerComponent(props: Props) {
     }, [props.ModeratorMsgSocket]);
 
     /*****************************************************/
+
     return (
         <Space direction="vertical" style={{ width: '100%' }} onWheel={onWheelPageChange}>
-            <Document file={props.documentUrl} onLoadSuccess={onDocumentLoadSuccess}>
-                <Page
-                    height={330}
-                    pageNumber={pageNumber}
-                    renderTextLayer={false}
-                    renderAnnotationLayer={false}
-                />
-            </Document>
+            <Row
+                id="document_row"
+                style={{
+                    width: '90%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginTop: '4%',
+                }}
+            >
+                <Document file={props.documentUrl} onLoadSuccess={onDocumentLoadSuccess}>
+                    <Page
+                        pageNumber={pageNumber}
+                        renderTextLayer={false}
+                        renderAnnotationLayer={false}
+                        width={width}
+                    />
+                </Document>
+            </Row>
             <Row
                 style={{
                     width: '90%',
