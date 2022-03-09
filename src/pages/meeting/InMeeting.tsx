@@ -261,6 +261,10 @@ export default function InMeeting() {
         socket.off('', () => {});
     };
 
+    function destroyAll() {
+        Modal.destroyAll();
+    }
+
     return (
         <Layout>
             <MeetingHeader />
