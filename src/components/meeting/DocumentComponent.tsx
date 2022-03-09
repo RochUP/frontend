@@ -1,4 +1,4 @@
-import { Card, Col, Row, Space, Typography } from 'antd';
+import { Card, Col, Row, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getDocumentAction } from '../../actions/meetingActions';
@@ -59,7 +59,7 @@ export default function DocumentComponent(props: Props) {
                 <Col span={12}>
                     <Typography.Paragraph
                         style={{
-                            maxHeight: '400px',
+                            maxHeight: '450px',
                             textAlign: 'left',
                             whiteSpace: 'pre-line',
                             overflowY: 'auto',

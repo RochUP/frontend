@@ -47,11 +47,9 @@ export default function MeetingHeader() {
                     style={{ marginLeft: '90%' }}
                 >
                     <Menu.Item key="1">プロファイル</Menu.Item>
-                    {/* <Link to={'../login'}> */}
                     <Menu.Item key="2" onClick={showConfirm}>
                         ログアウト
                     </Menu.Item>
-                    {/* </Link> */}
                 </SubMenu>
             </Menu>
         </Header>
