@@ -3,6 +3,7 @@ import {
     ADD_QUESTION_VOTE,
     CHANGE_DOCUMENT_PAGE,
     GET_DOCUMENT,
+    GET_QUESTIONS,
     MEETING_EXIT,
     MEETING_JOIN,
 } from '../actions/meetingActions';
@@ -58,8 +59,8 @@ export default function reducer(state = initialState, action: any) {
             return initialState;
 
         case GET_DOCUMENT:
-            var documentUrls = state.documentUrls.slice();
-            var scripts = state.scripts.slice();
+            const documentUrls = state.documentUrls.slice();
+            const scripts = state.scripts.slice();
             const idx = state.documentIds.indexOf(action.payload.documentId);
             documentUrls[idx] = action.payload.documentUrl;
             scripts[idx] = action.payload.script;
@@ -74,6 +75,30 @@ export default function reducer(state = initialState, action: any) {
                 ...state,
                 presenterIdNow: action.payload.presenterIdNow,
                 documentPageNow: action.payload.documentPageNow,
+            };
+
+        case GET_QUESTIONS:
+            const pastQuestions = Array(state.presenterIds.length)
+                .fill(null)
+                .map((_) => new Array<Question>(0));
+            for (let i = 0; i < action.payload.questionIds.length; i++) {
+                const question = {
+                    meetingId: state.meetingId,
+                    questionId: action.payload.questionIds[i],
+                    questionBody: action.payload.questionBodys[i],
+                    documentId: action.payload.documentIds[i],
+                    documentPage: action.payload.documentPages[i],
+                    questionTime: action.payload.questionTimes[i],
+                    voteNum: 0,
+                    isVote: false,
+                };
+                pastQuestions[state.presenterIds.indexOf(action.payload.presenterIds[i])].push(
+                    question
+                );
+            }
+            return {
+                ...state,
+                questionList: pastQuestions,
             };
 
         case ADD_QUESTION:
