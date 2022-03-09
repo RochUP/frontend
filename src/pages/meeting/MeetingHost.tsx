@@ -48,17 +48,25 @@ export default function MeetingHost() {
     const [spinning, setSpinning] = useState(false);
     const [presenters, setPresenters] = useState<string[]>(['']);
 
-    const onClickAdd = () => {
-        const newPresenters = [...presenters, ''];
+    const onClickAdd = (index: number) => {
+        const newPresenters = presenters.slice();
+        newPresenters.splice(index + 1, 0, '');
+
         setPresenters(newPresenters);
     };
 
-    const onClickRemove = () => {
+    const onClickRemove = (index: number) => {
         if (presenters.length > 1) {
-            const newPresenters = [...presenters];
-            newPresenters.pop();
+            const newPresenters = presenters.slice();
+            newPresenters.splice(index, 1);
             setPresenters(newPresenters);
         }
+    };
+
+    const onChangePresenterId = (index: number, event: any) => {
+        const newPresenters = presenters.slice();
+        newPresenters[index] = event.target.value;
+        setPresenters(newPresenters);
     };
 
     function onChange(value: any, dateString: any) {
@@ -229,15 +237,19 @@ export default function MeetingHost() {
                                                                     textAlign: 'center',
                                                                 }}
                                                                 placeholder="発表者を入力してください"
+                                                                value={presenter}
+                                                                onChange={(e) =>
+                                                                    onChangePresenterId(idx, e)
+                                                                }
                                                             ></Input>
                                                             <Button
-                                                                onClick={onClickAdd}
+                                                                onClick={() => onClickAdd(idx)}
                                                                 type="primary"
                                                                 icon={<PlusOutlined />}
                                                                 size={'small'}
                                                             />
                                                             <Button
-                                                                onClick={onClickRemove}
+                                                                onClick={() => onClickRemove(idx)}
                                                                 type="primary"
                                                                 danger
                                                                 icon={<MinusOutlined />}
