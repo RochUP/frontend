@@ -1,0 +1,14 @@
+version: '3'
+services:
+   node:
+       build:
+        context: .
+       environment: 
+        - NODE_ENV=production
+       volumes:
+           - ../:/usr/src/app
+       working_dir: /usr/src/app
+    #    command: sh -c "yarn start"
+       ports:
+           - "3000:3000"
+       tty: true
