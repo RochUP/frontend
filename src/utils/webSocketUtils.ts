@@ -67,8 +67,8 @@ function receiveModeratorMsg(data: any) {
         moderatorMsgBody: data.moderatorMsgBody,
         isStartPresen: data.isStartPresen,
         questionId: data.questionId,
-        userId: data.userId,
-        presenterOrder: data.presenterOrder,
+        userId: data.questionUserId,
+        presenterOrder: data.presentOrder,
     }
     return res;
 }
@@ -110,7 +110,6 @@ export function sendQuestion (
     documentPage: number, 
     questionTime: string,
 ){
-    console.log("sendQuestion");
     const data = {
         messageType: "question",
         userId: userId,
@@ -120,6 +119,7 @@ export function sendQuestion (
         documentPage: documentPage,
         questionTime: questionTime
     };
+    console.log("sendQuestion", data);
     const data_str = JSON.stringify(data);
     socket.emit(data_str);
     
@@ -130,12 +130,12 @@ export function sendQuestionVote (
     questionId: number,
     isVote: boolean,
 ){
-    console.log("sendQuestionVote");
     const data = {
         messageType: "question_vote",
         questionId: questionId,
         isVote: isVote,
     };
+    console.log("sendQuestionVote", data);
     const data_str = JSON.stringify(data);
     socket.emit(data_str);
     
@@ -147,13 +147,13 @@ export function sendReaction (
     documentPage: number,
     isReaction: boolean,
 ){
-    console.log("sendReaction");
     const data = {
         messageType: "reaction",
         documentId: documentId,
         documentPage: documentPage,
         isReaction: isReaction,
     };
+    console.log("sendReaction", data);
     const data_str = JSON.stringify(data);
     socket.emit(data_str);
 }
@@ -165,7 +165,6 @@ export function sendHandsup (
     documentPage: number,
     isUp: boolean,
 ){
-    console.log("sendHandsup");
     const data = {
         messageType: "handsup",
         userId: userId,
@@ -173,6 +172,7 @@ export function sendHandsup (
         documentPage: documentPage,
         isUp: isUp,
     };
+    console.log("sendHandsup", data);
     const data_str = JSON.stringify(data);
     socket.emit(data_str);
 }
@@ -183,13 +183,13 @@ export function sendFinishword (
     presenterId: string,
     finishType: string, //"present" or "question"
 ){
-    console.log("sendFinishword");
     const data = {
         messageType: "finishword",
         meetingId: meetingId,
         presenterId: presenterId,
         finishType: finishType,
     };
+    console.log("sendFinishword", data);
     const data_str = JSON.stringify(data);
     socket.emit(data_str);
 }
@@ -198,11 +198,11 @@ export function sendMessage (
     socket: Socket,
     message: string,
 ){
-    console.log("sendMessage");
     const data = {
         messageType: "message",
         message: message,
     };
+    console.log("sendMessage", data);
     const data_str = JSON.stringify(data);
     socket.emit(data_str);
 }

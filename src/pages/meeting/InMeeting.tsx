@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 import DocumentComponent from "../../components/meeting/DocumentComponent";
 import ModeratorMsgComponent from "../../components/meeting/ModeratorMsgComponent";
 import store from "../../store";
-import { addQuestionAction, meetingExitAction } from "../../actions/meetingActions";
+import { addQuestionAction, changeDocumentPageAction, meetingExitAction } from "../../actions/meetingActions";
 import TextArea from "antd/lib/input/TextArea";
 import { UploadChangeParam, UploadFile } from "antd/lib/upload/interface";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
@@ -53,7 +53,6 @@ export default function InMeeting() {
     const presenterNames = useSelector((state: any) => state.meetingReducer.presenterNames);
     const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow)
     const documentIds = useSelector((state: any) => state.meetingReducer.documentIds);
-    const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow);
     const documentPageNow = useSelector((state: any) => state.meetingReducer.documentPageNow);
 
     /* websocket系 *************************************/
@@ -79,6 +78,12 @@ export default function InMeeting() {
                     break;
                 case "moderator_msg":
                     setModeratorMsgSocket(data);
+                    if (data.isStartPresen) {
+                        store.dispatch(changeDocumentPageAction(presenterIds[data.presenterOrder], 1));
+                    }
+                    if (data.userId === userId) {
+                        handleHandsdown(false);
+                    }
                     break;
                 case "document_update":
                     setDocumentSocket(data);
@@ -154,8 +159,8 @@ export default function InMeeting() {
         setIsModalVisible(true);
     };
 
-    const finishOn = ()=>{
-        sendFinishword(socket, meetingId, presenterIdNow, "present")
+    const finishOn = (finishtype: string)=>{
+        sendFinishword(socket, meetingId, presenterIdNow, finishtype);
     }
 
     //ポップアップのokボタンを押した時の処理
@@ -204,7 +209,7 @@ export default function InMeeting() {
             // 手を挙げたら
             handleHandsup(documentId);
         }else{
-            handleHandsdown();
+            handleHandsdown(true);
         }
     }
 
@@ -219,8 +224,10 @@ export default function InMeeting() {
         setHandsupText("手を下ろす");
     }
 
-    const handleHandsdown = () => {
-        sendHandsup(socket, userId, handsupDocumentIdNow, handsupDocumentPageNow, false);
+    const handleHandsdown = (send: boolean) => {
+        if (send) {
+            sendHandsup(socket, userId, handsupDocumentIdNow, handsupDocumentPageNow, false);
+        }
 
         setIsHandsup(false);
         setHandsupBottonType("primary");
@@ -234,13 +241,15 @@ export default function InMeeting() {
         console.log('exit');
         store.dispatch(meetingExitAction());
         SpeechRecognition.stopListening();
+        socket.off("", ()=>{});
     }
 
     return (
         <Layout>
             <MeetingHeader />
             <Content style={{padding:'0 50px'}}>
-            <Button onClick={finishOn}>終了</Button>
+            <Button onClick={() => finishOn("present")}>発表終了</Button>
+            <Button onClick={() => finishOn("question")}>質問終了</Button>
             <p>{transcript}</p>
                 <Title style={{margin:'16px 0'}}>
                     ○○会議進行中
@@ -296,7 +305,7 @@ export default function InMeeting() {
                             </Space>
                         </Col>
                         <ModeratorMsgComponent data={moderatorMsgSocket}/>
-                        <Tabs type="card" defaultActiveKey="1" style={{width:'100%'}}>
+                        <Tabs type="card" defaultActiveKey={presenterIds[0]} style={{width:'100%'}} activeKey={presenterIdNow}>
                             {
                                 presenterIds.map((presenterId:string, index:number) => {
                                     return (

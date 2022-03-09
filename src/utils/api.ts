@@ -3,9 +3,10 @@ import axios from "axios";
 const URL = process.env.REACT_APP_API_URL;
 
 async function post(path:string, data:object) {
+    console.log("post", path, data);
     return await axios.post(URL + path, data=data)
         .then(res => {
-            console.log(res);
+            console.log("response", res);
             return res.data;
         })
         .catch(err => {
