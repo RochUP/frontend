@@ -1,14 +1,12 @@
-import { Breadcrumb, Button, Col, Layout, Row, Space, Modal, Tooltip, Upload, Tabs, message } from "antd";
+import { Breadcrumb, Button, Col, Layout, Row, Space, Modal, Tooltip, Upload, Tabs, message, Typography } from "antd";
 import {
     ArrowUpOutlined,
     UploadOutlined
 } from '@ant-design/icons';
-import { Typography } from 'antd';
 import "../../assets/css/Pages.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import CommentListComponent from "../../components/meeting/CommentListComponent";
-
 import Socket from "../../utils/webSocket";
 import { receiveData } from "../../utils/webSocketUtils";
 import MeetingHeader from "../../components/meeting/MeetingHeader";
@@ -23,7 +21,6 @@ import { uploadFile2AzureStorage } from "../../utils/azureStorage";
 import { registerDocument } from "../../utils/api";
 
 const { Footer, Content } = Layout;
-
 const { Text } = Typography;
 const { TabPane } = Tabs;
 
@@ -32,6 +29,7 @@ const ws = new WebSocket(URL+"");
 let socket = new Socket(ws);
 
 export default function InMeeting() {
+    
     const navigate = useNavigate();
 
     const userId = useSelector((state: any) => state.userReducer.userid);
