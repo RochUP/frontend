@@ -1,27 +1,27 @@
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { Breadcrumb, Button, Col, Layout, Row, Space, Modal, Tooltip, Upload, Tabs, message, Typography } from "antd";
+import TextArea from "antd/lib/input/TextArea";
+import { UploadChangeParam, UploadFile } from "antd/lib/upload/interface";
 import {
     ArrowUpOutlined,
     UploadOutlined,
     ArrowDownOutlined
 } from '@ant-design/icons';
+
 import "../../assets/css/Pages.css";
-import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { addQuestionAction, meetingExitAction } from "../../actions/meetingActions";
 import CommentListComponent from "../../components/meeting/CommentListComponent";
-import Socket from "../../utils/webSocket";
-import { receiveData, sendFinishword, sendHandsup } from "../../utils/webSocketUtils";
-import MeetingHeader from "../../components/meeting/MeetingHeader";
-import { useSelector } from "react-redux";
 import DocumentComponent from "../../components/meeting/DocumentComponent";
+import MeetingHeader from "../../components/meeting/MeetingHeader";
 import ModeratorMsgComponent from "../../components/meeting/ModeratorMsgComponent";
 import store from "../../store";
-import { addQuestionAction, meetingExitAction } from "../../actions/meetingActions";
-import TextArea from "antd/lib/input/TextArea";
-import { UploadChangeParam, UploadFile } from "antd/lib/upload/interface";
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import React from 'react';
-import { uploadFile2AzureStorage } from "../../utils/azureStorage";
 import { registerDocument } from "../../utils/api";
+import { uploadFile2AzureStorage } from "../../utils/azureStorage";
+import Socket from "../../utils/webSocket";
+import { receiveData, sendFinishword, sendHandsup } from "../../utils/webSocketUtils";
 
 
 const { Footer, Content } = Layout;
