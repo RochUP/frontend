@@ -25,11 +25,14 @@ jobs:
         env:
           CI: false
 
+      - name: ls
+        run: ls
+
+      - name: Create 404.html
+        run: cp ./build/404.html ./build/404.html
+
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
-      
-      - name: Create 404.html
-        run: cp ./public/404.html ./public/404.html
