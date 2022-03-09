@@ -25,11 +25,8 @@ jobs:
         env:
           CI: false
 
-      - name: ls
-        run: ls
-
       - name: Create 404.html
-        run: cp ./build/404.html ./build/404.html
+        run: cp ./build/index.html ./build/404.html
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
