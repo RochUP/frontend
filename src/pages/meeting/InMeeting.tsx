@@ -39,6 +39,7 @@ import { receiveData, sendFinishword, sendHandsup } from '../../utils/webSocketU
 const { Footer, Content } = Layout;
 const { Text } = Typography;
 const { TabPane } = Tabs;
+const { confirm } = Modal;
 
 const URL = process.env.REACT_APP_WEBSOCKET_URL;
 const ws = new WebSocket(URL + '');
@@ -259,11 +260,24 @@ export default function InMeeting() {
         store.dispatch(meetingExitAction());
         SpeechRecognition.stopListening();
         socket.off('', () => {});
+        navigate('/meeting/join');
     };
-
-    function destroyAll() {
-        Modal.destroyAll();
-    }
+    
+    const showConfirm = () => {
+        confirm({
+            title: '退出しますか？',
+            content: '会議から退出した後、また会議に参加することが可能です。',
+            okText: '退出',
+            okType: 'danger',
+            cancelText: 'キャンセル',
+            onOk() {
+                onClickExit();
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
+    };
 
     return (
         <Layout>
@@ -349,11 +363,7 @@ export default function InMeeting() {
                                     </Modal>
                                 </Tooltip>
                                 <Tooltip placement="topRight" title={'会議を退出します'}>
-                                    <Link to={'../meeting/join'}>
-                                        <Button type="primary" danger onClick={onClickExit}>
-                                            退出
-                                        </Button>
-                                    </Link>
+                                    <Button type="primary" danger onClick={showConfirm}>退出</Button>
                                 </Tooltip>
                             </Space>
                         </Col>
