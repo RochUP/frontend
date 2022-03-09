@@ -101,6 +101,8 @@ export default function InMeeting() {
             });
     };
 
+    const [tabPresenterId, setTabPresenterId] = useState(presenterIdNow);
+
     /* websocket系 *************************************/
     const [questionSocket, setQuestionSocket] = useState();
     const [questionVoteSocket, setQuestionVoteSocket] = useState();
@@ -130,6 +132,7 @@ export default function InMeeting() {
                         store.dispatch(
                             changeDocumentPageAction(presenterIds[data.presenterOrder], 1)
                         );
+                        setTabPresenterId(presenterIds[data.presenterOrder]);
                     }
                     if (data.userId === userId) {
                         handleHandsdown(false);
@@ -425,7 +428,10 @@ export default function InMeeting() {
                             type="card"
                             defaultActiveKey={presenterIds[0]}
                             style={{ width: '100%' }}
-                            activeKey={presenterIdNow}
+                            activeKey={tabPresenterId}
+                            onTabClick={(key) => {
+                                setTabPresenterId(key);
+                            }}
                         >
                             {presenterIds.map((presenterId: string, index: number) => {
                                 return (
