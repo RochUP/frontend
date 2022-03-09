@@ -51,6 +51,7 @@ export default function InMeeting() {
 
     const presenterIds = useSelector((state: any) => state.meetingReducer.presenterIds);
     const presenterNames = useSelector((state: any) => state.meetingReducer.presenterNames);
+    const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow)
     const documentIds = useSelector((state: any) => state.meetingReducer.documentIds);
     const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow);
     const documentPageNow = useSelector((state: any) => state.meetingReducer.documentPageNow);

@@ -45,7 +45,7 @@ export default function reducer(state=initialState, action: any) {
                 scripts: ["",],
                 presenterIdNow: [""],
                 documentPageNow: 1,
-                questionList: Array(action.payload.presenterIds.length).fill(null).map(item => new Array()),
+                questionList: [[{}],],
             };
 
         case GET_DOCUMENT:
