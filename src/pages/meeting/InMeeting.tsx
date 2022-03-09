@@ -1,3 +1,7 @@
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import {
     Breadcrumb,
     Button,
@@ -12,29 +16,25 @@ import {
     message,
     Typography,
 } from 'antd';
+import TextArea from 'antd/lib/input/TextArea';
+import { UploadChangeParam, UploadFile } from 'antd/lib/upload/interface';
 import { ArrowUpOutlined, UploadOutlined, ArrowDownOutlined } from '@ant-design/icons';
+
 import '../../assets/css/Pages.css';
-import { Link, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import CommentListComponent from '../../components/meeting/CommentListComponent';
-import Socket from '../../utils/webSocket';
-import { receiveData, sendFinishword, sendHandsup } from '../../utils/webSocketUtils';
-import MeetingHeader from '../../components/meeting/MeetingHeader';
-import { useSelector } from 'react-redux';
-import DocumentComponent from '../../components/meeting/DocumentComponent';
-import ModeratorMsgComponent from '../../components/meeting/ModeratorMsgComponent';
-import store from '../../store';
 import {
     addQuestionAction,
     changeDocumentPageAction,
     meetingExitAction,
 } from '../../actions/meetingActions';
-import TextArea from 'antd/lib/input/TextArea';
-import { UploadChangeParam, UploadFile } from 'antd/lib/upload/interface';
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import React from 'react';
-import { uploadFile2AzureStorage } from '../../utils/azureStorage';
+import CommentListComponent from '../../components/meeting/CommentListComponent';
+import DocumentComponent from '../../components/meeting/DocumentComponent';
+import MeetingHeader from '../../components/meeting/MeetingHeader';
+import ModeratorMsgComponent from '../../components/meeting/ModeratorMsgComponent';
+import store from '../../store';
 import { registerDocument } from '../../utils/api';
+import { uploadFile2AzureStorage } from '../../utils/azureStorage';
+import Socket from '../../utils/webSocket';
+import { receiveData, sendFinishword, sendHandsup } from '../../utils/webSocketUtils';
 
 const { Footer, Content } = Layout;
 const { Text } = Typography;
@@ -252,7 +252,7 @@ export default function InMeeting() {
         setHandsupText('手を挙げる');
     };
 
-    /**************************************************** */
+    /*****************************************************/
 
     const onClickExit = () => {
         console.log('exit');
@@ -267,6 +267,7 @@ export default function InMeeting() {
             <Content style={{ padding: '0 50px' }}>
                 <Button onClick={() => finishOn('present')}>発表終了</Button>
                 <Button onClick={() => finishOn('question')}>質問終了</Button>
+
                 <p>{transcript}</p>
                 <Title style={{ margin: '16px 0' }}>○○会議進行中</Title>
                 <Breadcrumb style={{ margin: '16px 0' }}>
@@ -276,23 +277,28 @@ export default function InMeeting() {
                 <div className="site-layout-content" style={{ background: '#fff' }}>
                     <Row>
                         <Col span={12} style={{ maxHeight: 50 }}>
-                            {/* style={{background:'#DD2248'}}> */}
-                            <Text type="secondary">会議ID:</Text>
+                            {/* style={{background:'#DD2248'}} */}
+                            <Text type="secondary" style={{ marginLeft: 20 }}>
+                                会議ID:
+                            </Text>
                             <Text type="secondary" style={{ marginLeft: 5 }}>
                                 {meetingId}
                             </Text>
                         </Col>
-                        <Col span={12} style={{ maxHeight: 50 }}>
+                        <Col span={11} style={{ maxHeight: 50, width: '100%' }}>
                             {/* style={{background:'#DD2248'}}> */}
                             {/* 右側操作ボタン */}
-                            <Space align="baseline" style={{ marginLeft: '70%' }}>
+                            <Space
+                                align="baseline"
+                                style={{ display: 'flex', justifyContent: 'right' }}
+                            >
+                                {/* <Text type="secondary">会議ID:</Text>
+                        <Text type="secondary" style={{marginLeft: 5}}>{meetingId}</Text> */}
                                 <Tooltip
                                     placement="topRight"
                                     title={'発表者は原稿を登録してください'}
                                 >
-                                    <Button onClick={showModal} style={{ marginLeft: '60%' }}>
-                                        原稿登録
-                                    </Button>
+                                    <Button onClick={showModal}>原稿登録</Button>
                                     {/* ここのonOKはポップアップのokボタン */}
                                     <Modal
                                         title="原稿登録"
@@ -315,7 +321,9 @@ export default function InMeeting() {
                                                 beforeUpload={(file) => {
                                                     const isPdf = file.type === 'application/pdf';
                                                     if (!isPdf) {
-                                                        // message.error('PDFファイルを選択してください!');
+                                                        message.error(
+                                                            'PDFファイルを選択してください!'
+                                                        );
                                                         return Upload.LIST_IGNORE;
                                                     }
                                                     return false;
@@ -337,7 +345,7 @@ export default function InMeeting() {
                                     </Modal>
                                 </Tooltip>
                                 <Tooltip placement="topRight" title={'会議を退出します'}>
-                                    <Link to={'../meeting/join'} style={{ marginLeft: '90%' }}>
+                                    <Link to={'../meeting/join'}>
                                         <Button type="primary" danger onClick={onClickExit}>
                                             退出
                                         </Button>

@@ -17,6 +17,13 @@ jobs:
         with:
           node-version: "14.x"
 
+      - name: Create dot env file
+        shell: bash
+        run: echo "REACT_APP_AZURE_SPEECH_SUBSCRIPTION_KEY=${{ secrets.REACT_APP_AZURE_SPEECH_SUBSCRIPTION_KEY }}\nREACT_APP_AZURE_SPEECH_SERVICE_REGION=${{ secrets.REACT_APP_AZURE_SPEECH_SERVICE_REGION }}\nREACT_APP_AZURE_ACCOUNT_NAME=${{ secrets.REACT_APP_AZURE_ACCOUNT_NAME }}\nREACT_APP_AZURE_SHARED_ACCESS_SIGNATURE=${{ secrets.REACT_APP_AZURE_SHARED_ACCESS_SIGNATURE }}\nREACT_APP_AZURE_CONTAINER_NAME=${{ secrets.REACT_APP_AZURE_CONTAINER_NAME }}" > .env.local
+
+      - name: cat
+        run: cat .env.local
+
       - name: Install
         run: npm install
 

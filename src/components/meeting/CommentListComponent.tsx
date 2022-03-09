@@ -88,7 +88,7 @@ export default function CommentListComponent(props: Props) {
                                 )
                             })
                         }
-                        style={{overflowY:'auto', overflowX:'hidden', textAlign:'left'}}
+                        style={{overflowY:'auto', overflowX:'hidden', textAlign:'left', maxHeight:'400px'}}
                         renderItem={(item:any, idx:number)=> (
                             <li id={"comment"+idx} style={{maxWidth:'100%'}}>
                                 <CommentItemComponent question={item}/>
