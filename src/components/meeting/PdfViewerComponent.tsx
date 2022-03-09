@@ -16,18 +16,17 @@ type Props = {
 }
 
 function PdfViewerComponent(props: Props) {
-    const [numPages, setNumPages] = useState<number>(0);
-    const [pageNumber, setPageNumber] = useState(1);
 
-    const presenterIds = useSelector((state: any) => state.meetingReducer.presenterIds);
-    const documentUrls = useSelector((state: any) => state.meetingReducer.documentUrls);
+
     const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow);
-    const documentUrlNow = documentUrls[presenterIds.indexOf(presenterIdNow)];
     const documentPageNow = useSelector((state: any) => state.meetingReducer.documentPageNow);
 
+    const [numPages, setNumPages] = useState<number>(0);
+    const [pageNumber, setPageNumber] = useState(documentPageNow);
+
     useEffect(() => {
-        setPageNumber(documentPageNow);
-    }, [documentPageNow]);
+        store.dispatch(changeDocumentPageAction(presenterIdNow, pageNumber));
+    }, [pageNumber]);
 
     function onDocumentLoadSuccess({numPages}: any) {
         setNumPages(numPages);
@@ -35,8 +34,7 @@ function PdfViewerComponent(props: Props) {
 
     function changePage(offset: number) {
         if(pageNumber + offset > 0 && pageNumber + offset <= numPages) {
-            setPageNumber(prevPageNumber => prevPageNumber + offset);
-            store.dispatch(changeDocumentPageAction(presenterIdNow, pageNumber + offset));
+            setPageNumber(pageNumber + offset);
         }
     }
 
@@ -60,8 +58,7 @@ function PdfViewerComponent(props: Props) {
                     pageNumber={pageNumber}
                     renderTextLayer={false}
                     renderAnnotationLayer={false}
-                    // rotate={90}
-                    />
+                />
             </Document>
             <Slider defaultValue={pageNumber} min={1} max={numPages} onChange={(value) => {setPageNumber(value);}} value={pageNumber}></Slider>
             <Space style={{display:'flex', justifyContent:'center'}}>

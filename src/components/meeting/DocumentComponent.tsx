@@ -11,15 +11,16 @@ import { getDocument } from "../../utils/api";
 type Props = {
     socket: any;
     presenterId: string;
+    index: number;
 }
 
 export default function DocumentComponent(props: Props) {
     
-    const presenterIds = useSelector((state: any) => state.meetingReducer.presenterIds);
     const documentIds = useSelector((state: any) => state.meetingReducer.documentIds);
+    const documentPageNow = useSelector((state: any) => state.meetingReducer.documentPageNow);
 
     useEffect(() => {
-        const documentId = documentIds[presenterIds.indexOf(props.presenterId)];
+        const documentId = documentIds[props.index];
         (async () => {
             await getDocument(documentId)
                 .then((res: any) => {
@@ -38,18 +39,22 @@ export default function DocumentComponent(props: Props) {
     const documentUrls = useSelector((state: any) => state.meetingReducer.documentUrls);
     const scripts = useSelector((state: any) => state.meetingReducer.scripts);
     
-    const script = scripts[presenterIds.indexOf(props.presenterId)];
+    const script = scripts[props.index];
 
-    
+    const scriptEachPage = script.split(/\n\n\n+/);
+    const [scriptPageNow, setScriptPageNow] = useState(scriptEachPage[documentPageNow-1]);
+    useEffect(() => {
+        setScriptPageNow(scriptEachPage[documentPageNow-1]);
+    }, [documentPageNow]);
 
     return (
         <Card style={{width: '100%', minHeight: 500, maxHeight: 500,}}>
             <Space direction="horizontal" style={{maxHeight: 480}}>
                 {/* <Card type="inner" style={{height: 450, width: '100%'}}> */}
-                    <PdfViewerComponent documentUrl={documentUrls[presenterIds.indexOf(props.presenterId)]}/>
+                    <PdfViewerComponent documentUrl={documentUrls[props.index]}/>
                 {/* </Card> */}
                 {/* <Card type="inner" style={{height: 450, width:'100%'}}> */}
-                    <p style={{width: '100%', minHeight: 350, textAlign:'left', marginLeft:'10%'}}>{script}</p>
+                    <p style={{width: '100%', minHeight: 350, textAlign:'left', marginLeft:'10%', whiteSpace: 'pre-line'}}>{scriptPageNow}</p>
                 {/* </Card> */}
             </Space>
         </Card>

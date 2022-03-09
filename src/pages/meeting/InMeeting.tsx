@@ -16,7 +16,7 @@ import { useSelector } from "react-redux";
 import DocumentComponent from "../../components/meeting/DocumentComponent";
 import ModeratorMsgComponent from "../../components/meeting/ModeratorMsgComponent";
 import store from "../../store";
-import { meetingExitAction } from "../../actions/meetingActions";
+import { addQuestionAction, meetingExitAction } from "../../actions/meetingActions";
 import TextArea from "antd/lib/input/TextArea";
 import { UploadChangeParam, UploadFile } from "antd/lib/upload/interface";
 import { uploadFile2AzureStorage } from "../../utils/azureStorage";
@@ -61,6 +61,7 @@ export default function InMeeting() {
             switch (data.messageType) {
                 case "question":
                     setQuestionSocket(data);
+                    store.dispatch(addQuestionAction(data))
                     break;
                 case "question_vote":
                     setQuestionVoteSocket(data);
@@ -89,6 +90,13 @@ export default function InMeeting() {
     const { Title } = Typography;
 
     /* 資料アップロード処理 *************************************/
+    const scripts = useSelector((state: any) => state.meetingReducer.scripts);
+    const idx = presenterIds.indexOf(userId);
+    let script_default = ""
+    if (idx !== -1) {
+        script_default = scripts[idx];
+    }
+
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [filesList, setFilesList] = useState<UploadFile[]>([]);
 
@@ -112,8 +120,11 @@ export default function InMeeting() {
             return;
         }
         const documentId = documentIds[idx];
-        const file = filesList[0].originFileObj;
-        const documentUrl = await uploadFile2AzureStorage(file);
+        let documentUrl = null;
+        if (filesList.length !== 0) {
+            const file = filesList[0].originFileObj;
+            documentUrl = await uploadFile2AzureStorage(file);
+        }
         const script = (document.getElementById("script_form") as HTMLFormElement).value;
         
         await registerDocument(documentId, documentUrl, script)
@@ -183,7 +194,7 @@ export default function InMeeting() {
                                                 >
                                                 <Button icon={<UploadOutlined />} style={{width:'100%'}}>原稿アップロード</Button>
                                             </Upload>
-                                            <TextArea id="script_form" showCount />
+                                            <TextArea id="script_form" showCount defaultValue={script_default}/>
                                         </Space>
                                     </Modal>
                                 </Tooltip>
@@ -199,13 +210,13 @@ export default function InMeeting() {
                             {
                                 presenterIds.map((presenterId:string, index:number) => {
                                     return (
-                                        <TabPane tab={presenterNames[presenterIds.indexOf(presenterId)]} key={presenterId} >
+                                        <TabPane tab={presenterNames[index]} key={presenterId} >
                                             <Row>
                                                 {/* 左側のコンポーネント */}
                                                 {/* <Col span={12} style={{padding:"8px 0", margin:'8px'}}> */}
                                                 <Col flex={4} style={{width:'30%'}}>
                                                     <Col span={24}>
-                                                        <DocumentComponent socket={documentSocket} presenterId={presenterId}/>
+                                                        <DocumentComponent socket={documentSocket} presenterId={presenterId} index={index}/>
                                                     </Col>
                                                     <Col span={24} style={{padding:"8px 0", margin:'8px'}}>
                                                         <Button type="primary" icon={<ArrowUpOutlined />} style={{width:'45%', marginLeft:'25%'}}>Hands up</Button>

@@ -36,3 +36,11 @@ export const changeDocumentPageAction = (presenterIdNow: number, documentPageNow
         documentPageNow,
     }
 });
+
+export const ADD_QUESTION = "ADD_QUESTION";
+export const addQuestionAction = (question: any) => ({
+    type: ADD_QUESTION,
+    payload: {
+        question,
+    }
+});
