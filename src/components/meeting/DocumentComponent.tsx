@@ -1,4 +1,4 @@
-import { Card, Space } from "antd";
+import { Card, Space, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { getDocumentAction } from "../../actions/meetingActions";
@@ -49,12 +49,13 @@ export default function DocumentComponent(props: Props) {
 
     return (
         <Card style={{width: '100%', minHeight: 500, maxHeight: 500,}}>
-            <Space direction="horizontal" style={{maxHeight: 480}}>
+            <Space direction="horizontal" style={{maxHeight: 480, width:'50%'}}>
                 {/* <Card type="inner" style={{height: 450, width: '100%'}}> */}
                     <PdfViewerComponent documentUrl={documentUrls[props.index]}/>
                 {/* </Card> */}
-                {/* <Card type="inner" style={{height: 450, width:'100%'}}> */}
-                    <p style={{width: '100%', minHeight: 350, textAlign:'left', marginLeft:'10%', whiteSpace: 'pre-line'}}>{scriptPageNow}</p>
+                {/* <Card type="inner" style={{maxHeight: '450px', width:'100%', minWidth:'100%'}}> */}
+                    {/* <p style={{width: '100%', minHeight: 350, textAlign:'left', whiteSpace: 'pre-line'}}>{scriptPageNow}</p> */}
+                    <Typography.Paragraph style={{width: 550, minHeight: 400, maxHeight: '400px', textAlign:'left', whiteSpace: 'pre-line', marginLeft:'10%', overflowY:'auto'}}>{scriptPageNow}</Typography.Paragraph>
                 {/* </Card> */}
             </Space>
         </Card>

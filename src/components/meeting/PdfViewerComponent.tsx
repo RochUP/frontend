@@ -54,7 +54,7 @@ function PdfViewerComponent(props: Props) {
                 onLoadSuccess={onDocumentLoadSuccess}
             >
                 <Page 
-                    height={320}
+                    height={330}
                     pageNumber={pageNumber}
                     renderTextLayer={false}
                     renderAnnotationLayer={false}
