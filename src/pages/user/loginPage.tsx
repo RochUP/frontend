@@ -26,16 +26,13 @@ export default function LoginPage() {
                 if (!res.result) {
                     throw new Error('Login failed');
                 }
-                // alert("Login success");
                 storeUserData(res.userId, res.userName);
                 // TODO:
                 // - ローディング表示
-                // - 画面遷移
                 return success();
             })
             .catch((err) => {
                 console.log(err);
-                // alert(err.message);
                 return error();
             });
         setSpinning(false);
