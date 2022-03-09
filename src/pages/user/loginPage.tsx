@@ -1,13 +1,13 @@
+import { useCallback, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Alert, Button, Space, Modal, Spin } from 'antd';
 import { ProFormText } from '@ant-design/pro-form';
 import { LockOutlined, IdcardOutlined } from '@ant-design/icons';
 import '@ant-design/pro-form/dist/form.css';
-import { Alert, Button, Space, Modal, Spin } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
 
-import { login } from '../../utils/api';
-import store from '../../store';
 import { userLogin } from '../../actions/userActions';
-import { useCallback, useState } from 'react';
+import store from '../../store';
+import { login } from '../../utils/api';
 
 export default function LoginPage() {
     const [spinning, setSpinning] = useState(false);
