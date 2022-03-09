@@ -23,6 +23,7 @@ import { ArrowUpOutlined, UploadOutlined, ArrowDownOutlined } from '@ant-design/
 import '../../assets/css/Pages.css';
 import {
     addQuestionAction,
+    addQuestionVoteAction,
     changeDocumentPageAction,
     meetingExitAction,
 } from '../../actions/meetingActions';
@@ -85,6 +86,7 @@ export default function InMeeting() {
                     break;
                 case 'question_vote':
                     setQuestionVoteSocket(data);
+                    store.dispatch(addQuestionVoteAction(data.questionId, data.voteNum));
                     break;
                 case 'reaction':
                     setReactionSocket(data);
