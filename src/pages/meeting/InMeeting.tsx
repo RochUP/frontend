@@ -262,7 +262,7 @@ export default function InMeeting() {
         socket.off('', () => {});
         navigate('/meeting/join');
     };
-    
+
     const showConfirm = () => {
         confirm({
             title: '退出しますか？',
@@ -363,7 +363,9 @@ export default function InMeeting() {
                                     </Modal>
                                 </Tooltip>
                                 <Tooltip placement="topRight" title={'会議を退出します'}>
-                                    <Button type="primary" danger onClick={showConfirm}>退出</Button>
+                                    <Button type="primary" danger onClick={showConfirm}>
+                                        退出
+                                    </Button>
                                 </Tooltip>
                             </Space>
                         </Col>
