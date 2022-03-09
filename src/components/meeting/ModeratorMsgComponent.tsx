@@ -27,7 +27,7 @@ export default function ModeratorMsgComponent(props: Props) {
 
     const [message, setModeratorMessage] = useState("開始までお待ちください")
 
-    const hostSpeech = async () => {
+    const hostSpeech = async (message: string) => {
     
         await synthesizer.speakTextAsync(message,
             function (result) {
@@ -57,13 +57,15 @@ export default function ModeratorMsgComponent(props: Props) {
 
     useEffect(()=>{
         if(props.data){
-            setModeratorMessage(props.data.moderatorMsgBody)
+            setModeratorMessage(props.data.moderatorMsgBody);
+            hostSpeech(props.data.moderatorMsgBody);
         }
-    },[props.data])
+    },[props.data]);
 
     useEffect(()=>{
-        hostSpeech();
-    },[message])
+        hostSpeech(message);
+    }, [])
+
 
     return (
         <Col span={24}>

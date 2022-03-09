@@ -1,4 +1,4 @@
-import { Card, Space } from "antd";
+import { Card, Col, Row, Space, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { getDocumentAction } from "../../actions/meetingActions";
@@ -56,14 +56,20 @@ export default function DocumentComponent(props: Props) {
 
     return (
         <Card style={{width: '100%', minHeight: 500, maxHeight: 500,}}>
-            <Space direction="horizontal" style={{maxHeight: 480}}>
-                {/* <Card type="inner" style={{height: 450, width: '100%'}}> */}
+            <Row>
+                <Col span={12}>
                     <PdfViewerComponent documentUrl={documentUrls[props.index]}/>
-                {/* </Card> */}
-                {/* <Card type="inner" style={{height: 450, width:'100%'}}> */}
-                    <p style={{width: '100%', minHeight: 350, textAlign:'left', marginLeft:'10%', whiteSpace: 'pre-line'}}>{scriptPageNow}</p>
-                {/* </Card> */}
-            </Space>
+                </Col>
+                <Col span={12}>
+                    <Typography.Paragraph style={{  
+                                                    maxHeight: '400px',
+                                                    textAlign:'left', 
+                                                    whiteSpace: 'pre-line', 
+                                                    overflowY:'auto'}}>
+                        {scriptPageNow}
+                    </Typography.Paragraph>
+                </Col>
+            </Row>
         </Card>
     )
 }

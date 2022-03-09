@@ -54,13 +54,13 @@ function PdfViewerComponent(props: Props) {
                 onLoadSuccess={onDocumentLoadSuccess}
             >
                 <Page 
-                    height={320}
+                    height={330}
                     pageNumber={pageNumber}
                     renderTextLayer={false}
                     renderAnnotationLayer={false}
                 />
             </Document>
-            <Slider defaultValue={pageNumber} min={1} max={numPages} onChange={(value) => {setPageNumber(value);}} value={pageNumber}></Slider>
+            <Slider defaultValue={pageNumber} min={1} max={numPages} onChange={(value) => {setPageNumber(value);}} value={pageNumber} style={{width:'94%'}}></Slider>
             <Space style={{display:'flex', justifyContent:'center'}}>
                 <Button shape='circle' icon={<LeftOutlined />} onClick={() => changePage(-1)}></Button>
                 <p>Page {pageNumber} of {numPages}</p>

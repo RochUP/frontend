@@ -21,7 +21,11 @@ import { UploadChangeParam, UploadFile } from 'antd/lib/upload/interface';
 import { ArrowUpOutlined, UploadOutlined, ArrowDownOutlined } from '@ant-design/icons';
 
 import '../../assets/css/Pages.css';
-import { addQuestionAction, meetingExitAction } from '../../actions/meetingActions';
+import {
+    addQuestionAction,
+    changeDocumentPageAction,
+    meetingExitAction,
+} from '../../actions/meetingActions';
 import CommentListComponent from '../../components/meeting/CommentListComponent';
 import DocumentComponent from '../../components/meeting/DocumentComponent';
 import MeetingHeader from '../../components/meeting/MeetingHeader';
@@ -87,6 +91,14 @@ export default function InMeeting() {
                     break;
                 case 'moderator_msg':
                     setModeratorMsgSocket(data);
+                    if (data.isStartPresen) {
+                        store.dispatch(
+                            changeDocumentPageAction(presenterIds[data.presenterOrder], 1)
+                        );
+                    }
+                    if (data.userId === userId) {
+                        handleHandsdown(false);
+                    }
                     break;
                 case 'document_update':
                     setDocumentSocket(data);
@@ -162,8 +174,8 @@ export default function InMeeting() {
         setIsModalVisible(true);
     };
 
-    const finishOn = () => {
-        sendFinishword(socket, meetingId, presenterIdNow, 'present');
+    const finishOn = (finishtype: string) => {
+        sendFinishword(socket, meetingId, presenterIdNow, finishtype);
     };
 
     //ポップアップのokボタンを押した時の処理
@@ -214,7 +226,7 @@ export default function InMeeting() {
             // 手を挙げたら
             handleHandsup(documentId);
         } else {
-            handleHandsdown();
+            handleHandsdown(true);
         }
     };
 
@@ -229,8 +241,10 @@ export default function InMeeting() {
         setHandsupText('手を下ろす');
     };
 
-    const handleHandsdown = () => {
-        sendHandsup(socket, userId, handsupDocumentIdNow, handsupDocumentPageNow, false);
+    const handleHandsdown = (send: boolean) => {
+        if (send) {
+            sendHandsup(socket, userId, handsupDocumentIdNow, handsupDocumentPageNow, false);
+        }
 
         setIsHandsup(false);
         setHandsupBottonType('primary');
@@ -244,13 +258,16 @@ export default function InMeeting() {
         console.log('exit');
         store.dispatch(meetingExitAction());
         SpeechRecognition.stopListening();
+        socket.off('', () => {});
     };
 
     return (
         <Layout>
             <MeetingHeader />
             <Content style={{ padding: '0 50px' }}>
-                <Button onClick={finishOn}>終了</Button>
+                <Button onClick={() => finishOn('present')}>発表終了</Button>
+                <Button onClick={() => finishOn('question')}>質問終了</Button>
+
                 <p>{transcript}</p>
                 <Title style={{ margin: '16px 0' }}>○○会議進行中</Title>
                 <Breadcrumb style={{ margin: '16px 0' }}>
@@ -260,23 +277,28 @@ export default function InMeeting() {
                 <div className="site-layout-content" style={{ background: '#fff' }}>
                     <Row>
                         <Col span={12} style={{ maxHeight: 50 }}>
-                            {/* style={{background:'#DD2248'}}> */}
-                            <Text type="secondary">会議ID:</Text>
+                            {/* style={{background:'#DD2248'}} */}
+                            <Text type="secondary" style={{ marginLeft: 20 }}>
+                                会議ID:
+                            </Text>
                             <Text type="secondary" style={{ marginLeft: 5 }}>
                                 {meetingId}
                             </Text>
                         </Col>
-                        <Col span={12} style={{ maxHeight: 50 }}>
+                        <Col span={11} style={{ maxHeight: 50, width: '100%' }}>
                             {/* style={{background:'#DD2248'}}> */}
                             {/* 右側操作ボタン */}
-                            <Space align="baseline" style={{ marginLeft: '70%' }}>
+                            <Space
+                                align="baseline"
+                                style={{ display: 'flex', justifyContent: 'right' }}
+                            >
+                                {/* <Text type="secondary">会議ID:</Text>
+                        <Text type="secondary" style={{marginLeft: 5}}>{meetingId}</Text> */}
                                 <Tooltip
                                     placement="topRight"
                                     title={'発表者は原稿を登録してください'}
                                 >
-                                    <Button onClick={showModal} style={{ marginLeft: '60%' }}>
-                                        原稿登録
-                                    </Button>
+                                    <Button onClick={showModal}>原稿登録</Button>
                                     {/* ここのonOKはポップアップのokボタン */}
                                     <Modal
                                         title="原稿登録"
@@ -299,7 +321,9 @@ export default function InMeeting() {
                                                 beforeUpload={(file) => {
                                                     const isPdf = file.type === 'application/pdf';
                                                     if (!isPdf) {
-                                                        // message.error('PDFファイルを選択してください!');
+                                                        message.error(
+                                                            'PDFファイルを選択してください!'
+                                                        );
                                                         return Upload.LIST_IGNORE;
                                                     }
                                                     return false;
@@ -321,7 +345,7 @@ export default function InMeeting() {
                                     </Modal>
                                 </Tooltip>
                                 <Tooltip placement="topRight" title={'会議を退出します'}>
-                                    <Link to={'../meeting/join'} style={{ marginLeft: '90%' }}>
+                                    <Link to={'../meeting/join'}>
                                         <Button type="primary" danger onClick={onClickExit}>
                                             退出
                                         </Button>
@@ -330,7 +354,12 @@ export default function InMeeting() {
                             </Space>
                         </Col>
                         <ModeratorMsgComponent data={moderatorMsgSocket} />
-                        <Tabs type="card" defaultActiveKey="1" style={{ width: '100%' }}>
+                        <Tabs
+                            type="card"
+                            defaultActiveKey={presenterIds[0]}
+                            style={{ width: '100%' }}
+                            activeKey={presenterIdNow}
+                        >
                             {presenterIds.map((presenterId: string, index: number) => {
                                 return (
                                     <TabPane tab={presenterNames[index]} key={presenterId}>
