@@ -32,6 +32,8 @@ import {
     changeDocumentPageAction,
     getQuestionsAction,
     meetingExitAction,
+    sortQuestionsByTimeAction,
+    sortQuestionsByVoteAction,
     presentChangeAction,
 } from '../../actions/meetingActions';
 import CommentListComponent from '../../components/meeting/CommentListComponent';
@@ -120,6 +122,7 @@ export default function InMeeting() {
     const [reactionSocket, setReactionSocket] = useState();
     const [moderatorMsgSocket, setModeratorMsgSocket] = useState<ModeratorMsgSocketType>();
     const [documentSocket, setDocumentSocket] = useState();
+    const [sortMode, setSortMode] = useState<'time' | 'likes'>('time');
 
     function setData(e: any) {
         let data: any = receiveData(e.data);
@@ -335,6 +338,17 @@ export default function InMeeting() {
         });
     };
 
+    useEffect(() => {
+        switch (sortMode) {
+            case 'time':
+                store.dispatch(sortQuestionsByTimeAction());
+                break;
+            case 'likes':
+                store.dispatch(sortQuestionsByVoteAction());
+                break;
+        }
+    }, [sortMode, questionVoteSocket]);
+
     return (
         <Layout>
             <MeetingHeader />
@@ -480,6 +494,8 @@ export default function InMeeting() {
                                                     socket={socket}
                                                     data={questionSocket}
                                                     presenterId={presenterId}
+                                                    sortMode={sortMode}
+                                                    setSortMode={setSortMode}
                                                 />
                                             </Col>
                                         </Row>

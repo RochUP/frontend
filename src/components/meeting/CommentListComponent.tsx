@@ -1,4 +1,4 @@
-import { Button, Card, Col, Input, List, Tooltip } from 'antd';
+import { Button, Card, Col, Input, List, Select, Tooltip } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
 import '../../assets/css/Pages.css';
 import CommentItemComponent from './CommentItemComponent';
@@ -17,6 +17,8 @@ type Props = {
     socket: Socket;
     data: any;
     presenterId: string;
+    sortMode: 'time' | 'likes';
+    setSortMode: React.Dispatch<React.SetStateAction<'time' | 'likes'>>;
 };
 
 export default function CommentListComponent(props: Props) {
@@ -25,19 +27,19 @@ export default function CommentListComponent(props: Props) {
     const meetingId = useSelector((state: any) => state.meetingReducer.meetingId);
     const documentIds = useSelector((state: any) => state.meetingReducer.documentIds);
     const documentPageNow = useSelector((state: any) => state.meetingReducer.documentPageNow);
-
     const questionList = useSelector((state: any) => state.meetingReducer.questionList);
 
-    const [questionform, setquestion] = useState<string>(''); //質問チャットを書き込む用
+    const indexnum = presenterIds.indexOf(props.presenterId);
 
-    function handleClick() {
+    const [questionform, setquestion] = useState<string>('');
+
+    function handleSendCommentClick() {
         setquestion(
             (document.getElementById('question' + props.presenterId) as HTMLInputElement).value
         );
 
         //documentIdの取得
-        let indexnum = presenterIds.indexOf(props.presenterId);
-        let documentId = documentIds[indexnum];
+        const documentId = documentIds[indexnum];
 
         //日付の取得
         var date = new Date();
@@ -69,7 +71,6 @@ export default function CommentListComponent(props: Props) {
             qtime
         );
 
-        //書き込み欄のクリア
         setquestion('');
     }
 
@@ -80,7 +81,7 @@ export default function CommentListComponent(props: Props) {
         return date;
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleQuestionFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setquestion(e.target.value);
     };
 
@@ -93,46 +94,56 @@ export default function CommentListComponent(props: Props) {
             <Col span={24} style={{ width: '100%' }}>
                 <Card
                     title="コメント一覧"
+                    extra={
+                        <Select
+                            defaultValue={props.sortMode}
+                            onChange={(mode: 'time' | 'likes') => {
+                                props.setSortMode(mode);
+                            }}
+                            style={{ width: '100px' }}
+                        >
+                            <Select.Option value="time">時間順</Select.Option>
+                            <Select.Option value="likes">いいね順</Select.Option>
+                        </Select>
+                    }
                     style={{ width: '100%', minHeight: 500, maxHeight: 500, textAlign: 'center' }}
                 >
                     <List
                         className="comment-list"
                         itemLayout="horizontal"
-                        dataSource={questionList[presenterIds.indexOf(props.presenterId)].map(
-                            (question: any, _: number) => {
-                                return {
-                                    id: question.questionId,
-                                    content: (
-                                        <Tooltip title={`P.${question.documentPage}へのコメント`}>
-                                            <p
-                                                onClick={() =>
-                                                    changeDocumentPage(question.documentPage)
-                                                }
-                                            >
-                                                {question.questionBody}
-                                            </p>
-                                        </Tooltip>
-                                    ),
-                                    datetime: (
-                                        <span>
-                                            {moment(question.questionTime).format(
-                                                'YYYY年MM月DD日 HH時mm分ss秒'
-                                            )}
-                                        </span>
-                                    ),
-                                    like: question.voteNum,
-                                    isLiked: question.isVote,
-                                };
-                            }
-                        )}
+                        dataSource={questionList[indexnum].map((question: any, _: number) => {
+                            return {
+                                id: question.questionId,
+                                content: (
+                                    <Tooltip title={`P.${question.documentPage}へのコメント`}>
+                                        <p
+                                            onClick={() =>
+                                                changeDocumentPage(question.documentPage)
+                                            }
+                                        >
+                                            {question.questionBody}
+                                        </p>
+                                    </Tooltip>
+                                ),
+                                datetime: (
+                                    <span>
+                                        {moment(question.questionTime).format(
+                                            'YYYY年MM月DD日 HH時mm分ss秒'
+                                        )}
+                                    </span>
+                                ),
+                                like: question.voteNum,
+                                isLiked: question.isVote,
+                            };
+                        })}
                         style={{
                             overflowY: 'auto',
                             overflowX: 'hidden',
                             textAlign: 'left',
                             maxHeight: '400px',
                         }}
-                        renderItem={(item: any, idx: number) => (
-                            <li id={'comment' + idx} style={{ maxWidth: '100%' }}>
+                        renderItem={(item: any, _: number) => (
+                            <li id={item.questionId} style={{ maxWidth: '100%' }}>
                                 <CommentItemComponent socket={props.socket} question={item} />
                             </li>
                         )}
@@ -146,14 +157,14 @@ export default function CommentListComponent(props: Props) {
                         style={{ width: 'calc(100% - 50px)' }}
                         id={'question' + props.presenterId}
                         value={questionform}
-                        onChange={handleChange}
+                        onChange={handleQuestionFormChange}
                     ></Input>
                     <Button
                         type="primary"
                         icon={<SendOutlined />}
                         style={{ width: '50px' }}
                         onClick={() => {
-                            handleClick();
+                            handleSendCommentClick();
                         }}
                         disabled={questionform === ''}
                     />

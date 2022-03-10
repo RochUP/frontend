@@ -1,9 +1,11 @@
 import { Comment, Tooltip } from 'antd';
 import { LikeOutlined, LikeFilled } from '@ant-design/icons';
-import { createElement, useState } from 'react';
+import { createElement } from 'react';
 
 import Socket from '../../utils/webSocket';
 import { sendQuestionVote } from '../../utils/webSocketUtils';
+import store from '../../store';
+import { changeQuestionIsVote } from '../../actions/meetingActions';
 
 type Question = {
     id: number;
@@ -19,24 +21,17 @@ type Props = {
 };
 
 export default function CommentItemComponent(props: Props) {
-    const [isLiked, setIsLiked] = useState(props.question.isLiked);
-
-    const onClickLike = (questionId: number) => {
-        const vote = !isLiked;
-        setIsLiked(vote);
-        sendQuestionVote(props.socket, questionId, vote);
+    const onClickLike = () => {
+        sendQuestionVote(props.socket, props.question.id, !props.question.isLiked);
+        store.dispatch(changeQuestionIsVote(props.question.id, !props.question.isLiked));
     };
 
     return (
         <Comment
             actions={[
                 <Tooltip key="comment-basic-like" title="いいね">
-                    <span
-                        onClick={() => {
-                            onClickLike(props.question.id);
-                        }}
-                    >
-                        {createElement(isLiked ? LikeFilled : LikeOutlined)}
+                    <span onClick={onClickLike}>
+                        {createElement(props.question.isLiked ? LikeFilled : LikeOutlined)}
                         <span className="comment-action">{props.question.like}</span>
                     </span>
                 </Tooltip>,
