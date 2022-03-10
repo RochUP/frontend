@@ -79,3 +79,22 @@ export const addQuestionVoteAction = (questionId: number, voteNum: number) => ({
         voteNum,
     },
 });
+
+export const CHANGE_QUESTION_ISVOTE = 'CHANGE_QUESTION_ISVOTE';
+export const changeQuestionIsVote = (questionId: number, isVote: boolean) => ({
+    type: CHANGE_QUESTION_ISVOTE,
+    payload: {
+        questionId,
+        isVote,
+    },
+});
+
+export const SORT_QUESTIONS_BY_TIME = 'SORT_QUESTIONS_BY_TIME';
+export const sortQuestionsByTimeAction = () => ({
+    type: SORT_QUESTIONS_BY_TIME,
+});
+
+export const SORT_QUESTIONS_BY_VOTE = 'SORT_QUESTIONS_BY_VOTE';
+export const sortQuestionsByVoteAction = () => ({
+    type: SORT_QUESTIONS_BY_VOTE,
+});

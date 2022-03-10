@@ -1,3 +1,4 @@
+import moment from 'moment';
 import {
     ADD_QUESTION,
     ADD_QUESTION_VOTE,
@@ -6,6 +7,9 @@ import {
     GET_QUESTIONS,
     MEETING_EXIT,
     MEETING_JOIN,
+    CHANGE_QUESTION_ISVOTE,
+    SORT_QUESTIONS_BY_TIME,
+    SORT_QUESTIONS_BY_VOTE,
 } from '../actions/meetingActions';
 
 type Question = {
@@ -136,6 +140,49 @@ export default function reducer(state = initialState, action: any) {
             return {
                 ...state,
                 questionList: questionList,
+            };
+
+        case CHANGE_QUESTION_ISVOTE:
+            const isVoteChangedQuestionList = state.questionList.map(
+                (questions: Array<Question>) => {
+                    return questions.map((q: Question) => {
+                        q.questionId === action.payload.questionId &&
+                            (q.isVote = action.payload.isVote);
+                        return q;
+                    });
+                }
+            );
+            return {
+                ...state,
+                questionList: isVoteChangedQuestionList,
+            };
+
+        case SORT_QUESTIONS_BY_TIME:
+            const sortedQuestionListByTime = state.questionList.map(
+                (questions: Array<Question>) => {
+                    // 時間が早い順
+                    return questions.sort((q1: Question, q2: Question) => {
+                        return moment(q1.questionTime).diff(moment(q2.questionTime));
+                    });
+                }
+            );
+            return {
+                ...state,
+                questionList: sortedQuestionListByTime,
+            };
+
+        case SORT_QUESTIONS_BY_VOTE:
+            const sortedQuestionListByVote = state.questionList.map(
+                (questions: Array<Question>) => {
+                    // いいねが多い順
+                    return questions.sort((q1: Question, q2: Question) => {
+                        return q2.voteNum - q1.voteNum;
+                    });
+                }
+            );
+            return {
+                ...state,
+                questionList: sortedQuestionListByVote,
             };
 
         default:
