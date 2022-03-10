@@ -27,9 +27,14 @@ export default function ModeratorMsgComponent(props: Props) {
     const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow);
     const meetingStartTime = useSelector((state: any) => state.meetingReducer.meetingStartTime);
 
-    // const { setInterval } = require('timers/promises');
-
+    //司会メッセージ
     const [message, setModeratorMessage] = useState('');
+
+    //「開始までお待ちください」を会議開始まで表示
+    let flag: boolean = false;
+
+    //表示時間と司会メッセージの兼ね合いで(次々司会メッセージがくる)setTimeoutを止める
+    var timer;
 
     const hostSpeech = async (message: string) => {
         await synthesizer.speakTextAsync(
@@ -65,10 +70,27 @@ export default function ModeratorMsgComponent(props: Props) {
         if (props.data) {
             setModeratorMessage(props.data.moderatorMsgBody);
             hostSpeech(props.data.moderatorMsgBody);
+
+            flag = true;
         }
+
+        //表示を〇〇秒後に消す(今は10秒),　連続で押された場合の挙動は不明
+        timer = setTimeout(resetMessage, 5000);
+
+        // clearTimeout(timer0);
+
+        // if (counter != 0) {
+        //     clearTimeout(timer);
+        //     changeCounter((pre_counter) => pre_counter - 1);
+        // }
+        // // else if (counter === 0) {
+        // //     clearTimeout(timer1);
+        // //     changeCounter((pre_counter) => pre_counter + 1);
+        // // }
     }, [props.data]);
 
     useEffect(() => {
+        //現在の時間との比較を行い，結果に合わせてメッセージを表示(内容は検討が必要)
         let date = new Date();
 
         const qyear = String(date.getFullYear());
@@ -95,6 +117,7 @@ export default function ModeratorMsgComponent(props: Props) {
         }
     }, []);
 
+    //時間の調整
     const setTime = (date: string) => {
         if (Number(date) < 10) {
             date = '0' + date;
@@ -102,18 +125,21 @@ export default function ModeratorMsgComponent(props: Props) {
         return date;
     };
 
-    // const resetMessage = () => {
-    //     setModeratorMessage('');
-    //     console.log('reset');
-    //     return 0;
-    // };
+    //司会メッセージのリセット
+    function resetMessage() {
+        //開始前の時だけずっと表示
+        if (message !== '開始までお待ちください' && flag) {
+            setModeratorMessage('');
+            console.log('reset');
+        }
 
-    // var i = setInterval(resetMessage(), 2000);
+        // changeCounter((pre_counter) => pre_counter - 1);
+    }
 
     return (
         <Col span={24}>
             <audio id="audio" controls={false}></audio>
-            <Title level={4} style={{ width: '100%', textAlign: 'center', minHeight: 20 }}>
+            <Title level={4} style={{ width: '100%', textAlign: 'center', minHeight: 30 }}>
                 {message}
             </Title>
         </Col>
