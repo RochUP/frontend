@@ -77,7 +77,7 @@ export default function MeetingHost() {
 
     function onChange(value: any, dateString: any) {
         console.log('Selected Time: ', value);
-        console.log('Formatted Selected Time: ', dateString);
+        console.log('Formatted Selected Time: ', dateString + ':00');
     }
 
     function error() {
@@ -114,10 +114,10 @@ export default function MeetingHost() {
             ).value;
         }
         meetingDate = meetingDate + ':00';
+
         console.log(meetingName);
         console.log(meetingDate);
         console.log(presenterIds);
-
         // TODO:
         // - レスポンスが帰ってくるまでロード画面にする
         // - 作成完了したら画面遷移
@@ -254,7 +254,8 @@ export default function MeetingHost() {
                                                             ></Input>
                                                             <Button
                                                                 onClick={() => onClickAdd(idx)}
-                                                                type="default"
+                                                                type="primary"
+                                                                ghost
                                                                 icon={<UserAddOutlined />}
                                                                 size={'small'}
                                                             />

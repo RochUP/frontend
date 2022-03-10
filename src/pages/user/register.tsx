@@ -1,13 +1,15 @@
 import { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Alert, Button, Space, Modal, Spin } from 'antd';
-import { ProFormText } from '@ant-design/pro-form';
+import { Alert, Button, Modal, Spin } from 'antd';
+import { LoginForm, ProFormText } from '@ant-design/pro-form';
 import { UserOutlined, LockOutlined, IdcardOutlined } from '@ant-design/icons';
 import '@ant-design/pro-form/dist/form.css';
+import '../../assets/css/User.css';
 
 import { userLogin } from '../../actions/userActions';
 import store from '../../store';
 import { signup } from '../../utils/api';
+import UserFooter from './UserFooter';
 
 export default function RegisterPage() {
     const navigate = useNavigate();
@@ -74,17 +76,60 @@ export default function RegisterPage() {
     }
 
     return (
-        <Spin size="large" spinning={spinning}>
-            <div className="content___2zk1-">
-                <div className="ant-pro-form-login-container">
-                    <div className="ant-pro-form-login-container" style={{ marginTop: '10%' }}>
-                        <div className="ant-pro-form-login-top">
-                            <div className="ant-pro-form-login-header">
-                                <span className="ant-pro-form-login-header-title">Plithos</span>
-                            </div>
-                            <div className="ant-pro-form-login-desc">新規登録</div>
-                        </div>
-                        <div className="ant-pro-form-login-main">
+        <div className="login-page">
+            <Spin size="large" spinning={spinning}>
+                <div className="login-content">
+                    <div className="login-form">
+                        <LoginForm
+                            logo="https://github.githubassets.com/images/modules/logos_page/Octocat.png"
+                            title="Plithos"
+                            subTitle="オンラインミーティングアシスタント"
+                            submitter={{
+                                // ここのsearchConfigと下のrenderの方法どっちでも使える
+                                // しかし、searchConfigの方法は、ボタンのスタイルをコントロール困難
+                                searchConfig: {
+                                    submitText: '登録',
+                                },
+                                submitButtonProps: {
+                                    type: 'primary',
+                                    block: true,
+                                    style: {
+                                        display: 'none',
+                                    },
+                                },
+                                resetButtonProps: {
+                                    style: {
+                                        // リセットボタンは要らない
+                                        display: 'none',
+                                    },
+                                },
+                                // 第二種の方法
+                                // render: () => {
+                                //     return [
+                                //         <Button
+                                //             type="primary"
+                                //             key="submit"
+                                //             block
+                                //             onClick={() => {
+                                //                 handleRegisterClick();
+                                //             }}
+                                //         >
+                                //             登録
+                                //         </Button>,
+                                //     ];
+                                // },
+                            }}
+                            onFinish={handleRegisterClick}
+                            isKeyPressSubmit={true}
+                        >
+                            {!inputOk && (
+                                <Alert
+                                    message="ユーザID・ユーザーネーム・パスワードは半角英数字で入力してください"
+                                    type="error"
+                                    showIcon
+                                    style={{ marginBottom: '10px' }}
+                                />
+                            )}
                             <ProFormText
                                 name="userid"
                                 fieldProps={{
@@ -127,33 +172,26 @@ export default function RegisterPage() {
                                     },
                                 ]}
                             />
-                            <Space direction="vertical" style={{ width: 330 }}>
-                                {!inputOk && (
-                                    <Alert
-                                        message="ユーザID・ユーザーネーム・パスワードは半角英数字で入力してください"
-                                        type="error"
-                                        showIcon
-                                    />
-                                )}
-                                <Button
-                                    type="primary"
-                                    block
-                                    onClick={() => {
-                                        handleRegisterClick();
-                                    }}
-                                >
-                                    登録
+                            <Button
+                                type="primary"
+                                key="submit"
+                                block
+                                onClick={() => {
+                                    handleRegisterClick();
+                                }}
+                            >
+                                登録
+                            </Button>
+                            <Link to={'../login'}>
+                                <Button type="link" block style={{ marginTop: '10px' }}>
+                                    ログイン
                                 </Button>
-                                <Link to={'../login'}>
-                                    <Button type="link" block>
-                                        ログイン
-                                    </Button>
-                                </Link>
-                            </Space>
-                        </div>
+                            </Link>
+                        </LoginForm>
                     </div>
+                    <UserFooter />
                 </div>
-            </div>
-        </Spin>
+            </Spin>
+        </div>
     );
 }
