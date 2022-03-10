@@ -30,16 +30,23 @@ export default function MeetingJoin() {
         }
     }, []);
 
-    const [spinning, setSpinning] = useState(false);
+    const [spinning, setSpinning] = useState<boolean>(false);
+    const [meetingId, setMeetingId] = useState<number>(0);
+    const [inputOk, setInputOk] = useState<boolean>(false);
+
+    const onChangeMeetingId = (value: number) => {
+        console.log(value);
+        setMeetingId(value);
+    };
+
+    useEffect(() => {
+        setInputOk(meetingId != null && meetingId > 0);
+    }, [meetingId]);
 
     const joinMeeting = async () => {
         console.log('Join Meeting');
         const meetingId = +(document.getElementById('meetingId') as HTMLInputElement).value;
         console.log(userid, meetingId);
-
-        // TODO:
-        // - レスポンスが帰ってくるまでロード画面にする
-        // - 作成完了したら画面遷移
 
         setSpinning(true);
 
@@ -50,7 +57,6 @@ export default function MeetingJoin() {
                     throw new Error('Join Meeting Failed');
                 }
                 storeMeetingData(res);
-                // alert("join success");
                 navigate('/meeting/in');
             })
             .catch((err: any) => {
@@ -109,6 +115,7 @@ export default function MeetingJoin() {
                                         placeholder="会議IDを入力"
                                         min={1}
                                         controls={false}
+                                        onChange={onChangeMeetingId}
                                     />
                                     <p style={{ margin: '16px 0' }}>
                                         会議開催者から会議IDを取得してください
@@ -117,6 +124,7 @@ export default function MeetingJoin() {
                                         type="primary"
                                         // style={{ width: '20%' }}
                                         onClick={joinMeeting}
+                                        disabled={!inputOk}
                                     >
                                         会議に参加する
                                     </Button>
