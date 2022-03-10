@@ -65,13 +65,15 @@ export default function RegisterPage() {
                     destoryAll();
                 },
             },
+            okText: 'ログイン',
         });
     }
 
     function error() {
         Modal.error({
-            content: '新規登録失敗しました',
-            okButtonProps: {},
+            title: '新規登録失敗',
+            content: '改めてお試しください',
+            okText: '了解',
         });
     }
 

@@ -84,6 +84,7 @@ export default function MeetingHost() {
         Modal.error({
             title: 'エラー',
             content: 'ミーティング作成できませんでした。',
+            okText: '了解',
         });
     }
 
@@ -100,6 +101,7 @@ export default function MeetingHost() {
                     destoryAll();
                 },
             },
+            okText: 'はい',
         });
     }
 
