@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 
 export default class Socket {
-    private ws;
+    public ws;
     private ee;
 
     constructor(ws: WebSocket, ee = new EventEmitter()) {
