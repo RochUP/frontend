@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, Card, Input, Layout, Menu, Space, Spin } from 'antd';
+import { Breadcrumb, Button, Card, Input, InputNumber, Layout, Menu, Space, Spin } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import SubMenu from 'antd/lib/menu/SubMenu';
 import { Typography } from 'antd';
@@ -89,16 +89,21 @@ export default function MeetingJoin() {
                             bordered={false}
                             style={{ width: '100%', textAlign: 'center' }}
                         >
-                            <Space direction="vertical" style={{ width: '100%' }}>
+                            <Space
+                                direction="vertical"
+                                style={{ width: '100%', textAlign: 'center' }}
+                            >
                                 <p>ミーティングID</p>
-                                <Input
+                                <InputNumber
                                     id="meetingId"
                                     type={'number'}
-                                    style={{ width: '20%', textAlign: 'center' }}
+                                    style={{ width: '15%', textAlign: 'center' }}
                                     placeholder="ミーティングIDを入力してください"
+                                    min={1}
+                                    controls={false}
                                 />
                                 <p style={{ margin: '16px 0' }}>
-                                    ミーティングに参加するために、ミーティング開催者からミーティングを取得してください。
+                                    ミーティングに参加するために、ミーティング開催者からミーティングIDを取得してください。
                                 </p>
                                 <Button
                                     type="primary"

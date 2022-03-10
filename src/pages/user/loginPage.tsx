@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Alert, Button, Space, Modal, Spin } from 'antd';
-import { ProFormText } from '@ant-design/pro-form';
+import { LoginForm, ProFormText } from '@ant-design/pro-form';
 import { LockOutlined, IdcardOutlined } from '@ant-design/icons';
 import '@ant-design/pro-form/dist/form.css';
 
@@ -66,71 +66,86 @@ export default function LoginPage() {
 
     return (
         <Spin size="large" spinning={spinning}>
-            <div className="content___2zk1-">
-                <div className="ant-pro-form-login-container">
-                    <div className="ant-pro-form-login-container" style={{ marginTop: '10%' }}>
-                        <div className="ant-pro-form-login-top">
-                            <div className="ant-pro-form-login-header">
-                                <span className="ant-pro-form-login-header-title">Plithos</span>
-                            </div>
-                            <div className="ant-pro-form-login-desc">ログイン</div>
-                        </div>
-                        <div className="ant-pro-form-login-main">
-                            <ProFormText
-                                name="userid"
-                                fieldProps={{
-                                    size: 'large',
-                                    prefix: <IdcardOutlined className={'prefixIcon'} />,
+            <LoginForm
+                logo="https://github.githubassets.com/images/modules/logos_page/Octocat.png"
+                title="Plithos"
+                subTitle="オンラインミーティングアシスタント"
+                submitter={{
+                    // ここのsearchConfigと下のrenderの方法どっちでも使える
+                    // しかし、searchConfigの方法は、ボタンのスタイルをコントロール困難
+                    // searchConfig: {
+                    //     submitText: 'ログイン',
+                    // },
+                    // submitButtonProps: {
+                    //     type: 'primary',
+                    //     block: true,
+                    // },
+                    // resetButtonProps: {
+                    //     style: {
+                    //         // リセットボタンは要らない
+                    //         display: 'none',
+                    //     },
+                    // },
+                    render: () => {
+                        return [
+                            <Button
+                                type="primary"
+                                key="submit"
+                                block
+                                onClick={() => {
+                                    handleLoginClick();
                                 }}
-                                placeholder={'ユーザID'}
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'ユーザIDを入力してください!',
-                                    },
-                                ]}
-                            />
-                            <ProFormText.Password
-                                name="password"
-                                fieldProps={{
-                                    size: 'large',
-                                    prefix: <LockOutlined className={'prefixIcon'} />,
-                                }}
-                                placeholder={'パスワード'}
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'パスワードを入力してください!',
-                                    },
-                                ]}
-                            />
-                            <Space direction="vertical" style={{ width: 330 }}>
-                                {!inputOk && (
-                                    <Alert
-                                        message="ユーザIDとパスワードは半角英数字で入力してください"
-                                        type="error"
-                                        showIcon
-                                    />
-                                )}
-                                <Button
-                                    type="primary"
-                                    block
-                                    onClick={() => {
-                                        handleLoginClick();
-                                    }}
-                                >
-                                    ログイン
-                                </Button>
-                                <Link to={'../register'}>
-                                    <Button type="link" block>
-                                        新規登録
-                                    </Button>
-                                </Link>
-                            </Space>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                            >
+                                ログイン
+                            </Button>,
+                        ];
+                    },
+                }}
+                onFinish={handleLoginClick}
+                isKeyPressSubmit={true}
+            >
+                {!inputOk && (
+                    <Alert
+                        message="ユーザIDとパスワードは半角英数字で入力してください"
+                        type="error"
+                        showIcon
+                        style={{ marginBottom: '10px' }}
+                    />
+                )}
+                <ProFormText
+                    name="userid"
+                    fieldProps={{
+                        size: 'large',
+                        prefix: <IdcardOutlined className={'prefixIcon'} />,
+                    }}
+                    placeholder={'ユーザID'}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'ユーザIDを入力してください!',
+                        },
+                    ]}
+                />
+                <ProFormText.Password
+                    name="password"
+                    fieldProps={{
+                        size: 'large',
+                        prefix: <LockOutlined className={'prefixIcon'} />,
+                    }}
+                    placeholder={'パスワード'}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'パスワードを入力してください!',
+                        },
+                    ]}
+                />
+            </LoginForm>
+            <Link to={'../register'}>
+                <Button type="link" block style={{ marginTop: '-10%' }}>
+                    新規登録
+                </Button>
+            </Link>
         </Spin>
     );
 }
