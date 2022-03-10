@@ -207,6 +207,7 @@ export async function getQuestions(meetingId: string) {
                 documentPages: res.documentPages,
                 questionTimes: res.questionTimes,
                 presenterIds: res.presenterIds,
+                voteNums: res.voteNums,
             };
             return res_data;
         })

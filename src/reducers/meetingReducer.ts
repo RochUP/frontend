@@ -98,7 +98,7 @@ export default function reducer(state = initialState, action: any) {
                     documentId: action.payload.documentIds[i],
                     documentPage: action.payload.documentPages[i],
                     questionTime: action.payload.questionTimes[i],
-                    voteNum: 0,
+                    voteNum: action.payload.voteNums[i],
                     isVote: false,
                 };
                 pastQuestions[state.presenterIds.indexOf(action.payload.presenterIds[i])].push(

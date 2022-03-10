@@ -56,7 +56,8 @@ export const getQuestionsAction = (
     documentIds: number[],
     documentPages: number[],
     questionTimes: string[],
-    presenterIds: string[]
+    presenterIds: string[],
+    voteNums: number[]
 ) => ({
     type: GET_QUESTIONS,
     payload: {
@@ -66,6 +67,7 @@ export const getQuestionsAction = (
         documentPages,
         questionTimes,
         presenterIds,
+        voteNums,
     },
 });
 
