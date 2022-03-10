@@ -14,8 +14,8 @@ function TestPage() {
             {/* <WSTestComponent /> */}
             {/* <StoreTestComponent /> */}
             {/* <SpeechRecTestComponent /> */}
-            <AzureStorageComponent />
-            {/* <Text2SpeechComponent /> */}
+            {/* <AzureStorageComponent /> */}
+            <Text2SpeechComponent />
         </div>
     );
 }
