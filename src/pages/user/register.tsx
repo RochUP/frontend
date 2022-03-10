@@ -1,13 +1,15 @@
 import { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Alert, Button, Space, Modal, Spin } from 'antd';
+import { Alert, Button, Modal, Spin } from 'antd';
 import { LoginForm, ProFormText } from '@ant-design/pro-form';
 import { UserOutlined, LockOutlined, IdcardOutlined } from '@ant-design/icons';
 import '@ant-design/pro-form/dist/form.css';
+import '../../assets/css/User.css';
 
 import { userLogin } from '../../actions/userActions';
 import store from '../../store';
 import { signup } from '../../utils/api';
+import UserFooter from './UserFooter';
 
 export default function RegisterPage() {
     const navigate = useNavigate();
@@ -74,29 +76,102 @@ export default function RegisterPage() {
     }
 
     return (
-        <Spin size="large" spinning={spinning}>
-            <LoginForm
-                logo="https://github.githubassets.com/images/modules/logos_page/Octocat.png"
-                title="Plithos"
-                subTitle="オンラインミーティングアシスタント"
-                submitter={{
-                    // ここのsearchConfigと下のrenderの方法どっちでも使える
-                    // しかし、searchConfigの方法は、ボタンのスタイルをコントロール困難
-                    // searchConfig: {
-                    //     submitText: '登録',
-                    // },
-                    // submitButtonProps: {
-                    //     type: 'primary',
-                    //     block: true,
-                    // },
-                    // resetButtonProps: {
-                    //     style: {
-                    //         // リセットボタンは要らない
-                    //         display: 'none',
-                    //     },
-                    // },
-                    render: () => {
-                        return [
+        <div className="login-page">
+            <Spin size="large" spinning={spinning}>
+                <div className="login-content">
+                    <div className="login-form">
+                        <LoginForm
+                            logo="https://github.githubassets.com/images/modules/logos_page/Octocat.png"
+                            title="Plithos"
+                            subTitle="オンラインミーティングアシスタント"
+                            submitter={{
+                                // ここのsearchConfigと下のrenderの方法どっちでも使える
+                                // しかし、searchConfigの方法は、ボタンのスタイルをコントロール困難
+                                searchConfig: {
+                                    submitText: '登録',
+                                },
+                                submitButtonProps: {
+                                    type: 'primary',
+                                    block: true,
+                                    style: {
+                                        display: 'none',
+                                    },
+                                },
+                                resetButtonProps: {
+                                    style: {
+                                        // リセットボタンは要らない
+                                        display: 'none',
+                                    },
+                                },
+                                // 第二種の方法
+                                // render: () => {
+                                //     return [
+                                //         <Button
+                                //             type="primary"
+                                //             key="submit"
+                                //             block
+                                //             onClick={() => {
+                                //                 handleRegisterClick();
+                                //             }}
+                                //         >
+                                //             登録
+                                //         </Button>,
+                                //     ];
+                                // },
+                            }}
+                            onFinish={handleRegisterClick}
+                            isKeyPressSubmit={true}
+                        >
+                            {!inputOk && (
+                                <Alert
+                                    message="ユーザID・ユーザーネーム・パスワードは半角英数字で入力してください"
+                                    type="error"
+                                    showIcon
+                                    style={{ marginBottom: '10px' }}
+                                />
+                            )}
+                            <ProFormText
+                                name="userid"
+                                fieldProps={{
+                                    size: 'large',
+                                    prefix: <IdcardOutlined className={'prefixIcon'} />,
+                                }}
+                                placeholder={'ユーザID'}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'ユーザIDを入力してください!',
+                                    },
+                                ]}
+                            />
+                            <ProFormText
+                                name="username"
+                                fieldProps={{
+                                    size: 'large',
+                                    prefix: <UserOutlined className={'prefixIcon'} />,
+                                }}
+                                placeholder={'ユーザネーム'}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'ユーザネームを入力してください!',
+                                    },
+                                ]}
+                            />
+                            <ProFormText.Password
+                                name="password"
+                                fieldProps={{
+                                    size: 'large',
+                                    prefix: <LockOutlined className={'prefixIcon'} />,
+                                }}
+                                placeholder={'パスワード'}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'パスワードを入力してください!',
+                                    },
+                                ]}
+                            />
                             <Button
                                 type="primary"
                                 key="submit"
@@ -106,69 +181,17 @@ export default function RegisterPage() {
                                 }}
                             >
                                 登録
-                            </Button>,
-                        ];
-                    },
-                }}
-                onFinish={handleRegisterClick}
-                isKeyPressSubmit={true}
-            >
-                {!inputOk && (
-                    <Alert
-                        message="ユーザID・ユーザーネーム・パスワードは半角英数字で入力してください"
-                        type="error"
-                        showIcon
-                        style={{ marginBottom: '10px' }}
-                    />
-                )}
-                <ProFormText
-                    name="userid"
-                    fieldProps={{
-                        size: 'large',
-                        prefix: <IdcardOutlined className={'prefixIcon'} />,
-                    }}
-                    placeholder={'ユーザID'}
-                    rules={[
-                        {
-                            required: true,
-                            message: 'ユーザIDを入力してください!',
-                        },
-                    ]}
-                />
-                <ProFormText
-                    name="username"
-                    fieldProps={{
-                        size: 'large',
-                        prefix: <UserOutlined className={'prefixIcon'} />,
-                    }}
-                    placeholder={'ユーザネーム'}
-                    rules={[
-                        {
-                            required: true,
-                            message: 'ユーザネームを入力してください!',
-                        },
-                    ]}
-                />
-                <ProFormText.Password
-                    name="password"
-                    fieldProps={{
-                        size: 'large',
-                        prefix: <LockOutlined className={'prefixIcon'} />,
-                    }}
-                    placeholder={'パスワード'}
-                    rules={[
-                        {
-                            required: true,
-                            message: 'パスワードを入力してください!',
-                        },
-                    ]}
-                />
-            </LoginForm>
-            <Link to={'../login'}>
-                <Button type="link" block style={{ marginTop: '-10%' }}>
-                    ログイン
-                </Button>
-            </Link>
-        </Spin>
+                            </Button>
+                            <Link to={'../login'}>
+                                <Button type="link" block style={{ marginTop: '10px' }}>
+                                    ログイン
+                                </Button>
+                            </Link>
+                        </LoginForm>
+                    </div>
+                    <UserFooter />
+                </div>
+            </Spin>
+        </div>
     );
 }

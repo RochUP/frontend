@@ -1,7 +1,4 @@
-import { Breadcrumb, Button, Card, Input, InputNumber, Layout, Menu, Space, Spin } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
-import SubMenu from 'antd/lib/menu/SubMenu';
-import { Typography } from 'antd';
+import { Breadcrumb, Button, Card, InputNumber, Layout, Space, Spin, Typography } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import '../../assets/css/Pages.css';
 import { useSelector } from 'react-redux';
@@ -11,7 +8,7 @@ import { meetingJoinAction } from '../../actions/meetingActions';
 import MeetingHeader from '../../components/meeting/MeetingHeader';
 import { useEffect, useState } from 'react';
 
-const { Header, Footer, Content } = Layout;
+const { Footer, Content } = Layout;
 
 export default function MeetingJoin() {
     const { Title } = Typography;
