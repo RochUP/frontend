@@ -11,6 +11,7 @@ import MeetingJoin from './pages/meeting/MeetingJoin';
 import Chat from './pages/meeting/chat';
 import MeetingHost from './pages/meeting/MeetingHost';
 import InMeeting from './pages/meeting/InMeeting';
+import NotFound from './pages/NotFoundPage';
 
 function App() {
     return (
@@ -26,6 +27,7 @@ function App() {
                         <Route path="/meeting/join" element={<MeetingJoin />} />
                         <Route path="/meeting/host" element={<MeetingHost />} />
                         <Route path="/meeting/in" element={<InMeeting />} />
+                        <Route path="*" element={<NotFound />} />
                     </Routes>
                 </Router>
             </Provider>
