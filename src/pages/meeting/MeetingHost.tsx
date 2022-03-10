@@ -11,6 +11,7 @@ import {
     Spin,
     Modal,
 } from 'antd';
+import dayjs from 'dayjs';
 import { UserAddOutlined, UserDeleteOutlined } from '@ant-design/icons';
 import { Typography } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
@@ -21,8 +22,11 @@ import store from '../../store';
 import { meetingJoinAction } from '../../actions/meetingActions';
 import MeetingHeader from '../../components/meeting/MeetingHeader';
 import { useSelector } from 'react-redux';
-import 'moment/locale/ja';
-import locale from 'antd/lib/date-picker/locale/ja_JP';
+import { ConfigProvider } from 'antd';
+import 'dayjs/locale/ja';
+import jaJP from 'antd/lib/locale/ja_JP';
+
+dayjs.locale('ja');
 
 const { Footer, Content } = Layout;
 
@@ -215,19 +219,20 @@ export default function MeetingHost() {
                                                 </Space>
                                             </Row>
                                             <Row>
-                                                <Space>
-                                                    <span>開始時間</span>
-                                                    <DatePicker
-                                                        id="meetingDate"
-                                                        style={{ width: '113%' }}
-                                                        showTime
-                                                        onChange={onChange}
-                                                        onOk={onOk}
-                                                        // ここの'HH:mm:ss'のところ、:ssを削除すると秒数がなくなる、しかしbugがありそう
-                                                        format="yyyy/MM/DD HH:mm:ss"
-                                                        locale={locale} // ここは時間選択で日本語表示になる
-                                                    />
-                                                </Space>
+                                                <ConfigProvider locale={jaJP}>
+                                                    <Space>
+                                                        <span>開始時間</span>
+                                                        <DatePicker
+                                                            id="meetingDate"
+                                                            style={{ width: '124%' }}
+                                                            showTime
+                                                            onChange={onChange}
+                                                            onOk={onOk}
+                                                            // ここの'HH:mm:ss'のところ、:ssを削除すると秒数がなくなる、しかしbugがありそう
+                                                            format="yyyy/MM/DD HH:mm"
+                                                        />
+                                                    </Space>
+                                                </ConfigProvider>
                                             </Row>
                                             {presenters.map((presenter, idx) => {
                                                 return (
