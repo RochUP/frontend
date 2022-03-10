@@ -24,6 +24,12 @@ export const meetingExitAction = () => ({
     payload: {},
 });
 
+export const PRESENT_CHANGE = 'PRESENT_CHANGE';
+export const presentChangeAction = (presentOrder: number) => ({
+    type: PRESENT_CHANGE,
+    payload: { presentOrder },
+});
+
 export const GET_DOCUMENT = 'GET_DOCUMENT';
 export const getDocumentAction = (documentId: number, documentUrl: string, script: string) => ({
     type: GET_DOCUMENT,
