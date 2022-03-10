@@ -64,7 +64,7 @@ export default function reducer(state = initialState, action: any) {
         case PRESENT_CHANGE:
             return {
                 ...state,
-                presentOrder: state.presentOrder,
+                presentOrder: action.payload.presentOrder,
             };
 
         case GET_DOCUMENT:
