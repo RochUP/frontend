@@ -19,9 +19,7 @@ import {
 import TextArea from 'antd/lib/input/TextArea';
 import { UploadChangeParam, UploadFile } from 'antd/lib/upload/interface';
 import {
-    ArrowUpOutlined,
     UploadOutlined,
-    ArrowDownOutlined,
     MessageOutlined,
     CheckCircleOutlined,
     FormOutlined,
@@ -272,10 +270,10 @@ export default function InMeeting() {
     return (
         <Layout>
             <MeetingHeader />
-            <Content style={{ padding: '0 50px' }}>
+            <Content style={{ padding: '0 40px' }}>
                 <p>{transcript}</p>
-                <Title style={{ margin: '16px 0' }}>○○会議進行中</Title>
-                <Breadcrumb style={{ margin: '16px 0' }}>
+                <Title style={{ margin: '10px 0' }}>○○会議進行中</Title>
+                <Breadcrumb style={{ margin: '10px 0' }}>
                     <Breadcrumb.Item>会議</Breadcrumb.Item>
                     <Breadcrumb.Item>会議中</Breadcrumb.Item>
                 </Breadcrumb>

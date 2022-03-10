@@ -69,7 +69,7 @@ export default function ModeratorMsgComponent(props: Props) {
     }, []);
 
     return (
-        <Col span={24}>
+        <Col span={24} style={{ marginTop: '5px' }}>
             <audio id="audio" controls={false}></audio>
             <Title level={4} style={{ width: '100%', textAlign: 'center' }}>
                 {message}

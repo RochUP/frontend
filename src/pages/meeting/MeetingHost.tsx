@@ -11,7 +11,7 @@ import {
     Spin,
     Modal,
 } from 'antd';
-import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
+import { UserAddOutlined, UserDeleteOutlined } from '@ant-design/icons';
 import { Typography } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import '../../assets/css/Pages.css';
@@ -21,6 +21,8 @@ import store from '../../store';
 import { meetingJoinAction } from '../../actions/meetingActions';
 import MeetingHeader from '../../components/meeting/MeetingHeader';
 import { useSelector } from 'react-redux';
+import 'moment/locale/ja';
+import locale from 'antd/lib/date-picker/locale/ja_JP';
 
 const { Footer, Content } = Layout;
 
@@ -221,7 +223,9 @@ export default function MeetingHost() {
                                                         showTime
                                                         onChange={onChange}
                                                         onOk={onOk}
+                                                        // ここの'HH:mm:ss'のところ、:ssを削除すると秒数がなくなる、しかしbugがありそう
                                                         format="yyyy/MM/DD HH:mm:ss"
+                                                        locale={locale} // ここは時間選択で日本語表示になる
                                                     />
                                                 </Space>
                                             </Row>
@@ -244,15 +248,15 @@ export default function MeetingHost() {
                                                             ></Input>
                                                             <Button
                                                                 onClick={() => onClickAdd(idx)}
-                                                                type="primary"
-                                                                icon={<PlusOutlined />}
+                                                                type="default"
+                                                                icon={<UserAddOutlined />}
                                                                 size={'small'}
                                                             />
                                                             <Button
                                                                 onClick={() => onClickRemove(idx)}
-                                                                type="primary"
+                                                                type="default"
                                                                 danger
-                                                                icon={<MinusOutlined />}
+                                                                icon={<UserDeleteOutlined />}
                                                                 size={'small'}
                                                             />
                                                         </Space>
