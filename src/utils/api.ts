@@ -128,6 +128,27 @@ export async function meetingJoin(userId: string, meetingId: number) {
         });
 }
 
+export async function meetingExit(userId: string, meetingId: number, documentId: number) {
+    // TODO:
+    // - return のフォーマット
+    const data = {
+        userId: userId,
+        meetingId: meetingId,
+        documentId: documentId,
+    };
+
+    return await post('/meeting/exit', data)
+        .then((res) => {
+            const res_data = {
+                result: res.result,
+            };
+            return res_data;
+        })
+        .catch((err) => {
+            throw err;
+        });
+}
+
 export async function registerDocument(
     documentId: number,
     documentUrl: string | null = null,
@@ -186,6 +207,7 @@ export async function getQuestions(meetingId: string) {
                 documentPages: res.documentPages,
                 questionTimes: res.questionTimes,
                 presenterIds: res.presenterIds,
+                voteNums: res.voteNums,
             };
             return res_data;
         })

@@ -42,6 +42,7 @@ function PdfViewerComponent(props: Props) {
 
     function onDocumentLoadSuccess({ numPages }: any) {
         setNumPages(numPages);
+        setIsReactedPage(Array(numPages).fill(false));
     }
 
     function changePage(pageNumber: number, offset?: number) {
@@ -122,7 +123,7 @@ function PdfViewerComponent(props: Props) {
         const reactionOn = !isReactedPage[documentPageNowIndex];
         sendReaction(props.socket, props.documentId, documentPageNow, reactionOn);
         const newIsReactionPage = isReactedPage.map((v, i) =>
-            documentPageNowIndex === i ? reactionOn : v
+            documentPageNowIndex == i ? reactionOn : v
         );
         setIsReactedPage(newIsReactionPage);
     };

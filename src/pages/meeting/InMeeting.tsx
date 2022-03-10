@@ -32,16 +32,18 @@ import {
     changeDocumentPageAction,
     getQuestionsAction,
     meetingExitAction,
+    presentChangeAction,
 } from '../../actions/meetingActions';
 import CommentListComponent from '../../components/meeting/CommentListComponent';
 import DocumentComponent from '../../components/meeting/DocumentComponent';
 import MeetingHeader from '../../components/meeting/MeetingHeader';
 import ModeratorMsgComponent from '../../components/meeting/ModeratorMsgComponent';
 import store from '../../store';
-import { getQuestions, registerDocument } from '../../utils/api';
+import { getQuestions, registerDocument, meetingExit } from '../../utils/api';
 import { uploadFile2AzureStorage } from '../../utils/azureStorage';
 import Socket from '../../utils/webSocket';
 import { receiveData, sendFinishword, sendHandsup } from '../../utils/webSocketUtils';
+import { meetingJoinAction } from '../../actions/meetingActions';
 
 const { Footer, Content } = Layout;
 const { Text } = Typography;
@@ -100,7 +102,8 @@ export default function InMeeting() {
                         res.documentIds,
                         res.documentPages,
                         res.questionTimes,
-                        res.presenterIds
+                        res.presenterIds,
+                        res.voteNums
                     )
                 );
             })
@@ -140,6 +143,7 @@ export default function InMeeting() {
                         store.dispatch(
                             changeDocumentPageAction(presenterIds[data.presenterOrder], 1)
                         );
+                        store.dispatch(presentChangeAction(data.presenterOrder));
                         setTabPresenterId(presenterIds[data.presenterOrder]);
                     }
                     break;
@@ -286,12 +290,33 @@ export default function InMeeting() {
         };
     }, []);
 
-    const onClickExit = () => {
+    //会議退出
+    const presentOrder = useSelector((state: any) => state.meetingReducer.presentOrder);
+    const [spinning, setSpinning] = useState(false);
+
+    const onClickExit = async () => {
         console.log('exit');
+        // console.log(userId, meetingId, documentId);
+
+        setSpinning(true);
+
+        await meetingExit(userId, meetingId, documentIds[presentOrder])
+            .then((res: any) => {
+                console.log(res);
+                if (!res.result) {
+                    throw new Error('Exit Meeting Failed');
+                }
+                navigate('/meeting/join');
+            })
+            .catch((err: any) => {
+                console.log(err);
+                alert(err.message);
+            });
+
+        setSpinning(false);
         store.dispatch(meetingExitAction());
         SpeechRecognition.stopListening();
         socket.ws.close();
-        navigate('/meeting/join');
     };
 
     const showConfirm = () => {
