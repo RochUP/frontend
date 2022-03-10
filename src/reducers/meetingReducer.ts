@@ -10,6 +10,7 @@ import {
     CHANGE_QUESTION_ISVOTE,
     SORT_QUESTIONS_BY_TIME,
     SORT_QUESTIONS_BY_VOTE,
+    PRESENT_CHANGE,
 } from '../actions/meetingActions';
 
 type Question = {
@@ -33,6 +34,7 @@ const initialState = {
     documentUrls: [''],
     scripts: [''],
     presenterIdNow: '',
+    presentOrder: 0,
     documentPageNow: 1,
     questionList: Array(0)
         .fill(null)
@@ -53,6 +55,7 @@ export default function reducer(state = initialState, action: any) {
                 documentUrls: Array(action.payload.documentIds.length).fill(''),
                 scripts: Array(action.payload.documentIds.length).fill(''),
                 presenterIdNow: action.payload.presenterIds[0],
+                presentOrder: 0,
                 documentPageNow: 1,
                 questionList: Array(action.payload.presenterIds.length)
                     .fill(null)
@@ -61,6 +64,12 @@ export default function reducer(state = initialState, action: any) {
 
         case MEETING_EXIT:
             return initialState;
+
+        case PRESENT_CHANGE:
+            return {
+                ...state,
+                presentOrder: action.payload.presentOrder,
+            };
 
         case GET_DOCUMENT:
             const documentUrls = state.documentUrls.slice();
