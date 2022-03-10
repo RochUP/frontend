@@ -174,12 +174,14 @@ export function sendFinishword(
     socket: Socket,
     meetingId: number,
     presenterId: string,
+    questionUserId: string,
     finishType: string //"present" or "question"
 ) {
     const data = {
         messageType: 'finishword',
         meetingId: meetingId,
         presenterId: presenterId,
+        questionUserId: questionUserId,
         finishType: finishType,
     };
     console.log('sendFinishword', data);

@@ -32,7 +32,7 @@ const initialState = {
     documentIds: [0],
     documentUrls: [''],
     scripts: [''],
-    presenterIdNow: 0,
+    presenterIdNow: '',
     documentPageNow: 1,
     questionList: Array(0)
         .fill(null)
