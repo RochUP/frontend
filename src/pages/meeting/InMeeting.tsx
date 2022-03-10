@@ -370,13 +370,17 @@ export default function InMeeting() {
                                 {meetingId}
                             </Text>
                         </Col>
-                        <Col span={11} style={{ maxHeight: 50, width: '100%' }}>
+                        <Col span={12} style={{ maxHeight: 50, width: '100%' }}>
                             {/* style={{background:'#DD2248'}}> */}
                             {/* 右側操作ボタン */}
                             <Space
                                 align="baseline"
                                 size={15}
-                                style={{ display: 'flex', justifyContent: 'right' }}
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'right',
+                                    marginRight: '5%',
+                                }}
                             >
                                 <Button
                                     danger
