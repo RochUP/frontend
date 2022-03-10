@@ -45,7 +45,7 @@ export default function CommentListComponent(props: Props) {
 
         const qyear = String(date.getFullYear());
         let qmonth = String(date.getMonth() + 1);
-        let qday = String(date.getDay());
+        let qday = String(date.getDate());
         let qhours = String(date.getHours());
         let qminutes = String(date.getMinutes());
         let qseconds = String(date.getSeconds());
