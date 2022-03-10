@@ -7,7 +7,6 @@ import { sendQuestionVote } from '../../utils/webSocketUtils';
 
 type Question = {
     id: number;
-    author: string;
     content: any;
     datetime: any;
     like: number;
@@ -31,7 +30,7 @@ export default function CommentItemComponent(props: Props) {
     return (
         <Comment
             actions={[
-                <Tooltip key="comment-basic-like" title="いいね！">
+                <Tooltip key="comment-basic-like" title="いいね">
                     <span
                         onClick={() => {
                             onClickLike(props.question.id);
@@ -42,7 +41,6 @@ export default function CommentItemComponent(props: Props) {
                     </span>
                 </Tooltip>,
             ]}
-            author={props.question.author}
             content={props.question.content}
             datetime={props.question.datetime}
         />
