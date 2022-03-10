@@ -77,6 +77,8 @@ export default function ModeratorMsgComponent(props: Props) {
         //表示を〇〇秒後に消す(今は10秒),　連続で押された場合の挙動は不明
         timer = setTimeout(resetMessage, 5000);
 
+        timer = setTimeout(resetMessage, 10000);
+
         // clearTimeout(timer0);
 
         // if (counter != 0) {
@@ -113,7 +115,7 @@ export default function ModeratorMsgComponent(props: Props) {
             setModeratorMessage('開始までお待ちください');
             hostSpeech('開始までお待ちください');
         } else {
-            setModeratorMessage('会議中です');
+            setModeratorMessage('');
         }
     }, []);
 
