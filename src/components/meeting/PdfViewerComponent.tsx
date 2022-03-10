@@ -14,6 +14,7 @@ import store from '../../store';
 import { changeDocumentPageAction } from '../../actions/meetingActions';
 import Socket from '../../utils/webSocket';
 import { sendHandsup, sendReaction } from '../../utils/webSocketUtils';
+import '../../assets/css/Pdfpage.css';
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const { Text } = Typography;
@@ -176,18 +177,19 @@ function PdfViewerComponent(props: Props) {
                         renderTextLayer={false}
                         renderAnnotationLayer={false}
                         width={width}
+                        className="pdf-page"
                     />
                 </Document>
             </Row>
             <Row
                 style={{
-                    width: '90%',
+                    width: '93%',
                     display: 'flex',
                     justifyContent: 'center',
                     marginTop: '4%',
                 }}
             >
-                <Col flex={1} style={{ paddingLeft: '10px' }}>
+                <Col flex={1}>
                     <Button shape="circle" icon={<LeftOutlined />} onClick={() => changePage(-1)} />
                 </Col>
                 <Col flex={30}>
@@ -199,7 +201,7 @@ function PdfViewerComponent(props: Props) {
                             setPageNumber(value);
                         }}
                         value={pageNumber}
-                        style={{ width: '100%' }}
+                        style={{ width: '103%' }}
                     />
                 </Col>
                 <Col flex={1}>
@@ -211,27 +213,24 @@ function PdfViewerComponent(props: Props) {
                     />
                 </Col>
             </Row>
-            <Row style={{ marginLeft: '20%' }}>
-                {/* <Col flex={1} style={{ marginTop: '1%' }}>
-                    <Text style={{ marginLeft: '5%' }}>このページに疑問がありますか？</Text>
-                </Col> */}
-                <Col flex={7}>
+            <Row style={{ width: '97%' }}>
+                <Col style={{ marginLeft: '20%' }}>
                     {/* ここはページ分け疑問ボタン */}
                     <Button
                         type={reactionBottonType}
                         style={{ width: 140 }}
                         icon={<QuestionOutlined />}
-                        shape="round"
+                        // shape="round"
                         onClick={onClickReaction}
                     >
                         わからない
                     </Button>
                 </Col>
-                <Col flex={7}>
+                <Col style={{ marginLeft: '10%' }}>
                     {/* ここは挙手ボタン */}
                     <Button
                         style={{ width: 140 }}
-                        shape="round"
+                        // shape="round"
                         type={handsupBottonType}
                         icon={handsupBottonIcon}
                         onClick={onClickHansup}

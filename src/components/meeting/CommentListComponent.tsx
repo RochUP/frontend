@@ -1,7 +1,6 @@
-import { Button, Card, Col, Input, List, Tooltip } from 'antd';
+import { Button, Card, Col, Input, List } from 'antd';
 import { CommentOutlined } from '@ant-design/icons';
 import '../../assets/css/Pages.css';
-import moment from 'moment';
 import CommentItemComponent from './CommentItemComponent';
 
 import Socket from '../../utils/webSocket';
@@ -107,11 +106,7 @@ export default function CommentListComponent(props: Props) {
                                     id: question.questionId,
                                     author: '匿名',
                                     content: <p>{question.questionBody}</p>,
-                                    datetime: (
-                                        <Tooltip title={question.questionTime}>
-                                            <span>{moment(question.questionTime).fromNow()}</span>
-                                        </Tooltip>
-                                    ),
+                                    datetime: <span>{question.questionTime}</span>,
                                     like: question.voteNum,
                                     isLiked: question.isVote,
                                 };
@@ -147,7 +142,7 @@ export default function CommentListComponent(props: Props) {
                         handleClick();
                     }}
                 >
-                    Comment
+                    コメント
                 </Button>
             </Col>
         </div>
