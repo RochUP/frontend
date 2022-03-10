@@ -1,10 +1,9 @@
-import { Button, Col, Row, Slider, Space, Typography } from 'antd';
-import { useEffect, useState } from 'react';
+import { Button, Col, Row, Slider, Space } from 'antd';
+import { useEffect, useMemo, useState } from 'react';
 import {
     RightOutlined,
     LeftOutlined,
     QuestionOutlined,
-    ArrowRightOutlined,
     ArrowDownOutlined,
     ArrowUpOutlined,
 } from '@ant-design/icons';
@@ -15,8 +14,6 @@ import { changeDocumentPageAction } from '../../actions/meetingActions';
 import Socket from '../../utils/webSocket';
 import { sendHandsup, sendReaction } from '../../utils/webSocketUtils';
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-
-const { Text } = Typography;
 
 type Props = {
     socket: Socket;
@@ -31,7 +28,6 @@ function PdfViewerComponent(props: Props) {
     const documentPageNow = useSelector((state: any) => state.meetingReducer.documentPageNow);
 
     const [numPages, setNumPages] = useState<number>(0);
-    const [pageNumber, setPageNumber] = useState(documentPageNow);
 
     const [width, setWidth] = useState<number | undefined>(0);
 
@@ -43,25 +39,24 @@ function PdfViewerComponent(props: Props) {
         setWidth(document.getElementById('document_row')?.clientWidth);
     });
 
-    useEffect(() => {
-        store.dispatch(changeDocumentPageAction(presenterIdNow, pageNumber));
-    }, [pageNumber]);
-
     function onDocumentLoadSuccess({ numPages }: any) {
         setNumPages(numPages);
     }
 
-    function changePage(offset: number) {
-        if (pageNumber + offset > 0 && pageNumber + offset <= numPages) {
-            setPageNumber(pageNumber + offset);
+    function changePage(pageNumber: number, offset?: number) {
+        if (offset) {
+            pageNumber = documentPageNow + offset;
+        }
+        if (pageNumber > 0 && pageNumber <= numPages) {
+            store.dispatch(changeDocumentPageAction(presenterIdNow, pageNumber));
         }
     }
 
     function onWheelPageChange(event: any) {
         if (event.deltaY > 0) {
-            changePage(1);
+            changePage(documentPageNow, 1);
         } else {
-            changePage(-1);
+            changePage(documentPageNow, -1);
         }
     }
 
@@ -114,48 +109,26 @@ function PdfViewerComponent(props: Props) {
         }
     }, [props.ModeratorMsgSocket]);
 
-    /*****************************************************/
-
     /* わからないボタン ********************************************************/
 
+    const documentPageNowIndex = useMemo(() => documentPageNow - 1, [documentPageNow]);
     const [isReactedPage, setIsReactedPage] = useState(Array(numPages).fill(false)); //どのページにリアクションしているか
     const [reactionBottonType, setReactionBottonType] = useState<
         'primary' | 'default' | 'link' | 'text' | 'ghost' | 'dashed' | undefined
     >('primary');
 
     const onClickReaction = () => {
-        if (!isReactedPage[pageNumber - 1]) {
-            handleReactionOn();
-        } else {
-            handleReactionOff();
-        }
-    };
-
-    const handleReactionOn = () => {
-        sendReaction(props.socket, props.documentId, pageNumber, true);
-        const isReactedPage_copy = isReactedPage.slice();
-        isReactedPage_copy[pageNumber - 1] = true;
-        setIsReactedPage(isReactedPage_copy);
-
-        setReactionBottonType('ghost');
-    };
-
-    const handleReactionOff = () => {
-        sendReaction(props.socket, props.documentId, pageNumber, false);
-        const isReactedPage_copy = isReactedPage.slice();
-        isReactedPage_copy[pageNumber - 1] = false;
-        setIsReactedPage(isReactedPage_copy);
-
-        setReactionBottonType('primary');
+        const reactionOn = !isReactedPage[documentPageNowIndex];
+        sendReaction(props.socket, props.documentId, documentPageNow, reactionOn);
+        const newIsReactionPage = isReactedPage.map((v, i) =>
+            documentPageNowIndex === i ? reactionOn : v
+        );
+        setIsReactedPage(newIsReactionPage);
     };
 
     useEffect(() => {
-        if (isReactedPage[pageNumber - 1]) {
-            setReactionBottonType('ghost');
-        } else {
-            setReactionBottonType('primary');
-        }
-    }, [pageNumber]);
+        setReactionBottonType(isReactedPage[documentPageNowIndex] ? 'ghost' : 'primary');
+    }, [isReactedPage, documentPageNowIndex]);
 
     /*****************************************************/
 
@@ -172,7 +145,7 @@ function PdfViewerComponent(props: Props) {
             >
                 <Document file={props.documentUrl} onLoadSuccess={onDocumentLoadSuccess}>
                     <Page
-                        pageNumber={pageNumber}
+                        pageNumber={documentPageNow}
                         renderTextLayer={false}
                         renderAnnotationLayer={false}
                         width={width}
@@ -188,17 +161,21 @@ function PdfViewerComponent(props: Props) {
                 }}
             >
                 <Col flex={1} style={{ paddingLeft: '10px' }}>
-                    <Button shape="circle" icon={<LeftOutlined />} onClick={() => changePage(-1)} />
+                    <Button
+                        shape="circle"
+                        icon={<LeftOutlined />}
+                        onClick={() => changePage(documentPageNow, -1)}
+                    />
                 </Col>
                 <Col flex={30}>
                     <Slider
-                        defaultValue={pageNumber}
+                        defaultValue={documentPageNow}
                         min={1}
                         max={numPages}
                         onChange={(value) => {
-                            setPageNumber(value);
+                            changePage(value);
                         }}
-                        value={pageNumber}
+                        value={documentPageNow}
                         style={{ width: '100%' }}
                     />
                 </Col>
@@ -206,15 +183,12 @@ function PdfViewerComponent(props: Props) {
                     <Button
                         shape="circle"
                         icon={<RightOutlined />}
-                        onClick={() => changePage(1)}
+                        onClick={() => changePage(documentPageNow, 1)}
                         style={{ marginLeft: '80%' }}
                     />
                 </Col>
             </Row>
             <Row style={{ marginLeft: '20%' }}>
-                {/* <Col flex={1} style={{ marginTop: '1%' }}>
-                    <Text style={{ marginLeft: '5%' }}>このページに疑問がありますか？</Text>
-                </Col> */}
                 <Col flex={7}>
                     {/* ここはページ分け疑問ボタン */}
                     <Button
