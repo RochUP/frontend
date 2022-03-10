@@ -106,13 +106,14 @@ export default function MeetingHost() {
     const createMeeting = async () => {
         console.log('Create Meeting');
         const meetingName = (document.getElementById('meetingName') as HTMLInputElement).value;
-        const meetingDate = (document.getElementById('meetingDate') as HTMLInputElement).value;
+        let meetingDate = (document.getElementById('meetingDate') as HTMLInputElement).value;
         const presenterIds = new Array<string>(presenters.length);
         for (let i = 0; i < presenterIds.length; i++) {
             presenterIds[i] = (
                 document.getElementById('presenterId' + i) as HTMLInputElement
             ).value;
         }
+        meetingDate = meetingDate + ':00';
         console.log(meetingName);
         console.log(meetingDate);
         console.log(presenterIds);
