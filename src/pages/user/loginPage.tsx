@@ -59,8 +59,9 @@ export default function LoginPage() {
 
     function error() {
         Modal.error({
-            content: 'ログイン失敗しました',
-            okButtonProps: {},
+            title: 'ログイン失敗',
+            content: 'ユーザIDまたはパスワードが間違っています',
+            okText: '了解',
         });
     }
 
