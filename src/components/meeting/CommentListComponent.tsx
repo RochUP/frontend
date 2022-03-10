@@ -1,7 +1,7 @@
+
 import { Button, Card, Col, Input, List, Tooltip } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
 import '../../assets/css/Pages.css';
-import moment from 'moment';
 import CommentItemComponent from './CommentItemComponent';
 
 import Socket from '../../utils/webSocket';
@@ -113,7 +113,7 @@ export default function CommentListComponent(props: Props) {
                                                 }
                                             >
                                                 {question.questionBody}
-                                            </p>{' '}
+                                            </p>
                                         </Tooltip>
                                     ),
                                     datetime: (
