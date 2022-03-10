@@ -9,6 +9,8 @@ import RegisterPage from './pages/user/register';
 import MeetingJoin from './pages/meeting/MeetingJoin';
 import MeetingHost from './pages/meeting/MeetingHost';
 import InMeeting from './pages/meeting/InMeeting';
+import NotFound from './pages/NotFoundPage';
+
 import { ConfigProvider } from 'antd';
 import jaJP from 'antd/lib/locale/ja_JP';
 
@@ -27,6 +29,7 @@ function App() {
                             <Route path="/meeting/join" element={<MeetingJoin />} />
                             <Route path="/meeting/host" element={<MeetingHost />} />
                             <Route path="/meeting/in" element={<InMeeting />} />
+                            <Route path="*" element={<NotFound />} />
                         </Routes>
                     </Router>
                 </Provider>
