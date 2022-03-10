@@ -100,7 +100,8 @@ export default function InMeeting() {
                         res.documentIds,
                         res.documentPages,
                         res.questionTimes,
-                        res.presenterIds
+                        res.presenterIds,
+                        res.voteNums
                     )
                 );
             })
