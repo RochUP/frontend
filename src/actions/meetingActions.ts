@@ -43,6 +43,26 @@ export const changeDocumentPageAction = (presenterIdNow: number, documentPageNow
     },
 });
 
+export const GET_QUESTIONS = 'GET_QUESTIONS';
+export const getQuestionsAction = (
+    questionIds: number[],
+    questionBodys: string[],
+    documentIds: number[],
+    documentPages: number[],
+    questionTimes: string[],
+    presenterIds: string[]
+) => ({
+    type: GET_QUESTIONS,
+    payload: {
+        questionIds,
+        questionBodys,
+        documentIds,
+        documentPages,
+        questionTimes,
+        presenterIds,
+    },
+});
+
 export const ADD_QUESTION = 'ADD_QUESTION';
 export const addQuestionAction = (question: any) => ({
     type: ADD_QUESTION,

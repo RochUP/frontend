@@ -32,6 +32,7 @@ import {
     addQuestionAction,
     addQuestionVoteAction,
     changeDocumentPageAction,
+    getQuestionsAction,
     meetingExitAction,
 } from '../../actions/meetingActions';
 import CommentListComponent from '../../components/meeting/CommentListComponent';
@@ -39,7 +40,7 @@ import DocumentComponent from '../../components/meeting/DocumentComponent';
 import MeetingHeader from '../../components/meeting/MeetingHeader';
 import ModeratorMsgComponent from '../../components/meeting/ModeratorMsgComponent';
 import store from '../../store';
-import { registerDocument } from '../../utils/api';
+import { getQuestions, registerDocument } from '../../utils/api';
 import { uploadFile2AzureStorage } from '../../utils/azureStorage';
 import Socket from '../../utils/webSocket';
 import { receiveData, sendFinishword, sendHandsup } from '../../utils/webSocketUtils';
@@ -58,6 +59,11 @@ export default function InMeeting() {
 
     const userId = useSelector((state: any) => state.userReducer.userid);
     const meetingId = useSelector((state: any) => state.meetingReducer.meetingId);
+    const presenterIds = useSelector((state: any) => state.meetingReducer.presenterIds);
+    const presenterNames = useSelector((state: any) => state.meetingReducer.presenterNames);
+    const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow);
+    const documentIds = useSelector((state: any) => state.meetingReducer.documentIds);
+    const documentPageNow = useSelector((state: any) => state.meetingReducer.documentPageNow);
 
     useEffect(() => {
         if (meetingId === 0) {
@@ -68,13 +74,34 @@ export default function InMeeting() {
 
         //音声認識開始
         SpeechRecognition.startListening({ language: 'ja', continuous: true });
+
+        // 過去の質問をgetする
+        getPastQuestions();
     }, []);
 
-    const presenterIds = useSelector((state: any) => state.meetingReducer.presenterIds);
-    const presenterNames = useSelector((state: any) => state.meetingReducer.presenterNames);
-    const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow);
-    const documentIds = useSelector((state: any) => state.meetingReducer.documentIds);
-    const documentPageNow = useSelector((state: any) => state.meetingReducer.documentPageNow);
+    const getPastQuestions = async () => {
+        await getQuestions(meetingId)
+            .then((res) => {
+                if (!res.result) {
+                    throw new Error('getQuestions error');
+                }
+                store.dispatch(
+                    getQuestionsAction(
+                        res.questionIds,
+                        res.questionBodys,
+                        res.documentIds,
+                        res.documentPages,
+                        res.questionTimes,
+                        res.presenterIds
+                    )
+                );
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
+    const [tabPresenterId, setTabPresenterId] = useState(presenterIdNow);
 
     /* websocket系 *************************************/
     const [questionSocket, setQuestionSocket] = useState();
@@ -105,6 +132,7 @@ export default function InMeeting() {
                         store.dispatch(
                             changeDocumentPageAction(presenterIds[data.presenterOrder], 1)
                         );
+                        setTabPresenterId(presenterIds[data.presenterOrder]);
                     }
                     break;
                 case 'document_update':
@@ -353,7 +381,10 @@ export default function InMeeting() {
                             type="card"
                             defaultActiveKey={presenterIds[0]}
                             style={{ width: '100%' }}
-                            activeKey={presenterIdNow}
+                            activeKey={tabPresenterId}
+                            onTabClick={(key) => {
+                                setTabPresenterId(key);
+                            }}
                         >
                             {presenterIds.map((presenterId: string, index: number) => {
                                 return (

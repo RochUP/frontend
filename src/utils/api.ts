@@ -169,3 +169,27 @@ export async function getDocument(documentId: string) {
             throw err;
         });
 }
+
+export async function getQuestions(meetingId: string) {
+    const data = {
+        meetingId: meetingId,
+    };
+
+    return await post('/questions', data)
+        .then((res) => {
+            const res_data = {
+                result: res.result,
+                meetingId: res.meetingId,
+                questionIds: res.questionIds,
+                questionBodys: res.questionBodys,
+                documentIds: res.documentIds,
+                documentPages: res.documentPages,
+                questionTimes: res.questionTimes,
+                presenterIds: res.presenterIds,
+            };
+            return res_data;
+        })
+        .catch((err) => {
+            throw err;
+        });
+}
