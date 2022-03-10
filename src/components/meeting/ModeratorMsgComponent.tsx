@@ -3,6 +3,7 @@ import { Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
+import { setInterval } from 'timers/promises';
 
 const { Title } = Typography;
 
@@ -24,8 +25,11 @@ export default function ModeratorMsgComponent(props: Props) {
     var synthesizer = new sdk.SpeechSynthesizer(speechConfig, audioConfig);
 
     const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow);
+    const meetingStartTime = useSelector((state: any) => state.meetingReducer.meetingStartTime);
 
-    const [message, setModeratorMessage] = useState('開始までお待ちください');
+    // const { setInterval } = require('timers/promises');
+
+    const [message, setModeratorMessage] = useState('');
 
     const hostSpeech = async (message: string) => {
         await synthesizer.speakTextAsync(
@@ -65,13 +69,51 @@ export default function ModeratorMsgComponent(props: Props) {
     }, [props.data]);
 
     useEffect(() => {
-        hostSpeech(message);
+        let date = new Date();
+
+        const qyear = String(date.getFullYear());
+        let qmonth = String(date.getMonth() + 1);
+        let qday = String(date.getDate());
+        let qhours = String(date.getHours());
+        let qminutes = String(date.getMinutes());
+        let qseconds = String(date.getSeconds());
+
+        qmonth = setTime(qmonth);
+        qday = setTime(qday);
+        qhours = setTime(qhours);
+        qminutes = setTime(qminutes);
+        qseconds = setTime(qseconds);
+
+        const nowtime =
+            qyear + '/' + qmonth + '/' + qday + ' ' + qhours + ':' + qminutes + ':' + qseconds;
+
+        if (meetingStartTime > nowtime) {
+            setModeratorMessage('開始までお待ちください');
+            hostSpeech('開始までお待ちください');
+        } else {
+            setModeratorMessage('会議中です');
+        }
     }, []);
+
+    const setTime = (date: string) => {
+        if (Number(date) < 10) {
+            date = '0' + date;
+        }
+        return date;
+    };
+
+    // const resetMessage = () => {
+    //     setModeratorMessage('');
+    //     console.log('reset');
+    //     return 0;
+    // };
+
+    // var i = setInterval(resetMessage(), 2000);
 
     return (
         <Col span={24}>
             <audio id="audio" controls={false}></audio>
-            <Title level={4} style={{ width: '100%', textAlign: 'center' }}>
+            <Title level={4} style={{ width: '100%', textAlign: 'center', minHeight: 20 }}>
                 {message}
             </Title>
         </Col>
