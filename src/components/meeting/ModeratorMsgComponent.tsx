@@ -26,6 +26,7 @@ export default function ModeratorMsgComponent(props: Props) {
 
     const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow);
     const meetingStartTime = useSelector((state: any) => state.meetingReducer.meetingStartTime);
+    const presenterOrder = useSelector((state: any) => state.meetingReducer.presenterOrder);
 
     //司会メッセージ
     const [message, setModeratorMessage] = useState('');
