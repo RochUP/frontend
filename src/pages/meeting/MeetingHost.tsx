@@ -16,7 +16,7 @@ import { UserAddOutlined, UserDeleteOutlined } from '@ant-design/icons';
 import { Typography } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import '../../assets/css/Pages.css';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { meetingCreate, meetingJoin } from '../../utils/api';
 import store from '../../store';
 import { meetingJoinAction } from '../../actions/meetingActions';
@@ -29,11 +29,6 @@ import jaJP from 'antd/lib/locale/ja_JP';
 dayjs.locale('ja');
 
 const { Footer, Content } = Layout;
-
-// function onChange(value: any, dateString: any) {
-//     console.log('Selected Time: ', value);
-//     console.log('Formatted Selected Time: ', dateString);
-// }
 
 function onOk(value: any) {
     console.log('onOk: ', value);
@@ -83,7 +78,7 @@ export default function MeetingHost() {
     function error() {
         Modal.error({
             title: 'エラー',
-            content: 'ミーティング作成できませんでした。',
+            content: '会議作成できませんでした。',
         });
     }
 
@@ -106,22 +101,19 @@ export default function MeetingHost() {
     const createMeeting = async () => {
         console.log('Create Meeting');
         const meetingName = (document.getElementById('meetingName') as HTMLInputElement).value;
-        let meetingDate = (document.getElementById('meetingDate') as HTMLInputElement).value;
+        const meetingDate =
+            (document.getElementById('meetingDate') as HTMLInputElement).value + ':00';
         const presenterIds = new Array<string>(presenters.length);
+
         for (let i = 0; i < presenterIds.length; i++) {
             presenterIds[i] = (
                 document.getElementById('presenterId' + i) as HTMLInputElement
             ).value;
         }
-        meetingDate = meetingDate + ':00';
 
         console.log(meetingName);
         console.log(meetingDate);
         console.log(presenterIds);
-        // TODO:
-        // - レスポンスが帰ってくるまでロード画面にする
-        // - 作成完了したら画面遷移
-        // - 返ってくるのはidだけになったのでどこかでjoinリクエストを投げる
 
         setSpinning(true);
 
@@ -131,13 +123,10 @@ export default function MeetingHost() {
                 if (!res.result) {
                     throw new Error('Meeting Create Failed');
                 }
-                // storeMeetingData(res);
-                // alert("meeting ID: "+res.meetingId+" created");
                 joinMeeting(res.meetingId);
             })
             .catch((err) => {
                 console.log(err);
-                // alert(err.message);
                 error();
                 setSpinning(false);
             });
@@ -146,10 +135,6 @@ export default function MeetingHost() {
     const joinMeeting = async (meetingId: number) => {
         console.log('Join Meeting');
         console.log(userid, meetingId);
-
-        // TODO:
-        // - レスポンスが帰ってくるまでロード画面にする
-        // - 作成完了したら画面遷移
 
         setSpinning(true);
 
@@ -160,9 +145,7 @@ export default function MeetingHost() {
                     throw new Error('Join Meeting Failed');
                 }
                 storeMeetingData(meetingId, res);
-                // alert("join success");
                 success();
-                // navigate("/meeting/in");
             })
             .catch((err: any) => {
                 console.log(err);
@@ -189,7 +172,7 @@ export default function MeetingHost() {
             <Layout>
                 <MeetingHeader />
                 <Content style={{ padding: '0 50px', margin: '16px 0', height: '100%' }}>
-                    <Title style={{ margin: '16px 0' }}>○○システム</Title>
+                    <Title style={{ margin: '16px 0' }}>Plithos</Title>
                     <Breadcrumb style={{ margin: '16px 0' }}>
                         <Breadcrumb.Item>会議</Breadcrumb.Item>
                         <Breadcrumb.Item>会議作成</Breadcrumb.Item>
@@ -199,12 +182,12 @@ export default function MeetingHost() {
                         style={{ background: '#fff', margin: '16px 0' }}
                     >
                         <Card
-                            title="ミーティングを作成する"
+                            title="会議を作成する"
                             bordered={false}
                             style={{ width: '100%', textAlign: 'center' }}
                         >
                             <Space direction="vertical" style={{ width: '100%' }}>
-                                <p>ミーティングを作成するために、詳細設定で設定してください。</p>
+                                <p>会議を作成するために、詳細設定で設定してください。</p>
                                 <Row gutter={[16, 16]}>
                                     <Col span={8}></Col>
                                     <Col span={8}>
@@ -279,7 +262,7 @@ export default function MeetingHost() {
                                     style={{ width: '20%' }}
                                     onClick={createMeeting}
                                 >
-                                    ミーティングを作成する
+                                    会議を作成する
                                 </Button>
                                 <Link to={'../meeting/join'}>
                                     <Button type="default" style={{ width: '20%' }}>
