@@ -1,5 +1,4 @@
 import './App.css';
-import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './store';
@@ -8,9 +7,9 @@ import TestPage from './pages/TestPage';
 import LoginPage from './pages/user/loginPage';
 import RegisterPage from './pages/user/register';
 import MeetingJoin from './pages/meeting/MeetingJoin';
-import Chat from './pages/meeting/chat';
 import MeetingHost from './pages/meeting/MeetingHost';
 import InMeeting from './pages/meeting/InMeeting';
+import LoginPageTest from './pages/LoginTestPage';
 
 function App() {
     return (
@@ -26,6 +25,7 @@ function App() {
                         <Route path="/meeting/join" element={<MeetingJoin />} />
                         <Route path="/meeting/host" element={<MeetingHost />} />
                         <Route path="/meeting/in" element={<InMeeting />} />
+                        <Route path="/test/login" element={<LoginPageTest />} />
                     </Routes>
                 </Router>
             </Provider>

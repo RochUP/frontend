@@ -253,7 +253,8 @@ export default function MeetingHost() {
                                                             ></Input>
                                                             <Button
                                                                 onClick={() => onClickAdd(idx)}
-                                                                type="default"
+                                                                type="primary"
+                                                                ghost
                                                                 icon={<UserAddOutlined />}
                                                                 size={'small'}
                                                             />
