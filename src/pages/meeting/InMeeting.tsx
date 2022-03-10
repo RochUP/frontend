@@ -61,8 +61,6 @@ type ModeratorMsgSocketType = {
 };
 
 const URL = process.env.REACT_APP_WEBSOCKET_URL;
-// const ws = new WebSocket(URL + '');
-// let socket = new Socket(ws);
 let isConnected = false;
 let socket: Socket;
 
@@ -276,6 +274,13 @@ export default function InMeeting() {
         setIsModalVisible(false);
     };
     /**************************************************** */
+    useEffect(() => {
+        return () => {
+            console.log('unmounted');
+            onClickExit();
+        };
+    }, []);
+
     useEffect(() => {
         return () => {
             console.log('unmounted');
