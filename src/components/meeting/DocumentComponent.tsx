@@ -6,9 +6,12 @@ import { getDocumentAction } from '../../actions/meetingActions';
 import PdfViewerComponent from '../../components/meeting/PdfViewerComponent';
 import store from '../../store';
 import { getDocument } from '../../utils/api';
+import Socket from '../../utils/webSocket';
 
 type Props = {
-    socket: any;
+    socket: Socket;
+    documentSocket: any;
+    ModeratorMsgSocket: any;
     presenterId: string;
     index: number;
 };
@@ -48,18 +51,23 @@ export default function DocumentComponent(props: Props) {
                     console.log(err);
                 });
         })();
-    }, [props.socket]);
+    }, [props.documentSocket]);
 
     return (
-        <Card style={{ width: '100%', minHeight: 500, maxHeight: 500 }}>
+        <Card style={{ width: '100%', minHeight: 550, maxHeight: 550 }}>
             <Row>
                 <Col span={12}>
-                    <PdfViewerComponent documentUrl={documentUrls[props.index]} />
+                    <PdfViewerComponent
+                        socket={props.socket}
+                        ModeratorMsgSocket={props.ModeratorMsgSocket}
+                        documentId={documentIds[props.index]}
+                        documentUrl={documentUrls[props.index]}
+                    />
                 </Col>
                 <Col span={12}>
                     <Typography.Paragraph
                         style={{
-                            maxHeight: '450px',
+                            maxHeight: '500px',
                             textAlign: 'left',
                             whiteSpace: 'pre-line',
                             overflowY: 'auto',
