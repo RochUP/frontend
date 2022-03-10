@@ -45,7 +45,7 @@ export default function CommentListComponent(props: Props) {
 
         const qyear = String(date.getFullYear());
         let qmonth = String(date.getMonth() + 1);
-        let qday = String(date.getDay());
+        let qday = String(date.getDate());
         let qhours = String(date.getHours());
         let qminutes = String(date.getMinutes());
         let qseconds = String(date.getSeconds());
@@ -84,8 +84,8 @@ export default function CommentListComponent(props: Props) {
         setquestion(e.target.value);
     };
 
-    const changeDocumentPage = useCallback((presenterId: number, page: number) => {
-        store.dispatch(changeDocumentPageAction(presenterId, page));
+    const changeDocumentPage = useCallback((page: number) => {
+        store.dispatch(changeDocumentPageAction(props.presenterId, page));
     }, []);
 
     return (
@@ -106,10 +106,7 @@ export default function CommentListComponent(props: Props) {
                                         <Tooltip title={`P.${question.documentPage}へのコメント`}>
                                             <p
                                                 onClick={() =>
-                                                    changeDocumentPage(
-                                                        question.presenterId,
-                                                        question.documentPage
-                                                    )
+                                                    changeDocumentPage(question.documentPage)
                                                 }
                                             >
                                                 {question.questionBody}
