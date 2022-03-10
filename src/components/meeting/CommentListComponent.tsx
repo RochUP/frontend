@@ -1,24 +1,17 @@
 import { Button, Card, Col, Input, List, Tooltip } from 'antd';
-import { CommentOutlined } from '@ant-design/icons';
+import { SendOutlined } from '@ant-design/icons';
 import '../../assets/css/Pages.css';
 import moment from 'moment';
 import CommentItemComponent from './CommentItemComponent';
 
 import Socket from '../../utils/webSocket';
+import store from '../../store';
+import { changeDocumentPageAction } from '../../actions/meetingActions';
 
 import { sendQuestion } from '../../utils/webSocketUtils';
 import { useSelector } from 'react-redux';
 
-import { useState } from 'react';
-
-// type SocketData = {
-//     messageType: string;
-//     meetingId: number;
-//     questionBody: string;
-//     documentId: number;
-//     documentPage: number;
-//     questionTime: string;
-// }
+import { useCallback, useState } from 'react';
 
 type Props = {
     socket: Socket;
@@ -91,6 +84,10 @@ export default function CommentListComponent(props: Props) {
         setquestion(e.target.value);
     };
 
+    const changeDocumentPage = useCallback((presenterId: number, page: number) => {
+        store.dispatch(changeDocumentPageAction(presenterId, page));
+    }, []);
+
     return (
         <div style={{ width: '100%' }}>
             <Col span={24} style={{ width: '100%' }}>
@@ -102,15 +99,29 @@ export default function CommentListComponent(props: Props) {
                         className="comment-list"
                         itemLayout="horizontal"
                         dataSource={questionList[presenterIds.indexOf(props.presenterId)].map(
-                            (question: any, idx: number) => {
+                            (question: any, _: number) => {
                                 return {
                                     id: question.questionId,
-                                    author: '匿名',
-                                    content: <p>{question.questionBody}</p>,
-                                    datetime: (
-                                        <Tooltip title={question.questionTime}>
-                                            <span>{moment(question.questionTime).fromNow()}</span>
+                                    content: (
+                                        <Tooltip title={`P.${question.documentPage}へのコメント`}>
+                                            <p
+                                                onClick={() =>
+                                                    changeDocumentPage(
+                                                        question.presenterId,
+                                                        question.documentPage
+                                                    )
+                                                }
+                                            >
+                                                {question.questionBody}
+                                            </p>{' '}
                                         </Tooltip>
+                                    ),
+                                    datetime: (
+                                        <span>
+                                            {moment(question.questionTime).format(
+                                                'YYYY年MM月DD日 HH時mm分ss秒'
+                                            )}
+                                        </span>
                                     ),
                                     like: question.voteNum,
                                     isLiked: question.isVote,
@@ -131,24 +142,25 @@ export default function CommentListComponent(props: Props) {
                     />
                 </Card>
             </Col>
-            <Col span={24} style={{ padding: '8px 0', margin: '8px' }}>
-                <Input
-                    placeholder="ここにコメントを書いてください"
-                    style={{ width: '60%', marginLeft: '5%' }}
-                    id={'question' + props.presenterId}
-                    value={questionform}
-                    onChange={handleChange}
-                ></Input>
-                <Button
-                    type="primary"
-                    icon={<CommentOutlined />}
-                    style={{ width: '30%' }}
-                    onClick={() => {
-                        handleClick();
-                    }}
-                >
-                    Comment
-                </Button>
+            <Col span={24} style={{ padding: '8px', margin: '8px' }}>
+                <Input.Group compact>
+                    <Input
+                        placeholder={`資料P.${documentPageNow}にコメントを送信する`}
+                        style={{ width: 'calc(100% - 50px)' }}
+                        id={'question' + props.presenterId}
+                        value={questionform}
+                        onChange={handleChange}
+                    ></Input>
+                    <Button
+                        type="primary"
+                        icon={<SendOutlined />}
+                        style={{ width: '50px' }}
+                        onClick={() => {
+                            handleClick();
+                        }}
+                        disabled={questionform === ''}
+                    />
+                </Input.Group>
             </Col>
         </div>
     );
