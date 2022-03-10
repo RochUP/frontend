@@ -1,4 +1,15 @@
-import { Breadcrumb, Button, Card, InputNumber, Layout, Space, Spin, Typography } from 'antd';
+import {
+    Breadcrumb,
+    Button,
+    Card,
+    Col,
+    InputNumber,
+    Layout,
+    Row,
+    Space,
+    Spin,
+    Typography,
+} from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import '../../assets/css/Pages.css';
 import { useSelector } from 'react-redux';
@@ -8,16 +19,13 @@ import { meetingJoinAction } from '../../actions/meetingActions';
 import MeetingHeader from '../../components/meeting/MeetingHeader';
 import { useEffect, useState } from 'react';
 
-const { Footer, Content } = Layout;
-
 export default function MeetingJoin() {
-    const { Title } = Typography;
     const navigate = useNavigate();
 
     const userid = useSelector((state: any) => state.userReducer.userid);
 
     useEffect(() => {
-        if (userid == '') {
+        if (userid === '') {
             navigate('/login');
         }
     }, []);
@@ -71,68 +79,75 @@ export default function MeetingJoin() {
         <Spin size="large" spinning={spinning}>
             <Layout>
                 <MeetingHeader />
-                <Content style={{ padding: '0 50px', margin: '16px 0', height: '100%' }}>
-                    <Title style={{ margin: '16px 0' }}>○○システム</Title>
+                <Layout.Content style={{ padding: '0 50px', margin: '16px 0', height: '100%' }}>
+                    <Typography.Title style={{ margin: '16px 0' }}>Plithos</Typography.Title>
                     <Breadcrumb style={{ margin: '16px 0' }}>
                         <Breadcrumb.Item>会議</Breadcrumb.Item>
                         <Breadcrumb.Item>会議参加</Breadcrumb.Item>
                     </Breadcrumb>
-                    <div
-                        className="site-layout-content"
-                        style={{ background: '#fff', margin: '16px 0' }}
-                    >
-                        <Card
-                            title="ミーティングに参加する"
-                            bordered={false}
-                            style={{ width: '100%', textAlign: 'center' }}
+                    <Row gutter={[16, 16]}>
+                        <Col
+                            xs={{ span: 24 }}
+                            lg={{ span: 12 }}
+                            // className="site-layout-content"
+                            // style={{ background: '#fff', margin: '16px 0' }}
                         >
-                            <Space
-                                direction="vertical"
-                                style={{ width: '100%', textAlign: 'center' }}
+                            <Card
+                                title="会議に参加する"
+                                bordered={false}
+                                style={{ minHeight: '300px', width: '100%', textAlign: 'center' }}
                             >
-                                <p>ミーティングID</p>
-                                <InputNumber
-                                    id="meetingId"
-                                    type={'number'}
-                                    style={{ width: '15%', textAlign: 'center' }}
-                                    placeholder="ミーティングIDを入力してください"
-                                    min={1}
-                                    controls={false}
-                                />
-                                <p style={{ margin: '16px 0' }}>
-                                    ミーティングに参加するために、ミーティング開催者からミーティングIDを取得してください。
-                                </p>
-                                <Button
-                                    type="primary"
-                                    style={{ width: '20%' }}
-                                    onClick={joinMeeting}
+                                <Space
+                                    direction="vertical"
+                                    style={{ width: '100%', textAlign: 'center' }}
                                 >
-                                    ミーティングに参加する
-                                </Button>
-                            </Space>
-                        </Card>
-                    </div>
-                    <div
-                        className="site-layout-content"
-                        style={{ background: '#fff', margin: '16px 0' }}
-                    >
-                        <Card
-                            title="ミーティング開催者ですか？"
-                            bordered={false}
-                            style={{ width: '100%', textAlign: 'center' }}
+                                    <p>会議ID</p>
+                                    <InputNumber
+                                        id="meetingId"
+                                        type={'number'}
+                                        style={{ minWidth: '200px', textAlign: 'center' }}
+                                        placeholder="会議IDを入力"
+                                        min={1}
+                                        controls={false}
+                                    />
+                                    <p style={{ margin: '16px 0' }}>
+                                        会議開催者から会議IDを取得してください
+                                    </p>
+                                    <Button
+                                        type="primary"
+                                        // style={{ width: '20%' }}
+                                        onClick={joinMeeting}
+                                    >
+                                        会議に参加する
+                                    </Button>
+                                </Space>
+                            </Card>
+                        </Col>
+                        <Col
+                            xs={{ span: 24 }}
+                            lg={{ span: 12 }}
+                            // className="site-layout-content"
+                            // style={{ background: '#fff', margin: '16px 0' }}
                         >
-                            <p style={{ margin: '16px 0' }}>
-                                ミーティングを作成するために、詳細設定で設定してください。
-                            </p>
-                            <Link to={'../meeting/host'}>
-                                <Button type="primary" style={{ width: '20%' }}>
-                                    ミーティングを作成する
-                                </Button>
-                            </Link>
-                        </Card>
-                    </div>
-                </Content>
-                <Footer
+                            <Card
+                                title="会議開催者ですか？"
+                                bordered={false}
+                                style={{ minHeight: '300px', width: '100%', textAlign: 'center' }}
+                            >
+                                <p style={{ margin: '16px 0' }}>会議情報を設定してください</p>
+                                <Link to={'../meeting/host'}>
+                                    <Button
+                                        type="primary"
+                                        // style={{ width: '20%' }}
+                                    >
+                                        会議を作成する
+                                    </Button>
+                                </Link>
+                            </Card>
+                        </Col>
+                    </Row>
+                </Layout.Content>
+                <Layout.Footer
                     style={{
                         position: 'relative',
                         left: 0,
@@ -143,7 +158,7 @@ export default function MeetingJoin() {
                     }}
                 >
                     Made by RochUP Team
-                </Footer>
+                </Layout.Footer>
             </Layout>
         </Spin>
     );

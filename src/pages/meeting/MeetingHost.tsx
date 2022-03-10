@@ -191,7 +191,7 @@ export default function MeetingHost() {
                         style={{ background: '#fff', margin: '16px 0' }}
                     >
                         <Card
-                            title="会議を作成"
+                            title="会議を作成する"
                             bordered={false}
                             style={{ width: '100%', textAlign: 'center' }}
                         >
