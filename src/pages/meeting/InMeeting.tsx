@@ -50,9 +50,21 @@ const { Text } = Typography;
 const { TabPane } = Tabs;
 const { confirm } = Modal;
 
+type ModeratorMsgSocketType = {
+    messageType: string;
+    meetingId: number;
+    moderatorMsgBody: string;
+    isStartPresen: boolean;
+    questionId: number;
+    userId: string;
+    presenterOrder: number;
+};
+
 const URL = process.env.REACT_APP_WEBSOCKET_URL;
-const ws = new WebSocket(URL + '');
-let socket = new Socket(ws);
+// const ws = new WebSocket(URL + '');
+// let socket = new Socket(ws);
+let isConnected = false;
+let socket: Socket;
 
 export default function InMeeting() {
     const navigate = useNavigate();
@@ -107,7 +119,7 @@ export default function InMeeting() {
     const [questionSocket, setQuestionSocket] = useState();
     const [questionVoteSocket, setQuestionVoteSocket] = useState();
     const [reactionSocket, setReactionSocket] = useState();
-    const [moderatorMsgSocket, setModeratorMsgSocket] = useState();
+    const [moderatorMsgSocket, setModeratorMsgSocket] = useState<ModeratorMsgSocketType>();
     const [documentSocket, setDocumentSocket] = useState();
 
     function setData(e: any) {
@@ -143,11 +155,25 @@ export default function InMeeting() {
             }
         }
     }
+
     useEffect(() => {
-        // 初回レンダリング時のみSocket Onにする
-        console.log('socket on');
-        socket.on('message', setData);
+        if (!isConnected) {
+            // 初回レンダリング時のみSocket Onにする
+            const ws = new WebSocket(URL + '');
+            socket = new Socket(ws);
+            socket.on('connect', () => {
+                console.log('websocket connected');
+            });
+            socket.on('disconnect', () => {
+                console.log('websocket disconnected');
+                isConnected = false;
+            });
+            socket.on('message', setData);
+            isConnected = true;
+            console.log('websocket on');
+        }
     }, []);
+
     /**************************************************** */
 
     /* 発表，質問の終了判定 *************************************/
@@ -155,14 +181,18 @@ export default function InMeeting() {
         {
             command: '*発表を終わ*',
             callback: () => {
-                sendFinishword(socket, meetingId, presenterIdNow, 'present');
+                let questionUserId = '';
+                if (moderatorMsgSocket) questionUserId = moderatorMsgSocket.userId;
+                sendFinishword(socket, meetingId, presenterIdNow, questionUserId, 'present');
             },
             // callback: () => {sendPresenFinish()}
         },
         {
             command: '*質問を終わ*',
             callback: () => {
-                sendFinishword(socket, meetingId, presenterIdNow, 'question');
+                let questionUserId = '';
+                if (moderatorMsgSocket) questionUserId = moderatorMsgSocket.userId;
+                sendFinishword(socket, meetingId, presenterIdNow, questionUserId, 'question');
             },
             // callback: () => {sendQuestionFinish()}
         },
@@ -210,7 +240,9 @@ export default function InMeeting() {
     };
 
     const finishOn = (finishtype: string) => {
-        sendFinishword(socket, meetingId, presenterIdNow, finishtype);
+        let questionUserId = '';
+        if (moderatorMsgSocket) questionUserId = moderatorMsgSocket.userId;
+        sendFinishword(socket, meetingId, presenterIdNow, questionUserId, finishtype);
     };
 
     //ポップアップのokボタンを押した時の処理
@@ -244,12 +276,18 @@ export default function InMeeting() {
         setIsModalVisible(false);
     };
     /**************************************************** */
+    useEffect(() => {
+        return () => {
+            console.log('unmounted');
+            onClickExit();
+        };
+    }, []);
 
     const onClickExit = () => {
         console.log('exit');
         store.dispatch(meetingExitAction());
         SpeechRecognition.stopListening();
-        socket.off('', () => {});
+        socket.ws.close();
         navigate('/meeting/join');
     };
 
