@@ -1,0 +1,13 @@
+.logo {
+    float: left;
+    width: 140px;
+    height: 31px;
+    margin: -10px 24px 16px 0;
+}
+
+.page-logo {
+    float: left;
+    height: 700%;
+    margin: 0 24px 16px 0;
+    padding-bottom: 87%;
+}

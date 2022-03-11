@@ -56,7 +56,7 @@ export default function DocumentComponent(props: Props) {
     return (
         <Card style={{ width: '100%', minHeight: 550, maxHeight: 550 }}>
             <Row>
-                <Col span={12}>
+                <Col span={15}>
                     <PdfViewerComponent
                         socket={props.socket}
                         ModeratorMsgSocket={props.ModeratorMsgSocket}
@@ -64,7 +64,7 @@ export default function DocumentComponent(props: Props) {
                         documentUrl={documentUrls[props.index]}
                     />
                 </Col>
-                <Col span={12}>
+                <Col span={9}>
                     <Typography.Paragraph
                         style={{
                             maxHeight: '500px',

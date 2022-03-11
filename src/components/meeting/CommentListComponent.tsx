@@ -108,46 +108,48 @@ export default function CommentListComponent(props: Props) {
                     }
                     style={{ width: '100%', minHeight: 500, maxHeight: 500, textAlign: 'center' }}
                 >
-                    <List
-                        className="comment-list"
-                        itemLayout="horizontal"
-                        dataSource={questionList[indexnum].map((question: any, _: number) => {
-                            return {
-                                id: question.questionId,
-                                content: (
-                                    <Tooltip title={`P.${question.documentPage}へのコメント`}>
-                                        <p
-                                            onClick={() =>
-                                                changeDocumentPage(question.documentPage)
-                                            }
-                                        >
-                                            {question.questionBody}
-                                        </p>
-                                    </Tooltip>
-                                ),
-                                datetime: (
-                                    <span>
-                                        {moment(question.questionTime).format(
-                                            'YYYY年MM月DD日 HH時mm分ss秒'
-                                        )}
-                                    </span>
-                                ),
-                                like: question.voteNum,
-                                isLiked: question.isVote,
-                            };
-                        })}
-                        style={{
-                            overflowY: 'auto',
-                            overflowX: 'hidden',
-                            textAlign: 'left',
-                            maxHeight: '400px',
-                        }}
-                        renderItem={(item: any, _: number) => (
-                            <li id={item.questionId} style={{ maxWidth: '100%' }}>
-                                <CommentItemComponent socket={props.socket} question={item} />
-                            </li>
-                        )}
-                    />
+                    {!(questionList.length === 0) && (
+                        <List
+                            className="comment-list"
+                            itemLayout="horizontal"
+                            dataSource={questionList[indexnum].map((question: any, _: number) => {
+                                return {
+                                    id: question.questionId,
+                                    content: (
+                                        <Tooltip title={`P.${question.documentPage}へのコメント`}>
+                                            <p
+                                                onClick={() =>
+                                                    changeDocumentPage(question.documentPage)
+                                                }
+                                            >
+                                                {question.questionBody}
+                                            </p>
+                                        </Tooltip>
+                                    ),
+                                    datetime: (
+                                        <span>
+                                            {moment(question.questionTime).format(
+                                                'YYYY年MM月DD日 HH時mm分ss秒'
+                                            )}
+                                        </span>
+                                    ),
+                                    like: question.voteNum,
+                                    isLiked: question.isVote,
+                                };
+                            })}
+                            style={{
+                                overflowY: 'auto',
+                                overflowX: 'hidden',
+                                textAlign: 'left',
+                                maxHeight: '400px',
+                            }}
+                            renderItem={(item: any, _: number) => (
+                                <li id={item.questionId} style={{ maxWidth: '100%' }}>
+                                    <CommentItemComponent socket={props.socket} question={item} />
+                                </li>
+                            )}
+                        />
+                    )}
                 </Card>
             </Col>
             <Col span={24} style={{ padding: '8px', margin: '8px' }}>

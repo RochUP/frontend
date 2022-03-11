@@ -102,7 +102,8 @@ export default function MeetingHost() {
             content: `会議ID: ${meetingId}`,
             okButtonProps: {
                 onClick: () => {
-                    navigate('/meeting/in');
+                    // navigate('/meeting/in');
+                    navigate('/meeting/join');
                     destoryAll();
                 },
             },
@@ -135,13 +136,15 @@ export default function MeetingHost() {
                 if (!res.result) {
                     throw new Error('Meeting Create Failed');
                 }
-                joinMeeting(res.meetingId);
+                // joinMeeting(res.meetingId);
+                success(res.meetingId);
             })
             .catch((err) => {
                 console.log(err);
                 error();
                 setSpinning(false);
             });
+        setSpinning(false);
     };
 
     const joinMeeting = async (meetingId: number) => {
@@ -287,7 +290,7 @@ export default function MeetingHost() {
                 </Layout.Content>
                 <Layout.Footer
                     style={{
-                        position: 'relative',
+                        position: 'fixed',
                         left: 0,
                         bottom: 0,
                         width: '100%',

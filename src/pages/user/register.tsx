@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Alert, Button, Modal, Spin } from 'antd';
+import { Alert, Button, Modal, Spin, Typography } from 'antd';
 import { LoginForm, ProFormText } from '@ant-design/pro-form';
 import { UserOutlined, LockOutlined, IdcardOutlined } from '@ant-design/icons';
 import '@ant-design/pro-form/dist/form.css';
@@ -109,10 +109,20 @@ export default function RegisterPage() {
             <Spin size="large" spinning={spinning}>
                 <div className="login-content">
                     <div className="login-form">
+                        <div className="login-title">
+                            <img
+                                className="login-logo"
+                                src={`${process.env.PUBLIC_URL}/logo_plithos.png`}
+                                alt="logo"
+                            />
+                            <Typography.Text className="login-title-text" type="secondary">
+                                オンラインミーティングアシスタント
+                            </Typography.Text>
+                        </div>
                         <LoginForm
-                            logo="https://github.githubassets.com/images/modules/logos_page/Octocat.png"
-                            title="Plithos"
-                            subTitle="オンラインミーティングアシスタント"
+                            // logo={`${process.env.PUBLIC_URL}/logo.png`}
+                            // title="Plithos"
+                            // subTitle="オンラインミーティングアシスタント"
                             submitter={{
                                 // ここのsearchConfigと下のrenderの方法どっちでも使える
                                 // しかし、searchConfigの方法は、ボタンのスタイルをコントロール困難

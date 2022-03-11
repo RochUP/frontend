@@ -3,6 +3,7 @@ import { UserOutlined } from '@ant-design/icons';
 import SubMenu from 'antd/lib/menu/SubMenu';
 import { useNavigate } from 'react-router-dom';
 import '../../assets/css/Pages.css';
+import '../../assets/css/Logo.css';
 import { useSelector } from 'react-redux';
 import store from '../../store';
 import { userLogout } from '../../actions/userActions';
@@ -39,6 +40,13 @@ export default function MeetingHeader() {
 
     return (
         <Layout.Header style={{ maxHeight: 60 }}>
+            <div className="logo">
+                <img
+                    className="page-logo"
+                    src={`${process.env.PUBLIC_URL}/logo_plithos_rev.png`}
+                    alt="logo"
+                ></img>
+            </div>
             <Menu theme="dark" mode="horizontal" style={{ maxHeight: 60 }}>
                 <SubMenu
                     key="sub1"
