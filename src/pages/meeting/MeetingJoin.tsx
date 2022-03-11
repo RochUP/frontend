@@ -1,16 +1,4 @@
-import {
-    Button,
-    Card,
-    InputNumber,
-    Layout,
-    Space,
-    Spin,
-    Typography,
-    Modal,
-    Divider,
-    Row,
-    Input,
-} from 'antd';
+import { Button, Card, InputNumber, Layout, Space, Spin, Typography, Modal, Divider } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import '../../assets/css/Pages.css';
 import { useSelector } from 'react-redux';
@@ -19,7 +7,7 @@ import store from '../../store';
 import { meetingJoinAction } from '../../actions/meetingActions';
 import MeetingHeader from '../../components/meeting/MeetingHeader';
 import { useEffect, useState } from 'react';
-
+import MeetingHost from './MeetingHost';
 // import ProForm from '@ant-design/pro-form';
 
 export default function MeetingJoin() {
@@ -167,92 +155,20 @@ export default function MeetingJoin() {
                         <Divider />
                         <div className="ant-card-head">会議開催者ですか？</div>
                         <p style={{ margin: '16px 0' }}>会議情報を設定してください</p>
-                        <Link to={'../meeting/host'}>
-                            <Button type="primary" onClick={showModal} style={{ width: '20%' }}>
-                                会議を作成する
-                            </Button>
-                        </Link>
+                        <Button type="primary" onClick={showModal} style={{ width: '20%' }}>
+                            会議を作成する
+                        </Button>
                         {/* ここは会議作成のポップアップ */}
-                        {/* <Modal title="会議作成">
-                            <Space direction="vertical" style={{ width: '100%' }}>
-                                <p>会議情報を設定してください</p>
-                                        <Space direction="vertical">
-                                            <Row>
-                                                <Space>
-                                                    <span>会議名</span>
-                                                    <Input
-                                                        id="meetingName"
-                                                        style={{ width: '135%' }}
-                                                        placeholder="会議名を入力"
-                                                        onChange={onChangeMeetingName}
-                                                    ></Input>
-                                                </Space>
-                                            </Row>
-                                            <Row>
-                                                <ConfigProvider locale={jaJP}>
-                                                    <Space>
-                                                        <span>開始時間</span>
-                                                        <DatePicker
-                                                            id="meetingDate"
-                                                            style={{ width: '124%' }}
-                                                            showTime
-                                                            onChange={onChangeMeetingDate}
-                                                            format="yyyy/MM/DD HH:mm"
-                                                        />
-                                                    </Space>
-                                                </ConfigProvider>
-                                            </Row>
-                                            {presenters.map((presenter, idx) => {
-                                                return (
-                                                    <Row key={'presenter' + idx}>
-                                                        <Space>
-                                                            <span>発表者</span>
-                                                            <Input
-                                                                id={'presenterId' + idx}
-                                                                style={{
-                                                                    width: '100%',
-                                                                    textAlign: 'left',
-                                                                }}
-                                                                placeholder="ユーザーIDを入力"
-                                                                value={presenter}
-                                                                onChange={(e) =>
-                                                                    onChangePresenterId(idx, e)
-                                                                }
-                                                            ></Input>
-                                                            <Button
-                                                                onClick={() => onClickAdd(idx)}
-                                                                type="primary"
-                                                                ghost
-                                                                icon={<UserAddOutlined />}
-                                                                size={'small'}
-                                                            />
-                                                            <Button
-                                                                onClick={() => onClickRemove(idx)}
-                                                                type="default"
-                                                                danger
-                                                                icon={<UserDeleteOutlined />}
-                                                                size={'small'}
-                                                            />
-                                                        </Space>
-                                                    </Row>
-                                                );
-                                            })}
-                                        </Space>
-                                <Button
-                                    type="primary"
-                                    style={{ width: '20%' }}
-                                    onClick={createMeeting}
-                                    disabled={!inputOk}
-                                >
-                                    作成
-                                </Button>
-                                <Link to={'../meeting/join'}>
-                                    <Button type="default" style={{ width: '20%' }}>
-                                        キャンセル
-                                    </Button>
-                                </Link>
-                            </Space>
-                        </Modal> */}
+                        <Modal
+                            title="会議作成"
+                            visible={isModalVisible}
+                            onOk={handleOk}
+                            onCancel={handleCancel}
+                            width={1000}
+                            footer={null}
+                        >
+                            <MeetingHost setHostModalVisiable={setIsModalVisible} />
+                        </Modal>
                     </Card>
                 </Layout.Content>
                 <Layout.Footer

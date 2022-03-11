@@ -47,6 +47,7 @@ import Socket from '../../utils/webSocket';
 import { receiveData, sendFinishword, sendHandsup } from '../../utils/webSocketUtils';
 import { meetingJoinAction } from '../../actions/meetingActions';
 import { dateArrayFormatter } from '@ant-design/pro-utils';
+import { useMemo } from 'react';
 
 const { Footer, Content } = Layout;
 const { Text } = Typography;
@@ -79,12 +80,14 @@ export default function InMeeting() {
     const documentIds = useSelector((state: any) => state.meetingReducer.documentIds);
     const documentPageNow = useSelector((state: any) => state.meetingReducer.documentPageNow);
 
+    const isPresenter = useMemo(() => presenterIds.includes(userId), [presenterIds, userId]);
+
     //会議退出
     const presentOrder = useSelector((state: any) => state.meetingReducer.presentOrder);
     const [spinning, setSpinning] = useState(false);
 
     //発表か質問のどちらかしかボタンを押せないようにする
-    const [presenCheck, setCheck] = useState(true);
+    const [nextType, changeNextType] = useState<'present' | 'question' | 'end'>('present');
 
     useEffect(() => {
         if (meetingId === 0) {
@@ -152,14 +155,16 @@ export default function InMeeting() {
                 case 'moderator_msg':
                     setModeratorMsgSocket(data);
                     if (data.isStartPresen) {
-                        setCheck(true);
                         store.dispatch(
                             changeDocumentPageAction(presenterIds[data.presenterOrder], 1)
                         );
                         store.dispatch(presentChangeAction(data.presenterOrder));
                         setTabPresenterId(presenterIds[data.presenterOrder]);
+                        changeNextType('present');
+                    } else if (data.moderatorMsgBody.match(/会議を終了/)) {
+                        changeNextType('end');
                     } else {
-                        setCheck(false);
+                        changeNextType('question');
                     }
                     break;
                 case 'document_update':
@@ -189,35 +194,33 @@ export default function InMeeting() {
         }
     }, []);
 
-    /**************************************************** */
-
     /* 発表，質問の終了判定 *************************************/
-    const viewFinishButton = () => {
-        if (!presenCheck) {
-            return (
-                <Button
-                    danger
-                    icon={<MessageOutlined />}
-                    disabled={presenCheck}
-                    ghost={presenCheck}
-                    onClick={() => finishOn('question')}
-                >
-                    質問終了
-                </Button>
-            );
-        } else {
-            return (
-                <Button
-                    danger
-                    icon={<CheckCircleOutlined />}
-                    disabled={!presenCheck}
-                    ghost={!presenCheck}
-                    onClick={() => finishOn('present')}
-                >
-                    発表終了
-                </Button>
-            );
+    const finishButtonTitle = useMemo(() => {
+        switch (nextType) {
+            case 'present':
+                return '発表終了';
+            case 'question':
+                return '質問終了';
+            case 'end':
+                return '会議は終了しました';
         }
+    }, [nextType]);
+
+    const FinishButton = () => {
+        return (
+            <Button
+                danger
+                ghost
+                onClick={() => finishOn(nextType)}
+                {...(nextType === 'end'
+                    ? { type: 'text', disabled: true }
+                    : nextType === 'present'
+                    ? { icon: <MessageOutlined /> }
+                    : { icon: <CheckCircleOutlined /> })}
+            >
+                {finishButtonTitle}
+            </Button>
+        );
     };
 
     const commands = [
@@ -227,9 +230,7 @@ export default function InMeeting() {
                 let questionUserId = '';
                 if (moderatorMsgSocket) questionUserId = moderatorMsgSocket.userId;
 
-                if (presenCheck) {
-                    sendFinishword(socket, meetingId, presenterIdNow, questionUserId, 'present');
-                }
+                sendFinishword(socket, meetingId, presenterIdNow, questionUserId, nextType);
             },
             // callback: () => {sendPresenFinish()}
         },
@@ -239,9 +240,7 @@ export default function InMeeting() {
                 let questionUserId = '';
                 if (moderatorMsgSocket) questionUserId = moderatorMsgSocket.userId;
 
-                if (!presenCheck) {
-                    sendFinishword(socket, meetingId, presenterIdNow, questionUserId, 'question');
-                }
+                sendFinishword(socket, meetingId, presenterIdNow, questionUserId, nextType);
             },
             // callback: () => {sendQuestionFinish()}
         },
@@ -249,22 +248,6 @@ export default function InMeeting() {
 
     const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } =
         useSpeechRecognition({ commands });
-
-    // function sendPresenFinish(){
-    //     resetTranscript;
-    //     sendFinishword(socket, meetingId, presenterIdNow, "present");
-    // }
-
-    // function sendQuestionFinish(){
-    //     resetTranscript;
-    //     sendFinishword(socket, meetingId, presenterIdNow, "question")
-    // }
-
-    // setTimeout(()=>resetTranscript,5000);
-
-    /**************************************************** */
-
-    const { Title } = Typography;
 
     /* 資料アップロード処理 *************************************/
     const scripts = useSelector((state: any) => state.meetingReducer.scripts);
@@ -296,8 +279,7 @@ export default function InMeeting() {
 
     //ポップアップのokボタンを押した時の処理
     const handleOk = async () => {
-        const idx = presenterIds.indexOf(userId);
-        if (idx === -1) {
+        if (!isPresenter) {
             alert('You are not presenter');
             setIsModalVisible(false);
             return;
@@ -388,8 +370,7 @@ export default function InMeeting() {
         <Layout>
             <MeetingHeader />
             <Content style={{ padding: '0 40px' }}>
-                {/* <p>{transcript}</p> */}
-                <Title style={{ margin: '10px 0' }}>{meetingName}</Title>
+                <Typography.Title style={{ margin: '10px 0' }}>{meetingName}</Typography.Title>
                 <Breadcrumb style={{ margin: '10px 0' }}>
                     <Breadcrumb.Item>会議ID: {meetingId}</Breadcrumb.Item>
                 </Breadcrumb>
@@ -408,19 +389,26 @@ export default function InMeeting() {
                                     marginRight: '5%',
                                 }}
                             >
-                                {viewFinishButton()}
+                                <FinishButton />
                                 <Tooltip
                                     placement="topRight"
-                                    title={'発表者は原稿を登録してください'}
+                                    title={
+                                        isPresenter
+                                            ? '発表者は原稿を登録してください'
+                                            : '発表者以外は原稿を登録できません'
+                                    }
                                 >
-                                    <Button
-                                        type="primary"
-                                        ghost
-                                        icon={<FormOutlined />}
-                                        onClick={showModal}
-                                    >
-                                        資料・原稿登録
-                                    </Button>
+                                    {nextType !== 'end' && (
+                                        <Button
+                                            type="primary"
+                                            ghost
+                                            icon={<FormOutlined />}
+                                            onClick={showModal}
+                                            disabled={!isPresenter}
+                                        >
+                                            資料・原稿登録
+                                        </Button>
+                                    )}
                                     {/* ここのonOKはポップアップのokボタン */}
                                     <Modal
                                         title="資料・原稿登録"

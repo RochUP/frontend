@@ -27,7 +27,7 @@ function App() {
                             <Route path="/login" element={<LoginPage />} />
                             <Route path="/register" element={<RegisterPage />} />
                             <Route path="/meeting/join" element={<MeetingJoin />} />
-                            <Route path="/meeting/host" element={<MeetingHost />} />
+                            {/* <Route path="/meeting/host" element={<MeetingHost />} /> */}
                             <Route path="/meeting/in" element={<InMeeting />} />
                             <Route path="*" element={<NotFound />} />
                         </Routes>
