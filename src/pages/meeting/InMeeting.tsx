@@ -407,15 +407,17 @@ export default function InMeeting() {
                                             : '発表者以外は原稿を登録できません'
                                     }
                                 >
-                                    <Button
-                                        type="primary"
-                                        ghost
-                                        icon={<FormOutlined />}
-                                        onClick={showModal}
-                                        disabled={!isPresenter}
-                                    >
-                                        原稿登録
-                                    </Button>
+                                    {nextType !== 'end' && (
+                                        <Button
+                                            type="primary"
+                                            ghost
+                                            icon={<FormOutlined />}
+                                            onClick={showModal}
+                                            disabled={!isPresenter}
+                                        >
+                                            原稿登録
+                                        </Button>
+                                    )}
                                     {/* ここのonOKはポップアップのokボタン */}
                                     <Modal
                                         title="原稿登録"
