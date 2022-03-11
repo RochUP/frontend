@@ -206,68 +206,113 @@ export default function MeetingHost() {
                                 <Row gutter={[16, 16]}>
                                     <Col span={8}></Col>
                                     <Col span={8}>
-                                        <Space direction="vertical">
-                                            <Row>
-                                                <Space>
-                                                    <span>会議名</span>
-                                                    <Input
-                                                        id="meetingName"
-                                                        style={{ width: '135%' }}
-                                                        placeholder="会議名を入力"
-                                                        onChange={onChangeMeetingName}
-                                                    ></Input>
-                                                </Space>
-                                            </Row>
-                                            <Row>
-                                                <ConfigProvider locale={jaJP}>
-                                                    <Space>
-                                                        <span>開始時間</span>
-                                                        <DatePicker
-                                                            id="meetingDate"
-                                                            style={{ width: '124%' }}
-                                                            showTime
-                                                            onChange={onChangeMeetingDate}
-                                                            format="yyyy/MM/DD HH:mm"
+                                        {/* <Space direction="vertical"> */}
+                                        <Row gutter={[16, 16]}>
+                                            <Col
+                                                span={6}
+                                                style={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'right',
+                                                }}
+                                            >
+                                                <span>会議名</span>
+                                            </Col>
+                                            <Col span={12}>
+                                                <Input
+                                                    id="meetingName"
+                                                    style={{ width: '100%' }}
+                                                    placeholder="会議名を入力"
+                                                    onChange={onChangeMeetingName}
+                                                ></Input>
+                                            </Col>
+                                        </Row>
+                                        <Row gutter={[16, 16]}>
+                                            <ConfigProvider locale={jaJP}>
+                                                <Col
+                                                    span={6}
+                                                    style={{
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'right',
+                                                    }}
+                                                >
+                                                    <span>開始時間</span>
+                                                </Col>
+                                                <Col span={12}>
+                                                    <DatePicker
+                                                        id="meetingDate"
+                                                        style={{ width: '100%' }}
+                                                        showTime
+                                                        onChange={onChangeMeetingDate}
+                                                        format="yyyy/MM/DD HH:mm"
+                                                    />
+                                                </Col>
+                                            </ConfigProvider>
+                                        </Row>
+                                        {presenters.map((presenter, idx) => {
+                                            return (
+                                                <Row gutter={[16, 16]}>
+                                                    <Col
+                                                        span={6}
+                                                        style={{
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'right',
+                                                        }}
+                                                    >
+                                                        <span>発表者</span>
+                                                    </Col>
+                                                    <Col span={12}>
+                                                        <Input
+                                                            id={'presenterId' + idx}
+                                                            style={{
+                                                                width: '100%',
+                                                                textAlign: 'left',
+                                                            }}
+                                                            placeholder="ユーザーIDを入力"
+                                                            value={presenter}
+                                                            onChange={(e) =>
+                                                                onChangePresenterId(idx, e)
+                                                            }
+                                                        ></Input>
+                                                    </Col>
+                                                    <Col
+                                                        span={2}
+                                                        style={{
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                        }}
+                                                    >
+                                                        <Button
+                                                            onClick={() => onClickAdd(idx)}
+                                                            type="primary"
+                                                            ghost
+                                                            icon={<UserAddOutlined />}
+                                                            size={'small'}
                                                         />
-                                                    </Space>
-                                                </ConfigProvider>
-                                            </Row>
-                                            {presenters.map((presenter, idx) => {
-                                                return (
-                                                    <Row key={'presenter' + idx}>
-                                                        <Space>
-                                                            <span>発表者</span>
-                                                            <Input
-                                                                id={'presenterId' + idx}
-                                                                style={{
-                                                                    width: '100%',
-                                                                    textAlign: 'left',
-                                                                }}
-                                                                placeholder="ユーザーIDを入力"
-                                                                value={presenter}
-                                                                onChange={(e) =>
-                                                                    onChangePresenterId(idx, e)
-                                                                }
-                                                            ></Input>
-                                                            <Button
-                                                                onClick={() => onClickAdd(idx)}
-                                                                type="primary"
-                                                                ghost
-                                                                icon={<UserAddOutlined />}
-                                                                size={'small'}
-                                                            />
-                                                            <Button
-                                                                onClick={() => onClickRemove(idx)}
-                                                                type="default"
-                                                                danger
-                                                                icon={<UserDeleteOutlined />}
-                                                                size={'small'}
-                                                            />
-                                                        </Space>
-                                                    </Row>
-                                                );
-                                            })}
-                                        </Space>
+                                                    </Col>
+                                                    <Col
+                                                        span={2}
+                                                        style={{
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                        }}
+                                                    >
+                                                        <Button
+                                                            onClick={() => onClickRemove(idx)}
+                                                            type="default"
+                                                            danger
+                                                            icon={<UserDeleteOutlined />}
+                                                            size={'small'}
+                                                        />
+                                                    </Col>
+                                                </Row>
+                                            );
+                                        })}
+                                        {/* </Space> */}
                                     </Col>
                                     <Col span={8}></Col>
                                 </Row>
