@@ -8,13 +8,13 @@ import store from '../../store';
 import { userLogout } from '../../actions/userActions';
 import { meetingExitAction } from '../../actions/meetingActions';
 
-const { Header } = Layout;
 const { confirm } = Modal;
 
 export default function MeetingHeader() {
     const navigate = useNavigate();
 
     const username = useSelector((state: any) => state.userReducer.username);
+    const userId = useSelector((state: any) => state.userReducer.userid);
     const onClickLogout = () => {
         store.dispatch(meetingExitAction());
         store.dispatch(userLogout());
@@ -24,7 +24,7 @@ export default function MeetingHeader() {
     const showConfirm = () => {
         confirm({
             title: 'ログアウトしますか？',
-            content: 'ログアウトした後は、再度ログインする必要があります。',
+            content: 'ログアウトした後は、再度ログインする必要があります',
             okText: 'ログアウト',
             okType: 'danger',
             cancelText: 'キャンセル',
@@ -38,13 +38,13 @@ export default function MeetingHeader() {
     };
 
     return (
-        <Header style={{ maxHeight: 60 }}>
+        <Layout.Header style={{ maxHeight: 60 }}>
             <Menu theme="dark" mode="horizontal" style={{ maxHeight: 60 }}>
                 <SubMenu
                     key="sub1"
                     icon={<UserOutlined />}
-                    title={username}
-                    style={{ marginLeft: '90%' }}
+                    title={`${username} (ID: ${userId})`}
+                    style={{ marginLeft: 'auto' }}
                 >
                     <Menu.Item key="1">プロファイル</Menu.Item>
                     <Menu.Item key="2" onClick={showConfirm}>
@@ -52,6 +52,6 @@ export default function MeetingHeader() {
                     </Menu.Item>
                 </SubMenu>
             </Menu>
-        </Header>
+        </Layout.Header>
     );
 }

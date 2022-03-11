@@ -28,19 +28,7 @@ import jaJP from 'antd/lib/locale/ja_JP';
 
 dayjs.locale('ja');
 
-const { Footer, Content } = Layout;
-
-// function onChange(value: any, dateString: any) {
-//     console.log('Selected Time: ', value);
-//     console.log('Formatted Selected Time: ', dateString);
-// }
-
-function onOk(value: any) {
-    console.log('onOk: ', value);
-}
-
 export default function MeetingHost() {
-    const { Title } = Typography;
     const navigate = useNavigate();
 
     const userid = useSelector((state: any) => state.userReducer.userid);
@@ -51,8 +39,29 @@ export default function MeetingHost() {
         }
     }, []);
 
-    const [spinning, setSpinning] = useState(false);
+    const [spinning, setSpinning] = useState<boolean>(false);
+    const [meetingName, setMeetingName] = useState<string>('');
+    const [meetingDate, setMeetingDate] = useState<string>('');
     const [presenters, setPresenters] = useState<string[]>(['']);
+    const [inputOk, setInputOk] = useState<boolean>(false);
+
+    useEffect(() => {
+        setInputOk(
+            meetingName !== '' &&
+                meetingDate !== '' &&
+                presenters.filter((id) => /^[\w]+$/.test(id)).length > 0
+        );
+    }, [meetingName, meetingDate, presenters]);
+
+    const onChangeMeetingName = (e: any) => {
+        setMeetingName(e.target.value);
+    };
+
+    const onChangeMeetingDate = (date: any, dateString: string) => {
+        console.log('Selected Time: ', date);
+        console.log('Formatted Selected Time: ', dateString + ':00');
+        setMeetingDate(dateString + ':00');
+    };
 
     const onClickAdd = (index: number) => {
         const newPresenters = presenters.slice();
@@ -75,15 +84,9 @@ export default function MeetingHost() {
         setPresenters(newPresenters);
     };
 
-    function onChange(value: any, dateString: any) {
-        console.log('Selected Time: ', value);
-        console.log('Formatted Selected Time: ', dateString + ':00');
-    }
-
     function error() {
         Modal.error({
-            title: 'エラー',
-            content: 'ミーティング作成できませんでした。',
+            title: '会議が作成できませんでした',
             okText: '了解',
         });
     }
@@ -92,9 +95,10 @@ export default function MeetingHost() {
         Modal.destroyAll();
     }
 
-    function success() {
+    function success(meetingId: number) {
         Modal.success({
-            content: '会議を作成しました。',
+            title: '会議を作成しました',
+            content: `会議ID: ${meetingId}`,
             okButtonProps: {
                 onClick: () => {
                     navigate('/meeting/in');
@@ -108,22 +112,19 @@ export default function MeetingHost() {
     const createMeeting = async () => {
         console.log('Create Meeting');
         const meetingName = (document.getElementById('meetingName') as HTMLInputElement).value;
-        let meetingDate = (document.getElementById('meetingDate') as HTMLInputElement).value;
+        const meetingDate =
+            (document.getElementById('meetingDate') as HTMLInputElement).value + ':00';
         const presenterIds = new Array<string>(presenters.length);
+
         for (let i = 0; i < presenterIds.length; i++) {
             presenterIds[i] = (
                 document.getElementById('presenterId' + i) as HTMLInputElement
             ).value;
         }
-        meetingDate = meetingDate + ':00';
 
         console.log(meetingName);
         console.log(meetingDate);
         console.log(presenterIds);
-        // TODO:
-        // - レスポンスが帰ってくるまでロード画面にする
-        // - 作成完了したら画面遷移
-        // - 返ってくるのはidだけになったのでどこかでjoinリクエストを投げる
 
         setSpinning(true);
 
@@ -133,13 +134,10 @@ export default function MeetingHost() {
                 if (!res.result) {
                     throw new Error('Meeting Create Failed');
                 }
-                // storeMeetingData(res);
-                // alert("meeting ID: "+res.meetingId+" created");
                 joinMeeting(res.meetingId);
             })
             .catch((err) => {
                 console.log(err);
-                // alert(err.message);
                 error();
                 setSpinning(false);
             });
@@ -148,10 +146,6 @@ export default function MeetingHost() {
     const joinMeeting = async (meetingId: number) => {
         console.log('Join Meeting');
         console.log(userid, meetingId);
-
-        // TODO:
-        // - レスポンスが帰ってくるまでロード画面にする
-        // - 作成完了したら画面遷移
 
         setSpinning(true);
 
@@ -162,9 +156,7 @@ export default function MeetingHost() {
                     throw new Error('Join Meeting Failed');
                 }
                 storeMeetingData(meetingId, res);
-                // alert("join success");
-                success();
-                // navigate("/meeting/in");
+                success(meetingId);
             })
             .catch((err: any) => {
                 console.log(err);
@@ -190,8 +182,8 @@ export default function MeetingHost() {
         <Spin size="large" spinning={spinning}>
             <Layout>
                 <MeetingHeader />
-                <Content style={{ padding: '0 50px', margin: '16px 0', height: '100%' }}>
-                    <Title style={{ margin: '16px 0' }}>○○システム</Title>
+                <Layout.Content style={{ padding: '0 50px', margin: '16px 0', height: '100%' }}>
+                    <Typography.Title style={{ margin: '16px 0' }}>Plithos</Typography.Title>
                     <Breadcrumb style={{ margin: '16px 0' }}>
                         <Breadcrumb.Item>会議</Breadcrumb.Item>
                         <Breadcrumb.Item>会議作成</Breadcrumb.Item>
@@ -201,12 +193,12 @@ export default function MeetingHost() {
                         style={{ background: '#fff', margin: '16px 0' }}
                     >
                         <Card
-                            title="ミーティングを作成する"
+                            title="会議を作成する"
                             bordered={false}
                             style={{ width: '100%', textAlign: 'center' }}
                         >
                             <Space direction="vertical" style={{ width: '100%' }}>
-                                <p>ミーティングを作成するために、詳細設定で設定してください。</p>
+                                <p>会議情報を設定してください</p>
                                 <Row gutter={[16, 16]}>
                                     <Col span={8}></Col>
                                     <Col span={8}>
@@ -217,7 +209,8 @@ export default function MeetingHost() {
                                                     <Input
                                                         id="meetingName"
                                                         style={{ width: '135%' }}
-                                                        placeholder="会議名を入力してください"
+                                                        placeholder="会議名を入力"
+                                                        onChange={onChangeMeetingName}
                                                     ></Input>
                                                 </Space>
                                             </Row>
@@ -229,9 +222,7 @@ export default function MeetingHost() {
                                                             id="meetingDate"
                                                             style={{ width: '124%' }}
                                                             showTime
-                                                            onChange={onChange}
-                                                            onOk={onOk}
-                                                            // ここの'HH:mm:ss'のところ、:ssを削除すると秒数がなくなる、しかしbugがありそう
+                                                            onChange={onChangeMeetingDate}
                                                             format="yyyy/MM/DD HH:mm"
                                                         />
                                                     </Space>
@@ -246,9 +237,9 @@ export default function MeetingHost() {
                                                                 id={'presenterId' + idx}
                                                                 style={{
                                                                     width: '100%',
-                                                                    textAlign: 'center',
+                                                                    textAlign: 'left',
                                                                 }}
-                                                                placeholder="発表者を入力してください"
+                                                                placeholder="ユーザーIDを入力"
                                                                 value={presenter}
                                                                 onChange={(e) =>
                                                                     onChangePresenterId(idx, e)
@@ -280,8 +271,9 @@ export default function MeetingHost() {
                                     type="primary"
                                     style={{ width: '20%' }}
                                     onClick={createMeeting}
+                                    disabled={!inputOk}
                                 >
-                                    ミーティングを作成する
+                                    作成
                                 </Button>
                                 <Link to={'../meeting/join'}>
                                     <Button type="default" style={{ width: '20%' }}>
@@ -291,8 +283,8 @@ export default function MeetingHost() {
                             </Space>
                         </Card>
                     </div>
-                </Content>
-                <Footer
+                </Layout.Content>
+                <Layout.Footer
                     style={{
                         position: 'relative',
                         left: 0,
@@ -303,7 +295,7 @@ export default function MeetingHost() {
                     }}
                 >
                     Made by RochUP Team
-                </Footer>
+                </Layout.Footer>
             </Layout>
         </Spin>
     );
