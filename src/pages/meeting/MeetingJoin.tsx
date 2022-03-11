@@ -64,8 +64,8 @@ export default function MeetingJoin() {
                 console.log(err);
                 // alert(err.message);
                 Modal.error({
-                    title: 'ミーティングに参加できませんでした',
-                    content: 'ミーティングIDが間違っているか、ミーティングが存在しません',
+                    title: '会議に参加できませんでした',
+                    content: '会議IDが間違っているか、会議が存在しません',
                     okText: '了解',
                 });
             });
