@@ -71,6 +71,7 @@ export default function InMeeting() {
     const navigate = useNavigate();
 
     const userId = useSelector((state: any) => state.userReducer.userid);
+    const meetingName = useSelector((state: any) => state.meetingReducer.meetingName);
     const meetingId = useSelector((state: any) => state.meetingReducer.meetingId);
     const presenterIds = useSelector((state: any) => state.meetingReducer.presenterIds);
     const presenterNames = useSelector((state: any) => state.meetingReducer.presenterNames);
@@ -83,7 +84,7 @@ export default function InMeeting() {
     const [spinning, setSpinning] = useState(false);
 
     //発表か質問のどちらかしかボタンを押せないようにする
-    const [questionCheck, setCheck] = useState(true);
+    const [presenCheck, setCheck] = useState(true);
 
     useEffect(() => {
         if (meetingId === 0) {
@@ -192,13 +193,13 @@ export default function InMeeting() {
 
     /* 発表，質問の終了判定 *************************************/
     const viewFinishButton = () => {
-        if (!questionCheck) {
+        if (!presenCheck) {
             return (
                 <Button
                     danger
                     icon={<MessageOutlined />}
-                    disabled={questionCheck}
-                    ghost={questionCheck}
+                    disabled={presenCheck}
+                    ghost={presenCheck}
                     onClick={() => finishOn('question')}
                 >
                     質問終了
@@ -209,8 +210,8 @@ export default function InMeeting() {
                 <Button
                     danger
                     icon={<CheckCircleOutlined />}
-                    disabled={!questionCheck}
-                    ghost={!questionCheck}
+                    disabled={!presenCheck}
+                    ghost={!presenCheck}
                     onClick={() => finishOn('present')}
                 >
                     発表終了
@@ -225,7 +226,10 @@ export default function InMeeting() {
             callback: () => {
                 let questionUserId = '';
                 if (moderatorMsgSocket) questionUserId = moderatorMsgSocket.userId;
-                sendFinishword(socket, meetingId, presenterIdNow, questionUserId, 'present');
+
+                if (presenCheck) {
+                    sendFinishword(socket, meetingId, presenterIdNow, questionUserId, 'present');
+                }
             },
             // callback: () => {sendPresenFinish()}
         },
@@ -234,7 +238,10 @@ export default function InMeeting() {
             callback: () => {
                 let questionUserId = '';
                 if (moderatorMsgSocket) questionUserId = moderatorMsgSocket.userId;
-                sendFinishword(socket, meetingId, presenterIdNow, questionUserId, 'question');
+
+                if (!presenCheck) {
+                    sendFinishword(socket, meetingId, presenterIdNow, questionUserId, 'question');
+                }
             },
             // callback: () => {sendQuestionFinish()}
         },
@@ -382,7 +389,7 @@ export default function InMeeting() {
             <MeetingHeader />
             <Content style={{ padding: '0 40px' }}>
                 <p>{transcript}</p>
-                <Title style={{ margin: '10px 0' }}>○○会議進行中</Title>
+                <Title style={{ margin: '10px 0' }}>{meetingName}中</Title>
                 <Breadcrumb style={{ margin: '10px 0' }}>
                     <Breadcrumb.Item>会議</Breadcrumb.Item>
                     <Breadcrumb.Item>会議中</Breadcrumb.Item>
