@@ -5,10 +5,10 @@ import {
     Col,
     InputNumber,
     Layout,
-    Row,
     Space,
     Spin,
     Typography,
+    Modal,
 } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import '../../assets/css/Pages.css';
@@ -61,7 +61,12 @@ export default function MeetingJoin() {
             })
             .catch((err: any) => {
                 console.log(err);
-                alert(err.message);
+                // alert(err.message);
+                Modal.error({
+                    title: 'ミーティングに参加できませんでした',
+                    content: 'ミーティングIDが間違っているか、ミーティングが存在しません',
+                    okText: '了解',
+                });
             });
 
         setSpinning(false);
