@@ -168,80 +168,43 @@ function PdfViewerComponent(props: Props) {
     }, [isReactedPage, documentPageNowIndex]);
 
     //ボタンのサイズ調整
-    const ButtonSize = () => {
+    const SizedButton = () => {
         const width = window.innerWidth;
-        //閾値の値は仮に1400にしているので，検討する必要あり
-        if (width > 1400) {
-            return (
-                <Row
-                    style={{
-                        width: '97%',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }}
-                >
-                    <Col style={{ marginRight: '5%' }}>
-                        {/* ここはページ分け疑問ボタン */}
-                        <Button
-                            type={reactionBottonType}
-                            style={{ width: 140 }}
-                            icon={<QuestionOutlined />}
-                            shape="round"
-                            onClick={onClickReaction}
-                        >
-                            わからない
-                        </Button>
-                    </Col>
-                    <Col style={{ marginLeft: '5%' }}>
-                        {/* ここは挙手ボタン */}
-                        <Button
-                            style={{ width: 140 }}
-                            shape="round"
-                            type={handsupBottonType}
-                            icon={handsupBottonIcon}
-                            onClick={onClickHansup}
-                            disabled={!(documentIds.indexOf(props.documentId) === presentOrder)}
-                        >
-                            {handsupText}
-                        </Button>
-                    </Col>
-                </Row>
-            );
-        } else {
-            return (
-                <Row
-                    style={{
-                        width: '97%',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }}
-                >
-                    <Col style={{ marginRight: '5%' }}>
-                        {/* ここはページ分け疑問ボタン */}
-                        <Button
-                            type={reactionBottonType}
-                            style={{ width: width * 0.05 }}
-                            icon={<QuestionOutlined />}
-                            shape="round"
-                            onClick={onClickReaction}
-                        ></Button>
-                    </Col>
-                    <Col style={{ marginLeft: '5%' }}>
-                        {/* ここは挙手ボタン */}
-                        <Button
-                            style={{ width: width * 0.05 }}
-                            shape="round"
-                            type={handsupBottonType}
-                            icon={handsupBottonIcon}
-                            onClick={onClickHansup}
-                            disabled={!(documentIds.indexOf(props.documentId) === presentOrder)}
-                        ></Button>
-                    </Col>
-                </Row>
-            );
-        }
+        const isBig = width > 1400; //閾値の値は仮に1400にしているので，検討する必要あり
+        return (
+            <Row
+                style={{
+                    width: '97%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
+            >
+                <Col style={{ marginRight: '5%' }}>
+                    {/* ここはページ分け疑問ボタン */}
+                    <Button
+                        type={reactionBottonType}
+                        icon={<QuestionOutlined />}
+                        shape="round"
+                        onClick={onClickReaction}
+                    >
+                        {isBig && 'わからない'}
+                    </Button>
+                </Col>
+                <Col style={{ marginLeft: '5%' }}>
+                    {/* ここは挙手ボタン */}
+                    <Button
+                        shape="round"
+                        type={handsupBottonType}
+                        icon={handsupBottonIcon}
+                        onClick={onClickHansup}
+                        disabled={!(documentIds.indexOf(props.documentId) === presentOrder)}
+                    >
+                        {isBig && handsupText}
+                    </Button>
+                </Col>
+            </Row>
+        );
     };
 
     /* zoom ****************************************************/
@@ -258,7 +221,7 @@ function PdfViewerComponent(props: Props) {
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    marginTop: '4%',
+                    // marginTop: '4%',
                 }}
                 onClick={() => {
                     setZoomPdf(true);
@@ -281,6 +244,7 @@ function PdfViewerComponent(props: Props) {
                     display: 'flex',
                     justifyContent: 'center',
                     marginTop: '4%',
+                    visibility: numPages > 1 ? 'visible' : 'hidden',
                 }}
             >
                 <Col flex={1} style={{ paddingLeft: '10px' }}>
@@ -312,7 +276,7 @@ function PdfViewerComponent(props: Props) {
                 </Col>
             </Row>
 
-            {ButtonSize()}
+            <SizedButton />
 
             {/* 拡大表示 ***************************************************************/}
             <Modal visible={zoomPdf} width="90%" footer={null} onCancel={() => setZoomPdf(false)}>
@@ -339,7 +303,7 @@ function PdfViewerComponent(props: Props) {
                 <Row
                     style={{
                         width: '93%',
-                        display: 'flex',
+                        display: numPages > 1 ? 'flex' : 'none',
                         justifyContent: 'center',
                         marginTop: '4%',
                     }}
