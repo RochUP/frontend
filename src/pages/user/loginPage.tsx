@@ -89,10 +89,20 @@ export default function LoginPage() {
             <Spin size="large" spinning={spinning}>
                 <div className="login-content">
                     <div className="login-form">
+                        <div className="login-title">
+                            <img
+                                className="login-logo"
+                                src={`${process.env.PUBLIC_URL}/logo_plithos.png`}
+                                alt="logo"
+                            />
+                            <Typography.Text className="login-title-text" type="secondary">
+                                オンラインミーティングアシスタント
+                            </Typography.Text>
+                        </div>
                         <LoginForm
-                            logo="https://github.githubassets.com/images/modules/logos_page/Octocat.png"
-                            title="Plithos"
-                            subTitle="オンラインミーティングアシスタント"
+                            // logo={`${process.env.PUBLIC_URL}/logo.png`}
+                            // title="Plithos"
+                            // subTitle="オンラインミーティングアシスタント"
                             submitter={{
                                 // ここのsearchConfigと下のrenderの方法どっちでも使える
                                 // しかし、searchConfigの方法は、ボタンのスタイルをコントロール困難

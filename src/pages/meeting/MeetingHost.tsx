@@ -287,7 +287,7 @@ export default function MeetingHost() {
                 </Layout.Content>
                 <Layout.Footer
                     style={{
-                        position: 'relative',
+                        position: 'fixed',
                         left: 0,
                         bottom: 0,
                         width: '100%',
