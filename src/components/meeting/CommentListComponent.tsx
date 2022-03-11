@@ -160,6 +160,7 @@ export default function CommentListComponent(props: Props) {
                         id={'question' + props.presenterId}
                         value={questionform}
                         onChange={handleQuestionFormChange}
+                        onPressEnter={handleSendCommentClick}
                     ></Input>
                     <Button
                         type="primary"
