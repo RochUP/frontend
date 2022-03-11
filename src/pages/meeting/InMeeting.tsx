@@ -71,6 +71,7 @@ export default function InMeeting() {
     const navigate = useNavigate();
 
     const userId = useSelector((state: any) => state.userReducer.userid);
+    const meetingName = useSelector((state: any) => state.meetingReducer.meetingName);
     const meetingId = useSelector((state: any) => state.meetingReducer.meetingId);
     const presenterIds = useSelector((state: any) => state.meetingReducer.presenterIds);
     const presenterNames = useSelector((state: any) => state.meetingReducer.presenterNames);
@@ -388,7 +389,7 @@ export default function InMeeting() {
             <MeetingHeader />
             <Content style={{ padding: '0 40px' }}>
                 <p>{transcript}</p>
-                <Title style={{ margin: '10px 0' }}>○○会議進行中</Title>
+                <Title style={{ margin: '10px 0' }}>{meetingName}中</Title>
                 <Breadcrumb style={{ margin: '10px 0' }}>
                     <Breadcrumb.Item>会議</Breadcrumb.Item>
                     <Breadcrumb.Item>会議中</Breadcrumb.Item>
