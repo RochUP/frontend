@@ -47,6 +47,7 @@ import Socket from '../../utils/webSocket';
 import { receiveData, sendFinishword, sendHandsup } from '../../utils/webSocketUtils';
 import { meetingJoinAction } from '../../actions/meetingActions';
 import { dateArrayFormatter } from '@ant-design/pro-utils';
+import { useMemo } from 'react';
 
 const { Footer, Content } = Layout;
 const { Text } = Typography;
@@ -78,6 +79,8 @@ export default function InMeeting() {
     const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow);
     const documentIds = useSelector((state: any) => state.meetingReducer.documentIds);
     const documentPageNow = useSelector((state: any) => state.meetingReducer.documentPageNow);
+
+    const isPresenter = useMemo(() => presenterIds.includes(userId), [presenterIds, userId]);
 
     //会議退出
     const presentOrder = useSelector((state: any) => state.meetingReducer.presentOrder);
@@ -296,8 +299,7 @@ export default function InMeeting() {
 
     //ポップアップのokボタンを押した時の処理
     const handleOk = async () => {
-        const idx = presenterIds.indexOf(userId);
-        if (idx === -1) {
+        if (!isPresenter) {
             alert('You are not presenter');
             setIsModalVisible(false);
             return;
@@ -420,13 +422,18 @@ export default function InMeeting() {
                                 {viewFinishButton()}
                                 <Tooltip
                                     placement="topRight"
-                                    title={'発表者は原稿を登録してください'}
+                                    title={
+                                        isPresenter
+                                            ? '発表者は原稿を登録してください'
+                                            : '発表者以外は原稿を登録できません'
+                                    }
                                 >
                                     <Button
                                         type="primary"
                                         ghost
                                         icon={<FormOutlined />}
                                         onClick={showModal}
+                                        disabled={!isPresenter}
                                     >
                                         原稿登録
                                     </Button>
