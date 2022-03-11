@@ -11,22 +11,52 @@ import store from '../../store';
 import { signup } from '../../utils/api';
 import UserFooter from './UserFooter';
 
+const ERR_MSG_NOT_OK = '半角英数字で入力してください';
+
 export default function RegisterPage() {
     const navigate = useNavigate();
 
     const [spinning, setSpinning] = useState(false);
     const [inputOk, setInputOk] = useState(true);
+    const [errorMessage, setErrorMessage] = useState('正しく入力してください');
 
     const checkInputOk = useCallback((str: string): boolean => /^[\w]+$/.test(str), []);
+    const checkInputNotEmpty = useCallback(
+        (str: string): boolean => str.length > 0 && /^[\S]+$/.test(str),
+        []
+    );
+
+    const checkInput = useCallback(
+        (userid: string, username: string, password: string): boolean => {
+            console.log(
+                `signup: (userid: ${userid}, username: ${username}, password: ${password})`
+            );
+            if (
+                checkInputNotEmpty(userid) &&
+                checkInputNotEmpty(username) &&
+                checkInputNotEmpty(password)
+            ) {
+                if (checkInputOk(userid) && checkInputOk(password)) {
+                    return true;
+                } else {
+                    setErrorMessage(ERR_MSG_NOT_OK);
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        },
+        []
+    );
 
     const handleRegisterClick = async () => {
         const userid = (document?.getElementById('userid') as HTMLInputElement).value;
         const username = (document?.getElementById('username') as HTMLInputElement).value;
         const password = (document?.getElementById('password') as HTMLInputElement).value;
-        console.log(userid, username, password);
+        const ok = checkInput(userid, username, password);
+        setInputOk(ok);
 
-        if (checkInputOk(userid) && checkInputOk(username) && checkInputOk(password)) {
-            setInputOk(true);
+        if (ok) {
             setSpinning(true);
 
             await signup(userid, username, password)
@@ -42,9 +72,6 @@ export default function RegisterPage() {
                     return error();
                 });
             setSpinning(false);
-        } else {
-            setInputOk(false);
-            return;
         }
     };
 
@@ -126,7 +153,7 @@ export default function RegisterPage() {
                         >
                             {!inputOk && (
                                 <Alert
-                                    message="ユーザID・ユーザーネーム・パスワードは半角英数字で入力してください"
+                                    message={errorMessage}
                                     type="error"
                                     showIcon
                                     style={{ marginBottom: '10px' }}
@@ -142,7 +169,7 @@ export default function RegisterPage() {
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'ユーザIDを入力してください!',
+                                        message: 'ユーザIDを入力してください',
                                     },
                                 ]}
                             />
@@ -156,7 +183,7 @@ export default function RegisterPage() {
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'ユーザネームを入力してください!',
+                                        message: 'ユーザネームを入力してください',
                                     },
                                 ]}
                             />
@@ -170,7 +197,7 @@ export default function RegisterPage() {
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'パスワードを入力してください!',
+                                        message: 'パスワードを入力してください',
                                     },
                                 ]}
                             />

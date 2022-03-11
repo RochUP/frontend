@@ -11,23 +11,41 @@ import store from '../../store';
 import { login } from '../../utils/api';
 import { Footer } from 'antd/lib/layout/layout';
 
-const { Text } = Typography;
+const ERR_MSG_NOT_OK = '半角英数字で入力してください';
 
 export default function LoginPage() {
-    const [spinning, setSpinning] = useState(false);
-    const [inputOk, setInputOk] = useState(true);
+    const navigate = useNavigate();
+
+    const [spinning, setSpinning] = useState<boolean>(false);
+    const [inputOk, setInputOk] = useState<boolean>(true);
+    const [errorMessage, setErrorMessage] = useState('正しく入力してください');
 
     const checkInputOk = useCallback((str: string): boolean => /^[\w]+$/.test(str), []);
-
-    const navigate = useNavigate();
+    const checkInputNotEmpty = useCallback(
+        (str: string): boolean => str.length > 0 && /^[\S]+$/.test(str),
+        []
+    );
+    const checkInput = useCallback((userid: string, password: string): boolean => {
+        console.log(`login: (userid: ${userid}, password: ${password})`);
+        if (checkInputNotEmpty(userid) && checkInputNotEmpty(password)) {
+            if (checkInputOk(userid) && checkInputOk(password)) {
+                return true;
+            } else {
+                setErrorMessage(ERR_MSG_NOT_OK);
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }, []);
 
     const handleLoginClick = async () => {
         const userid = (document?.getElementById('userid') as HTMLInputElement).value;
         const password = (document?.getElementById('password') as HTMLInputElement).value;
-        console.log(userid, password);
+        const ok = checkInput(userid, password);
+        setInputOk(ok);
 
-        if (checkInputOk(userid) && checkInputOk(password)) {
-            setInputOk(true);
+        if (ok) {
             setSpinning(true);
 
             await login(userid, password)
@@ -43,9 +61,6 @@ export default function LoginPage() {
                     return error();
                 });
             setSpinning(false);
-        } else {
-            setInputOk(false);
-            return;
         }
     };
 
@@ -118,7 +133,7 @@ export default function LoginPage() {
                         >
                             {!inputOk && (
                                 <Alert
-                                    message="ユーザIDとパスワードは半角英数字で入力してください"
+                                    message={errorMessage}
                                     type="error"
                                     showIcon
                                     style={{ marginBottom: '10px' }}
@@ -134,7 +149,7 @@ export default function LoginPage() {
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'ユーザIDを入力してください!',
+                                        message: 'ユーザIDを入力してください',
                                     },
                                 ]}
                             />
@@ -148,7 +163,7 @@ export default function LoginPage() {
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'パスワードを入力してください!',
+                                        message: 'パスワードを入力してください',
                                     },
                                 ]}
                             />
@@ -180,7 +195,7 @@ export default function LoginPage() {
                             textAlign: 'center',
                         }}
                     >
-                        <Text type="secondary">Made by RochUP Team</Text>
+                        <Typography.Text type="secondary">Made by RochUP Team</Typography.Text>
                     </Footer>
                 </div>
             </Spin>
