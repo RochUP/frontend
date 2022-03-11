@@ -534,7 +534,7 @@ export default function InMeeting() {
             </Content>
             <Footer
                 style={{
-                    position: 'absolute',
+                    position: 'relative',
                     left: 0,
                     bottom: 0,
                     width: '100%',
