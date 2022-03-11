@@ -1,5 +1,4 @@
-import { Card, Col, message } from 'antd';
-import { Typography } from 'antd';
+import { Typography, Card, Col, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
@@ -11,18 +10,11 @@ type Props = {
     data: any;
 };
 
+let player: sdk.SpeakerAudioDestination = new sdk.SpeakerAudioDestination();
+
 export default function ModeratorMsgComponent(props: Props) {
     var subscriptionKey = process.env.REACT_APP_AZURE_SPEECH_SUBSCRIPTION_KEY + '';
     var serviceRegion = process.env.REACT_APP_AZURE_SPEECH_SERVICE_REGION + ''; // e.g., "westus"
-
-    var audioConfig = sdk.AudioConfig.fromDefaultSpeakerOutput(); //.fromAudioFileOutput(filename);
-    var speechConfig = sdk.SpeechConfig.fromSubscription(subscriptionKey, serviceRegion);
-    speechConfig.speechSynthesisLanguage = 'ja-JP';
-    speechConfig.speechSynthesisOutputFormat =
-        sdk.SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3;
-
-    // create the speech synthesizer.
-    var synthesizer = new sdk.SpeechSynthesizer(speechConfig, audioConfig);
 
     const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow);
     const meetingStartTime = useSelector((state: any) => state.meetingReducer.meetingStartTime);
@@ -38,19 +30,21 @@ export default function ModeratorMsgComponent(props: Props) {
     var timer;
 
     const hostSpeech = async (message: string) => {
+        player = new sdk.SpeakerAudioDestination();
+        var audioConfig = sdk.AudioConfig.fromSpeakerOutput(player);
+        var speechConfig = sdk.SpeechConfig.fromSubscription(subscriptionKey, serviceRegion);
+        speechConfig.speechSynthesisLanguage = 'ja-JP';
+        speechConfig.speechSynthesisOutputFormat =
+            sdk.SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3;
+
+        // create the speech synthesizer.
+        var synthesizer = new sdk.SpeechSynthesizer(speechConfig, audioConfig);
+
         await synthesizer.speakTextAsync(
             message,
             function (result) {
                 if (result.reason === sdk.ResultReason.SynthesizingAudioCompleted) {
                     console.log('synthesis finished.');
-
-                    console.log(result.audioData);
-                    const view = new DataView(result.audioData);
-                    const audioBlob = new Blob([view], { type: 'audio/wav' });
-                    const myURL = window.URL || window.webkitURL;
-                    const audioElement = document.getElementById('audio') as HTMLAudioElement;
-                    audioElement.src = myURL.createObjectURL(audioBlob);
-                    // audioElement.play();
                 } else {
                     console.error(
                         'Speech synthesis canceled, ' +
@@ -70,6 +64,7 @@ export default function ModeratorMsgComponent(props: Props) {
     useEffect(() => {
         if (props.data) {
             setModeratorMessage(props.data.moderatorMsgBody);
+            player?.pause();
             hostSpeech(props.data.moderatorMsgBody);
 
             flag = true;
@@ -139,9 +134,16 @@ export default function ModeratorMsgComponent(props: Props) {
         // changeCounter((pre_counter) => pre_counter - 1);
     }
 
+    // アンマウント時
+    useEffect(() => {
+        return () => {
+            console.log('unmount moderatorMsg');
+            player?.pause();
+        };
+    }, []);
+
     return (
         <Col span={24} style={{ marginTop: '5px' }}>
-            <audio id="audio" controls={false}></audio>
             <Title level={4} style={{ width: '100%', textAlign: 'center', minHeight: 30 }}>
                 {message}
             </Title>

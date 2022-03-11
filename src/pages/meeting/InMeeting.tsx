@@ -282,14 +282,7 @@ export default function InMeeting() {
     useEffect(() => {
         return () => {
             console.log('unmounted');
-            onClickExit();
-        };
-    }, []);
-
-    useEffect(() => {
-        return () => {
-            console.log('unmounted');
-            onClickExit();
+            Exit();
         };
     }, []);
 
@@ -297,7 +290,7 @@ export default function InMeeting() {
     const presentOrder = useSelector((state: any) => state.meetingReducer.presentOrder);
     const [spinning, setSpinning] = useState(false);
 
-    const onClickExit = async () => {
+    const Exit = async () => {
         console.log('exit');
         // console.log(userId, meetingId, documentId);
 
@@ -309,7 +302,6 @@ export default function InMeeting() {
                 if (!res.result) {
                     throw new Error('Exit Meeting Failed');
                 }
-                navigate('/meeting/join');
             })
             .catch((err: any) => {
                 console.log(err);
@@ -330,7 +322,7 @@ export default function InMeeting() {
             okType: 'danger',
             cancelText: 'キャンセル',
             onOk() {
-                onClickExit();
+                navigate('/meeting/join');
             },
             onCancel() {
                 console.log('Cancel');
