@@ -17,9 +17,7 @@ import { Typography } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import '../../assets/css/Pages.css';
 import { useEffect, useState } from 'react';
-import { meetingCreate, meetingJoin } from '../../utils/api';
-import store from '../../store';
-import { meetingJoinAction } from '../../actions/meetingActions';
+import { meetingCreate } from '../../utils/api';
 import MeetingHeader from '../../components/meeting/MeetingHeader';
 import { useSelector } from 'react-redux';
 import { ConfigProvider } from 'antd';
@@ -145,41 +143,6 @@ export default function MeetingHost() {
                 setSpinning(false);
             });
         setSpinning(false);
-    };
-
-    const joinMeeting = async (meetingId: number) => {
-        console.log('Join Meeting');
-        console.log(userid, meetingId);
-
-        setSpinning(true);
-
-        await meetingJoin(userid, meetingId)
-            .then((res: any) => {
-                console.log(res);
-                if (!res.result) {
-                    throw new Error('Join Meeting Failed');
-                }
-                storeMeetingData(meetingId, res);
-                success(meetingId);
-            })
-            .catch((err: any) => {
-                console.log(err);
-                alert(err.message);
-            });
-        setSpinning(false);
-    };
-
-    const storeMeetingData = (meetingId: number, res: any) => {
-        store.dispatch(
-            meetingJoinAction(
-                meetingId,
-                res.meetingName,
-                res.meetingStartTime,
-                res.presenterIds,
-                res.presenterNames,
-                res.documentIds
-            )
-        );
     };
 
     return (

@@ -391,20 +391,11 @@ export default function InMeeting() {
                 {/* <p>{transcript}</p> */}
                 <Title style={{ margin: '10px 0' }}>{meetingName}</Title>
                 <Breadcrumb style={{ margin: '10px 0' }}>
-                    <Breadcrumb.Item>会議</Breadcrumb.Item>
-                    <Breadcrumb.Item>会議中</Breadcrumb.Item>
+                    <Breadcrumb.Item>会議ID: {meetingId}</Breadcrumb.Item>
                 </Breadcrumb>
                 <div className="site-layout-content" style={{ background: '#fff' }}>
                     <Row>
-                        <Col span={12} style={{ maxHeight: 50 }}>
-                            {/* style={{background:'#DD2248'}} */}
-                            <Text type="secondary" style={{ marginLeft: 20 }}>
-                                会議ID:
-                            </Text>
-                            <Text type="secondary" style={{ marginLeft: 5 }}>
-                                {meetingId}
-                            </Text>
-                        </Col>
+                        <Col span={12} style={{ maxHeight: 50 }}></Col>
                         <Col span={12} style={{ maxHeight: 50, width: '100%' }}>
                             {/* style={{background:'#DD2248'}}> */}
                             {/* 右側操作ボタン */}
