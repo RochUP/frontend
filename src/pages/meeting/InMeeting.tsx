@@ -388,8 +388,8 @@ export default function InMeeting() {
         <Layout>
             <MeetingHeader />
             <Content style={{ padding: '0 40px' }}>
-                <p>{transcript}</p>
-                <Title style={{ margin: '10px 0' }}>{meetingName}中</Title>
+                {/* <p>{transcript}</p> */}
+                <Title style={{ margin: '10px 0' }}>{meetingName}</Title>
                 <Breadcrumb style={{ margin: '10px 0' }}>
                     <Breadcrumb.Item>会議</Breadcrumb.Item>
                     <Breadcrumb.Item>会議中</Breadcrumb.Item>
