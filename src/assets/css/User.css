@@ -3,10 +3,6 @@ body,
 html {
     height: 100%;
     overflow: auto;
-    background-image: url('https://gw.alipayobjects.com/zos/rmsportal/TVYTbAXWheQpRcWDaDMu.svg');
-    background-repeat: no-repeat;
-    background-position: center 110px;
-    background-size: 100%;
 }
 
 .login-container {
@@ -24,4 +20,22 @@ html {
 
 .login-form {
     margin-top: 10%;
+}
+
+.login-title {
+    align-content: center;
+    width: 300px;
+    margin-left: 43%;
+}
+
+.login-logo {
+    width: 85%;
+    height: 85%;
+    margin-left: 5%;
+}
+
+.login-title-text {
+    float: left;
+    margin-left: 5%;
+    margin-top: -30px;
 }
