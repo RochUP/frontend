@@ -151,14 +151,14 @@ export default function InMeeting() {
                 case 'moderator_msg':
                     setModeratorMsgSocket(data);
                     if (data.isStartPresen) {
-                        setCheck(questionCheck);
+                        setCheck(true);
                         store.dispatch(
                             changeDocumentPageAction(presenterIds[data.presenterOrder], 1)
                         );
                         store.dispatch(presentChangeAction(data.presenterOrder));
                         setTabPresenterId(presenterIds[data.presenterOrder]);
                     } else {
-                        setCheck(!questionCheck);
+                        setCheck(false);
                     }
                     break;
                 case 'document_update':
