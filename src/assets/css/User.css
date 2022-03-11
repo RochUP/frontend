@@ -25,7 +25,7 @@ html {
 .login-title {
     align-content: center;
     width: 300px;
-    margin-left: 43%;
+    margin: auto;
 }
 
 .login-logo {
