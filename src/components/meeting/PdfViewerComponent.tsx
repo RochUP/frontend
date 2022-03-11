@@ -1,4 +1,4 @@
-import { Button, Col, Row, Slider, Space } from 'antd';
+import { Button, Col, Modal, Row, Slider, Space } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import {
     RightOutlined,
@@ -7,7 +7,7 @@ import {
     ArrowDownOutlined,
     ArrowUpOutlined,
 } from '@ant-design/icons';
-import { Document, Page, pdfjs } from 'react-pdf';
+import { Document, Page, pdfjs, PDFPageProxy } from 'react-pdf';
 import { useSelector } from 'react-redux';
 import store from '../../store';
 import { changeDocumentPageAction } from '../../actions/meetingActions';
@@ -33,18 +33,48 @@ function PdfViewerComponent(props: Props) {
     const [numPages, setNumPages] = useState<number>(0);
 
     const [width, setWidth] = useState<number | undefined>(0);
+    const [widthHeightRatio, setWidthHeightRatio] = useState(1);
 
     useEffect(() => {
-        setWidth(document.getElementById('document_row')?.clientWidth);
-    }, []);
+        if (widthHeightRatio > 1) {
+            setWidth(document.getElementById('document_row')?.clientWidth);
+        } else {
+            // 縦長pdfは高さに合わせる
+            setWidth(
+                (document.getElementById('document_row') as HTMLElement).clientHeight *
+                    widthHeightRatio
+            );
+        }
+    }, [widthHeightRatio]);
 
     window.addEventListener('resize', () => {
-        setWidth(document.getElementById('document_row')?.clientWidth);
+        if (widthHeightRatio > 1) {
+            setWidth(document.getElementById('document_row')?.clientWidth);
+        } else {
+            // 縦長pdfは高さに合わせる
+            setWidth(
+                (document.getElementById('document_row') as HTMLElement).clientHeight *
+                    widthHeightRatio
+            );
+        }
     });
 
     function onDocumentLoadSuccess({ numPages }: any) {
         setNumPages(numPages);
         setIsReactedPage(Array(numPages).fill(false));
+    }
+
+    function onPageLoad(info: PDFPageProxy) {
+        const { height, width, originalHeight, originalWidth } = info;
+        // console.log(height, width, originalHeight, originalWidth);
+        setWidthHeightRatio(originalWidth / originalHeight);
+        if (widthHeightRatio < 1) {
+            // 縦長pdfは高さに合わせる
+            setWidth(
+                (document.getElementById('document_row') as HTMLElement).clientHeight *
+                    (originalWidth / originalHeight)
+            );
+        }
     }
 
     function changePage(pageNumber: number, offset?: number) {
@@ -138,7 +168,8 @@ function PdfViewerComponent(props: Props) {
         setReactionBottonType(isReactedPage[documentPageNowIndex] ? 'ghost' : 'primary');
     }, [isReactedPage, documentPageNowIndex]);
 
-    /*****************************************************/
+    /* zoom ****************************************************/
+    const [zoomPdf, setZoomPdf] = useState(false);
 
     return (
         <Space direction="vertical" style={{ width: '100%' }} onWheel={onWheelPageChange}>
@@ -146,9 +177,15 @@ function PdfViewerComponent(props: Props) {
                 id="document_row"
                 style={{
                     width: '90%',
+                    minHeight: 370,
+                    maxHeight: 370,
                     display: 'flex',
                     justifyContent: 'center',
+                    alignItems: 'center',
                     marginTop: '4%',
+                }}
+                onClick={() => {
+                    setZoomPdf(true);
                 }}
             >
                 <Document file={props.documentUrl} onLoadSuccess={onDocumentLoadSuccess}>
@@ -158,6 +195,7 @@ function PdfViewerComponent(props: Props) {
                         renderAnnotationLayer={false}
                         width={width}
                         className="pdf-page"
+                        onLoadSuccess={onPageLoad}
                     />
                 </Document>
             </Row>
@@ -197,24 +235,33 @@ function PdfViewerComponent(props: Props) {
                     />
                 </Col>
             </Row>
-            <Row style={{ width: '97%' }}>
-                <Col style={{ marginLeft: '20%' }}>
+            <Row
+                style={{
+                    width: '97%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
+            >
+                <Col style={{ marginRight: '5%' }}>
                     {/* ここはページ分け疑問ボタン */}
                     <Button
+                        id="rection_button"
                         type={reactionBottonType}
-                        style={{ width: 140 }}
+                        style={{ width: '120%' }}
                         icon={<QuestionOutlined />}
-                        // shape="round"
+                        shape="round"
                         onClick={onClickReaction}
                     >
                         わからない
                     </Button>
                 </Col>
-                <Col style={{ marginLeft: '10%' }}>
+                <Col style={{ marginLeft: '5%' }}>
                     {/* ここは挙手ボタン */}
                     <Button
-                        style={{ width: 140 }}
-                        // shape="round"
+                        id="handsup_button"
+                        style={{ width: '120%' }}
+                        shape="round"
                         type={handsupBottonType}
                         icon={handsupBottonIcon}
                         onClick={onClickHansup}
@@ -224,6 +271,99 @@ function PdfViewerComponent(props: Props) {
                     </Button>
                 </Col>
             </Row>
+            {/* 拡大表示 ***************************************************************/}
+            <Modal visible={zoomPdf} width="90%" footer={null} onCancel={() => setZoomPdf(false)}>
+                <Row
+                    id="document_row"
+                    style={{
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginTop: '4%',
+                    }}
+                >
+                    <Document file={props.documentUrl} onLoadSuccess={onDocumentLoadSuccess}>
+                        <Page
+                            pageNumber={documentPageNow}
+                            renderTextLayer={false}
+                            renderAnnotationLayer={false}
+                            className="pdf-page"
+                            // onLoadSuccess={onPageLoad}
+                        />
+                    </Document>
+                </Row>
+                <Row
+                    style={{
+                        width: '93%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        marginTop: '4%',
+                    }}
+                >
+                    <Col flex={1} style={{ paddingLeft: '10px' }}>
+                        <Button
+                            shape="circle"
+                            icon={<LeftOutlined />}
+                            onClick={() => changePage(documentPageNow, -1)}
+                        />
+                    </Col>
+                    <Col flex={30}>
+                        <Slider
+                            defaultValue={documentPageNow}
+                            min={1}
+                            max={numPages}
+                            onChange={(value) => {
+                                changePage(value);
+                            }}
+                            value={documentPageNow}
+                            style={{ width: '103%' }}
+                        />
+                    </Col>
+                    <Col flex={1}>
+                        <Button
+                            shape="circle"
+                            icon={<RightOutlined />}
+                            onClick={() => changePage(documentPageNow, 1)}
+                            style={{ marginLeft: '80%' }}
+                        />
+                    </Col>
+                </Row>
+                <Row
+                    style={{
+                        width: '97%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                >
+                    <Col style={{ marginRight: '5%' }}>
+                        {/* ここはページ分け疑問ボタン */}
+                        <Button
+                            type={reactionBottonType}
+                            style={{ width: 140 }}
+                            icon={<QuestionOutlined />}
+                            // shape="round"
+                            onClick={onClickReaction}
+                        >
+                            わからない
+                        </Button>
+                    </Col>
+                    <Col style={{ marginLeft: '5%' }}>
+                        {/* ここは挙手ボタン */}
+                        <Button
+                            style={{ width: 140 }}
+                            // shape="round"
+                            type={handsupBottonType}
+                            icon={handsupBottonIcon}
+                            onClick={onClickHansup}
+                            disabled={!(documentIds.indexOf(props.documentId) === presentOrder)}
+                        >
+                            {handsupText}
+                        </Button>
+                    </Col>
+                </Row>
+            </Modal>
         </Space>
     );
 }
