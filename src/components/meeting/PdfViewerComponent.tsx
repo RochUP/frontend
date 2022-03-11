@@ -36,25 +36,31 @@ function PdfViewerComponent(props: Props) {
     const [widthHeightRatio, setWidthHeightRatio] = useState(1);
 
     useEffect(() => {
-        if (widthHeightRatio > 1) {
-            setWidth(document.getElementById('document_row')?.clientWidth);
+        if (widthHeightRatio >= 1) {
+            setWidth(
+                (document.getElementById('document_row' + props.documentId) as HTMLElement)
+                    .clientWidth
+            );
         } else {
             // 縦長pdfは高さに合わせる
             setWidth(
-                (document.getElementById('document_row') as HTMLElement).clientHeight *
-                    widthHeightRatio
+                (document.getElementById('document_row' + props.documentId) as HTMLElement)
+                    .clientHeight * widthHeightRatio
             );
         }
     }, [widthHeightRatio]);
 
     window.addEventListener('resize', () => {
-        if (widthHeightRatio > 1) {
-            setWidth(document.getElementById('document_row')?.clientWidth);
+        if (widthHeightRatio >= 1) {
+            setWidth(
+                (document.getElementById('document_row' + props.documentId) as HTMLElement)
+                    .clientWidth
+            );
         } else {
             // 縦長pdfは高さに合わせる
             setWidth(
-                (document.getElementById('document_row') as HTMLElement).clientHeight *
-                    widthHeightRatio
+                (document.getElementById('document_row' + props.documentId) as HTMLElement)
+                    .clientHeight * widthHeightRatio
             );
         }
     });
@@ -68,13 +74,6 @@ function PdfViewerComponent(props: Props) {
         const { height, width, originalHeight, originalWidth } = info;
         // console.log(height, width, originalHeight, originalWidth);
         setWidthHeightRatio(originalWidth / originalHeight);
-        if (widthHeightRatio < 1) {
-            // 縦長pdfは高さに合わせる
-            setWidth(
-                (document.getElementById('document_row') as HTMLElement).clientHeight *
-                    (originalWidth / originalHeight)
-            );
-        }
     }
 
     function changePage(pageNumber: number, offset?: number) {
@@ -251,7 +250,7 @@ function PdfViewerComponent(props: Props) {
     return (
         <Space direction="vertical" style={{ width: '100%' }} onWheel={onWheelPageChange}>
             <Row
-                id="document_row"
+                id={'document_row' + props.documentId}
                 style={{
                     width: '90%',
                     minHeight: 370,
