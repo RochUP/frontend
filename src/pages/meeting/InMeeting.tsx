@@ -419,11 +419,11 @@ export default function InMeeting() {
                                         icon={<FormOutlined />}
                                         onClick={showModal}
                                     >
-                                        原稿登録
+                                        資料・原稿登録
                                     </Button>
                                     {/* ここのonOKはポップアップのokボタン */}
                                     <Modal
-                                        title="原稿登録"
+                                        title="資料・原稿登録"
                                         visible={isModalVisible}
                                         onOk={handleOk}
                                         onCancel={handleCancel}
@@ -431,7 +431,7 @@ export default function InMeeting() {
                                         cancelText={'キャンセル'}
                                     >
                                         <Space direction="vertical" style={{ width: '100%' }}>
-                                            <Text>原稿を登録しますか？</Text>
+                                            {/* <Text>原稿を登録しますか？</Text> */}
                                             <Upload
                                                 action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                                                 listType="picture"
@@ -455,13 +455,14 @@ export default function InMeeting() {
                                                     icon={<UploadOutlined />}
                                                     style={{ width: '100%' }}
                                                 >
-                                                    原稿アップロード
+                                                    資料アップロード
                                                 </Button>
                                             </Upload>
                                             <TextArea
                                                 id="script_form"
                                                 showCount
                                                 defaultValue={script_default}
+                                                placeholder="原稿"
                                             />
                                         </Space>
                                     </Modal>
