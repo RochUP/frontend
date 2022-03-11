@@ -279,7 +279,7 @@ function PdfViewerComponent(props: Props) {
             <Row
                 style={{
                     width: '93%',
-                    display: 'flex',
+                    display: numPages > 1 ? 'flex' : 'none',
                     justifyContent: 'center',
                     marginTop: '4%',
                 }}
@@ -340,7 +340,7 @@ function PdfViewerComponent(props: Props) {
                 <Row
                     style={{
                         width: '93%',
-                        display: 'flex',
+                        display: numPages > 1 ? 'flex' : 'none',
                         justifyContent: 'center',
                         marginTop: '4%',
                     }}
