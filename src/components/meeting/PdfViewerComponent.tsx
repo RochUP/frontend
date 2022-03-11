@@ -25,8 +25,10 @@ type Props = {
 
 function PdfViewerComponent(props: Props) {
     const userId = useSelector((state: any) => state.userReducer.userid);
+    const documentIds = useSelector((state: any) => state.meetingReducer.documentIds);
     const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow);
     const documentPageNow = useSelector((state: any) => state.meetingReducer.documentPageNow);
+    const presentOrder = useSelector((state: any) => state.meetingReducer.presentOrder);
 
     const [numPages, setNumPages] = useState<number>(0);
 
@@ -110,6 +112,10 @@ function PdfViewerComponent(props: Props) {
             handleHandsdown(false);
         }
     }, [props.ModeratorMsgSocket]);
+
+    useEffect(() => {
+        handleHandsdown(false);
+    }, [presentOrder]);
 
     /* わからないボタン ********************************************************/
 
@@ -212,6 +218,7 @@ function PdfViewerComponent(props: Props) {
                         type={handsupBottonType}
                         icon={handsupBottonIcon}
                         onClick={onClickHansup}
+                        disabled={!(documentIds.indexOf(props.documentId) === presentOrder)}
                     >
                         {handsupText}
                     </Button>
