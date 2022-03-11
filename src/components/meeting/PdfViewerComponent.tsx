@@ -259,7 +259,7 @@ function PdfViewerComponent(props: Props) {
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    marginTop: '4%',
+                    // marginTop: '4%',
                 }}
                 onClick={() => {
                     setZoomPdf(true);
@@ -279,9 +279,10 @@ function PdfViewerComponent(props: Props) {
             <Row
                 style={{
                     width: '93%',
-                    display: numPages > 1 ? 'flex' : 'none',
+                    display: 'flex',
                     justifyContent: 'center',
                     marginTop: '4%',
+                    visibility: numPages > 1 ? 'visible' : 'hidden',
                 }}
             >
                 <Col flex={1} style={{ paddingLeft: '10px' }}>
