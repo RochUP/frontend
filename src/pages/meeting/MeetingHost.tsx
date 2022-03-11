@@ -49,6 +49,7 @@ export default function MeetingHost() {
         setInputOk(
             meetingName !== '' &&
                 meetingDate !== '' &&
+                meetingDate !== ':00' &&
                 presenters.filter((id) => /^[\w]+$/.test(id)).length > 0
         );
     }, [meetingName, meetingDate, presenters]);
