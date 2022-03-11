@@ -90,7 +90,7 @@ function PdfViewerComponent(props: Props) {
         setHandsupDocumentPageNow(documentPageNow);
 
         setIsHandsup(true);
-        setHandsupBottonType('ghost');
+        setHandsupBottonType('primary');
         setHandsupBottonIcon(<ArrowDownOutlined />);
         setHandsupText('手を下ろす');
     };
@@ -101,7 +101,7 @@ function PdfViewerComponent(props: Props) {
         }
 
         setIsHandsup(false);
-        setHandsupBottonType('primary');
+        setHandsupBottonType('ghost');
         setHandsupBottonIcon(<ArrowUpOutlined />);
         setHandsupText('手を挙げる');
     };
@@ -123,7 +123,7 @@ function PdfViewerComponent(props: Props) {
     const [isReactedPage, setIsReactedPage] = useState(Array(numPages).fill(false)); //どのページにリアクションしているか
     const [reactionBottonType, setReactionBottonType] = useState<
         'primary' | 'default' | 'link' | 'text' | 'ghost' | 'dashed' | undefined
-    >('primary');
+    >('ghost');
 
     const onClickReaction = () => {
         const reactionOn = !isReactedPage[documentPageNowIndex];
@@ -135,8 +135,71 @@ function PdfViewerComponent(props: Props) {
     };
 
     useEffect(() => {
-        setReactionBottonType(isReactedPage[documentPageNowIndex] ? 'ghost' : 'primary');
+        setReactionBottonType(isReactedPage[documentPageNowIndex] ? 'primary' : 'ghost');
     }, [isReactedPage, documentPageNowIndex]);
+
+    //ボタンのサイズ調整
+    const ButtonSize = () => {
+        const width = window.innerWidth;
+        //閾値の値は仮に1400にしているので，検討する必要あり
+        if (width > 1400) {
+            return (
+                <Row style={{ width: '97%' }}>
+                    <Col style={{ marginLeft: '20%' }}>
+                        {/* ここはページ分け疑問ボタン */}
+                        <Button
+                            type={reactionBottonType}
+                            style={{ width: 140 }}
+                            icon={<QuestionOutlined />}
+                            // shape="round"
+                            onClick={onClickReaction}
+                        >
+                            わからない
+                        </Button>
+                    </Col>
+                    <Col style={{ marginLeft: '10%' }}>
+                        {/* ここは挙手ボタン */}
+                        <Button
+                            style={{ width: 140 }}
+                            // shape="round"
+                            type={handsupBottonType}
+                            icon={handsupBottonIcon}
+                            onClick={onClickHansup}
+                            disabled={!(documentIds.indexOf(props.documentId) === presentOrder)}
+                        >
+                            {handsupText}
+                        </Button>
+                    </Col>
+                </Row>
+            );
+        } else {
+            return (
+                <Row style={{ width: '97%' }}>
+                    <Col style={{ marginLeft: '20%' }}>
+                        {/* ここはページ分け疑問ボタン */}
+                        <Button
+                            type={reactionBottonType}
+                            style={{ width: width * 0.05 }}
+                            icon={<QuestionOutlined />}
+                            // shape="round"
+                            onClick={onClickReaction}
+                        ></Button>
+                    </Col>
+                    <Col style={{ marginLeft: '15%' }}>
+                        {/* ここは挙手ボタン */}
+                        <Button
+                            style={{ width: width * 0.05 }}
+                            // shape="round"
+                            type={handsupBottonType}
+                            icon={handsupBottonIcon}
+                            onClick={onClickHansup}
+                            disabled={!(documentIds.indexOf(props.documentId) === presentOrder)}
+                        ></Button>
+                    </Col>
+                </Row>
+            );
+        }
+    };
 
     /*****************************************************/
 
@@ -197,33 +260,7 @@ function PdfViewerComponent(props: Props) {
                     />
                 </Col>
             </Row>
-            <Row style={{ width: '97%' }}>
-                <Col style={{ marginLeft: '20%' }}>
-                    {/* ここはページ分け疑問ボタン */}
-                    <Button
-                        type={reactionBottonType}
-                        style={{ width: 140 }}
-                        icon={<QuestionOutlined />}
-                        // shape="round"
-                        onClick={onClickReaction}
-                    >
-                        わからない
-                    </Button>
-                </Col>
-                <Col style={{ marginLeft: '10%' }}>
-                    {/* ここは挙手ボタン */}
-                    <Button
-                        style={{ width: 140 }}
-                        // shape="round"
-                        type={handsupBottonType}
-                        icon={handsupBottonIcon}
-                        onClick={onClickHansup}
-                        disabled={!(documentIds.indexOf(props.documentId) === presentOrder)}
-                    >
-                        {handsupText}
-                    </Button>
-                </Col>
-            </Row>
+            {ButtonSize()}
         </Space>
     );
 }
