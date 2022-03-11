@@ -168,7 +168,6 @@ function PdfViewerComponent(props: Props) {
         setReactionBottonType(isReactedPage[documentPageNowIndex] ? 'primary' : 'ghost');
     }, [isReactedPage, documentPageNowIndex]);
 
-
     //ボタンのサイズ調整
     const ButtonSize = () => {
         const width = window.innerWidth;
@@ -245,7 +244,6 @@ function PdfViewerComponent(props: Props) {
             );
         }
     };
-
 
     /* zoom ****************************************************/
     const [zoomPdf, setZoomPdf] = useState(false);
@@ -354,7 +352,7 @@ function PdfViewerComponent(props: Props) {
                             onClick={() => changePage(documentPageNow, -1)}
                         />
                     </Col>
-                    <Col flex={30}>
+                    <Col flex={20}>
                         <Slider
                             defaultValue={documentPageNow}
                             min={1}
@@ -363,7 +361,7 @@ function PdfViewerComponent(props: Props) {
                                 changePage(value);
                             }}
                             value={documentPageNow}
-                            style={{ width: '103%' }}
+                            style={{ width: '100%' }}
                         />
                     </Col>
                     <Col flex={1}>
@@ -389,7 +387,7 @@ function PdfViewerComponent(props: Props) {
                             type={reactionBottonType}
                             style={{ width: 140 }}
                             icon={<QuestionOutlined />}
-                            // shape="round"
+                            shape="round"
                             onClick={onClickReaction}
                         >
                             わからない
@@ -399,7 +397,7 @@ function PdfViewerComponent(props: Props) {
                         {/* ここは挙手ボタン */}
                         <Button
                             style={{ width: 140 }}
-                            // shape="round"
+                            shape="round"
                             type={handsupBottonType}
                             icon={handsupBottonIcon}
                             onClick={onClickHansup}
@@ -410,7 +408,6 @@ function PdfViewerComponent(props: Props) {
                     </Col>
                 </Row>
             </Modal>
-
         </Space>
     );
 }
