@@ -24,18 +24,18 @@ html {
 
 .login-title {
     align-content: center;
-    width: 300px;
+    width: 238px;
     margin: auto;
 }
 
 .login-logo {
-    width: 85%;
-    height: 85%;
-    margin-left: 5%;
+    width: 100%;
+    height: 100%;
+    display: block;
+    margin-left: 4%;
 }
 
 .login-title-text {
-    float: left;
-    margin-left: 5%;
+    display: block;
     margin-top: -30px;
 }
