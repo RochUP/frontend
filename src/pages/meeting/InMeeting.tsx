@@ -87,7 +87,7 @@ export default function InMeeting() {
     const [spinning, setSpinning] = useState(false);
 
     //発表か質問のどちらかしかボタンを押せないようにする
-    const [presenCheck, setCheck] = useState(true);
+    const [nextType, changeNextType] = useState<'present' | 'question' | 'end'>('present');
 
     useEffect(() => {
         if (meetingId === 0) {
@@ -155,14 +155,16 @@ export default function InMeeting() {
                 case 'moderator_msg':
                     setModeratorMsgSocket(data);
                     if (data.isStartPresen) {
-                        setCheck(true);
                         store.dispatch(
                             changeDocumentPageAction(presenterIds[data.presenterOrder], 1)
                         );
                         store.dispatch(presentChangeAction(data.presenterOrder));
                         setTabPresenterId(presenterIds[data.presenterOrder]);
+                        changeNextType('present');
+                    } else if (data.moderatorMsgBody.match(/会議を終了/)) {
+                        changeNextType('end');
                     } else {
-                        setCheck(false);
+                        changeNextType('question');
                     }
                     break;
                 case 'document_update':
@@ -192,35 +194,33 @@ export default function InMeeting() {
         }
     }, []);
 
-    /**************************************************** */
-
     /* 発表，質問の終了判定 *************************************/
-    const viewFinishButton = () => {
-        if (!presenCheck) {
-            return (
-                <Button
-                    danger
-                    icon={<MessageOutlined />}
-                    disabled={presenCheck}
-                    ghost={presenCheck}
-                    onClick={() => finishOn('question')}
-                >
-                    質問終了
-                </Button>
-            );
-        } else {
-            return (
-                <Button
-                    danger
-                    icon={<CheckCircleOutlined />}
-                    disabled={!presenCheck}
-                    ghost={!presenCheck}
-                    onClick={() => finishOn('present')}
-                >
-                    発表終了
-                </Button>
-            );
+    const finishButtonTitle = useMemo(() => {
+        switch (nextType) {
+            case 'present':
+                return '発表終了';
+            case 'question':
+                return '質問終了';
+            case 'end':
+                return '会議は終了しました';
         }
+    }, [nextType]);
+
+    const FinishButton = () => {
+        return (
+            <Button
+                danger
+                ghost
+                onClick={() => finishOn(nextType)}
+                {...(nextType === 'end'
+                    ? { type: 'text', disabled: true }
+                    : nextType === 'present'
+                    ? { icon: <MessageOutlined /> }
+                    : { icon: <CheckCircleOutlined /> })}
+            >
+                {finishButtonTitle}
+            </Button>
+        );
     };
 
     const commands = [
@@ -230,9 +230,7 @@ export default function InMeeting() {
                 let questionUserId = '';
                 if (moderatorMsgSocket) questionUserId = moderatorMsgSocket.userId;
 
-                if (presenCheck) {
-                    sendFinishword(socket, meetingId, presenterIdNow, questionUserId, 'present');
-                }
+                sendFinishword(socket, meetingId, presenterIdNow, questionUserId, nextType);
             },
             // callback: () => {sendPresenFinish()}
         },
@@ -242,9 +240,7 @@ export default function InMeeting() {
                 let questionUserId = '';
                 if (moderatorMsgSocket) questionUserId = moderatorMsgSocket.userId;
 
-                if (!presenCheck) {
-                    sendFinishword(socket, meetingId, presenterIdNow, questionUserId, 'question');
-                }
+                sendFinishword(socket, meetingId, presenterIdNow, questionUserId, nextType);
             },
             // callback: () => {sendQuestionFinish()}
         },
@@ -252,22 +248,6 @@ export default function InMeeting() {
 
     const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } =
         useSpeechRecognition({ commands });
-
-    // function sendPresenFinish(){
-    //     resetTranscript;
-    //     sendFinishword(socket, meetingId, presenterIdNow, "present");
-    // }
-
-    // function sendQuestionFinish(){
-    //     resetTranscript;
-    //     sendFinishword(socket, meetingId, presenterIdNow, "question")
-    // }
-
-    // setTimeout(()=>resetTranscript,5000);
-
-    /**************************************************** */
-
-    const { Title } = Typography;
 
     /* 資料アップロード処理 *************************************/
     const scripts = useSelector((state: any) => state.meetingReducer.scripts);
@@ -390,8 +370,7 @@ export default function InMeeting() {
         <Layout>
             <MeetingHeader />
             <Content style={{ padding: '0 40px' }}>
-                {/* <p>{transcript}</p> */}
-                <Title style={{ margin: '10px 0' }}>{meetingName}</Title>
+                <Typography.Title style={{ margin: '10px 0' }}>{meetingName}</Typography.Title>
                 <Breadcrumb style={{ margin: '10px 0' }}>
                     <Breadcrumb.Item>会議</Breadcrumb.Item>
                     <Breadcrumb.Item>会議中</Breadcrumb.Item>
@@ -419,7 +398,7 @@ export default function InMeeting() {
                                     marginRight: '5%',
                                 }}
                             >
-                                {viewFinishButton()}
+                                <FinishButton />
                                 <Tooltip
                                     placement="topRight"
                                     title={
