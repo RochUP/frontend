@@ -95,8 +95,16 @@ export default function LoginPage() {
                                 src={`${process.env.PUBLIC_URL}/logo_plithos.png`}
                                 alt="logo"
                             />
-                            <Typography.Text className="login-title-text" type="secondary">
-                                オンラインミーティングアシスタント
+                            <Typography.Text
+                                className="login-title-text"
+                                type="secondary"
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                オンライン会議アシスタント
                             </Typography.Text>
                         </div>
                         <LoginForm
