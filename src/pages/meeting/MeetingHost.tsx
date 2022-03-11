@@ -149,7 +149,7 @@ export default function MeetingHost(props: Props) {
                             justifyContent: 'right',
                         }}
                     >
-                        <span>会議名</span>
+                        会議名
                     </Col>
                     <Col span={12}>
                         <Input
@@ -170,7 +170,7 @@ export default function MeetingHost(props: Props) {
                                 justifyContent: 'right',
                             }}
                         >
-                            <span>開始時間</span>
+                            開始時間
                         </Col>
                         <Col span={12}>
                             <DatePicker
@@ -194,7 +194,7 @@ export default function MeetingHost(props: Props) {
                                     justifyContent: 'right',
                                 }}
                             >
-                                <span>発表者</span>
+                                {`発表者 ${idx + 1}`}
                             </Col>
                             <Col span={12}>
                                 <Input
@@ -227,7 +227,7 @@ export default function MeetingHost(props: Props) {
                             <Col
                                 span={1}
                                 style={{
-                                    display: 'flex',
+                                    display: presenters.length === 1 && idx === 0 ? 'none' : 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                 }}
