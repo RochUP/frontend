@@ -83,7 +83,7 @@ export default function InMeeting() {
     const [spinning, setSpinning] = useState(false);
 
     //発表か質問のどちらかしかボタンを押せないようにする
-    const [questionCheck, setCheck] = useState(true);
+    const [presenCheck, setCheck] = useState(true);
 
     useEffect(() => {
         if (meetingId === 0) {
@@ -192,13 +192,13 @@ export default function InMeeting() {
 
     /* 発表，質問の終了判定 *************************************/
     const viewFinishButton = () => {
-        if (!questionCheck) {
+        if (!presenCheck) {
             return (
                 <Button
                     danger
                     icon={<MessageOutlined />}
-                    disabled={questionCheck}
-                    ghost={questionCheck}
+                    disabled={presenCheck}
+                    ghost={presenCheck}
                     onClick={() => finishOn('question')}
                 >
                     質問終了
@@ -209,8 +209,8 @@ export default function InMeeting() {
                 <Button
                     danger
                     icon={<CheckCircleOutlined />}
-                    disabled={!questionCheck}
-                    ghost={!questionCheck}
+                    disabled={!presenCheck}
+                    ghost={!presenCheck}
                     onClick={() => finishOn('present')}
                 >
                     発表終了
@@ -225,7 +225,10 @@ export default function InMeeting() {
             callback: () => {
                 let questionUserId = '';
                 if (moderatorMsgSocket) questionUserId = moderatorMsgSocket.userId;
-                sendFinishword(socket, meetingId, presenterIdNow, questionUserId, 'present');
+
+                if (presenCheck) {
+                    sendFinishword(socket, meetingId, presenterIdNow, questionUserId, 'present');
+                }
             },
             // callback: () => {sendPresenFinish()}
         },
@@ -234,7 +237,10 @@ export default function InMeeting() {
             callback: () => {
                 let questionUserId = '';
                 if (moderatorMsgSocket) questionUserId = moderatorMsgSocket.userId;
-                sendFinishword(socket, meetingId, presenterIdNow, questionUserId, 'question');
+
+                if (!presenCheck) {
+                    sendFinishword(socket, meetingId, presenterIdNow, questionUserId, 'question');
+                }
             },
             // callback: () => {sendQuestionFinish()}
         },
