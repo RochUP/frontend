@@ -46,6 +46,7 @@ import { uploadFile2AzureStorage } from '../../utils/azureStorage';
 import Socket from '../../utils/webSocket';
 import { receiveData, sendFinishword, sendHandsup } from '../../utils/webSocketUtils';
 import { meetingJoinAction } from '../../actions/meetingActions';
+import { dateArrayFormatter } from '@ant-design/pro-utils';
 
 const { Footer, Content } = Layout;
 const { Text } = Typography;
@@ -76,6 +77,13 @@ export default function InMeeting() {
     const presenterIdNow = useSelector((state: any) => state.meetingReducer.presenterIdNow);
     const documentIds = useSelector((state: any) => state.meetingReducer.documentIds);
     const documentPageNow = useSelector((state: any) => state.meetingReducer.documentPageNow);
+
+    //会議退出
+    const presentOrder = useSelector((state: any) => state.meetingReducer.presentOrder);
+    const [spinning, setSpinning] = useState(false);
+
+    //発表か質問のどちらかしかボタンを押せないようにする
+    const [questionCheck, setCheck] = useState(true);
 
     useEffect(() => {
         if (meetingId === 0) {
@@ -143,11 +151,14 @@ export default function InMeeting() {
                 case 'moderator_msg':
                     setModeratorMsgSocket(data);
                     if (data.isStartPresen) {
+                        setCheck(questionCheck);
                         store.dispatch(
                             changeDocumentPageAction(presenterIds[data.presenterOrder], 1)
                         );
                         store.dispatch(presentChangeAction(data.presenterOrder));
                         setTabPresenterId(presenterIds[data.presenterOrder]);
+                    } else {
+                        setCheck(!questionCheck);
                     }
                     break;
                 case 'document_update':
@@ -180,6 +191,34 @@ export default function InMeeting() {
     /**************************************************** */
 
     /* 発表，質問の終了判定 *************************************/
+    const viewFinishButton = () => {
+        if (!questionCheck) {
+            return (
+                <Button
+                    danger
+                    icon={<MessageOutlined />}
+                    disabled={questionCheck}
+                    ghost={questionCheck}
+                    onClick={() => finishOn('question')}
+                >
+                    質問終了
+                </Button>
+            );
+        } else {
+            return (
+                <Button
+                    danger
+                    icon={<CheckCircleOutlined />}
+                    disabled={!questionCheck}
+                    ghost={!questionCheck}
+                    onClick={() => finishOn('present')}
+                >
+                    発表終了
+                </Button>
+            );
+        }
+    };
+
     const commands = [
         {
             command: '*発表を終わ*',
@@ -287,9 +326,6 @@ export default function InMeeting() {
     }, []);
 
     //会議退出
-    const presentOrder = useSelector((state: any) => state.meetingReducer.presentOrder);
-    const [spinning, setSpinning] = useState(false);
-
     const Exit = async () => {
         console.log('exit');
         // console.log(userId, meetingId, documentId);
@@ -374,20 +410,7 @@ export default function InMeeting() {
                                     marginRight: '5%',
                                 }}
                             >
-                                <Button
-                                    danger
-                                    icon={<MessageOutlined />}
-                                    onClick={() => finishOn('question')}
-                                >
-                                    質問終了
-                                </Button>
-                                <Button
-                                    danger
-                                    icon={<CheckCircleOutlined />}
-                                    onClick={() => finishOn('present')}
-                                >
-                                    発表終了
-                                </Button>
+                                {viewFinishButton()}
                                 <Tooltip
                                     placement="topRight"
                                     title={'発表者は原稿を登録してください'}
