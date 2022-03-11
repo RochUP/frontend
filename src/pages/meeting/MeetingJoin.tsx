@@ -10,6 +10,7 @@ import {
     Spin,
     Typography,
     Modal,
+    Divider,
 } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import '../../assets/css/Pages.css';
@@ -92,11 +93,12 @@ export default function MeetingJoin() {
             <Layout>
                 <MeetingHeader />
                 <Layout.Content style={{ padding: '0 50px', margin: '16px 0', height: '100%' }}>
-                    <Typography.Title style={{ margin: '16px 0' }}>Plithos</Typography.Title>
-                    <Breadcrumb style={{ margin: '16px 0' }}>
-                        <Breadcrumb.Item>会議</Breadcrumb.Item>
-                        <Breadcrumb.Item>会議参加</Breadcrumb.Item>
-                    </Breadcrumb>
+                    <Typography.Title style={{ margin: '16px 0' }}>
+                        会議参加 / 作成
+                    </Typography.Title>
+                    {/* <Breadcrumb style={{ margin: '16px 0' }}>
+                        <Breadcrumb.Item>会議参加/作成</Breadcrumb.Item>
+                    </Breadcrumb> */}
                     <Row gutter={[16, 16]}>
                         <Col
                             xs={{ span: 24 }}
@@ -135,6 +137,7 @@ export default function MeetingJoin() {
                                         会議に参加する
                                     </Button>
                                 </Space>
+                                <Divider />
                             </Card>
                         </Col>
                         <Col
