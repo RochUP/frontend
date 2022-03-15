@@ -31,10 +31,10 @@ export default function CommentListComponent(props: Props) {
 
     const indexnum = presenterIds.indexOf(props.presenterId);
 
-    const [questionform, setquestion] = useState<string>('');
+    const [questionform, setQuestionform] = useState<string>('');
 
     function handleSendCommentClick() {
-        setquestion(
+        setQuestionform(
             (document.getElementById('question' + props.presenterId) as HTMLInputElement).value
         );
 
@@ -42,24 +42,7 @@ export default function CommentListComponent(props: Props) {
         const documentId = documentIds[indexnum];
 
         //日付の取得
-        var date = new Date();
-        // var qtime = date.toLocaleString();
-
-        const qyear = String(date.getFullYear());
-        let qmonth = String(date.getMonth() + 1);
-        let qday = String(date.getDate());
-        let qhours = String(date.getHours());
-        let qminutes = String(date.getMinutes());
-        let qseconds = String(date.getSeconds());
-
-        qmonth = setTime(qmonth);
-        qday = setTime(qday);
-        qhours = setTime(qhours);
-        qminutes = setTime(qminutes);
-        qseconds = setTime(qseconds);
-
-        const qtime =
-            qyear + '/' + qmonth + '/' + qday + ' ' + qhours + ':' + qminutes + ':' + qseconds;
+        const questionTime = moment().format('YYYY/MM/DD HH:mm:ss');
 
         sendQuestion(
             props.socket,
@@ -68,21 +51,14 @@ export default function CommentListComponent(props: Props) {
             questionform,
             documentId,
             documentPageNow,
-            qtime
+            questionTime
         );
 
-        setquestion('');
+        setQuestionform('');
     }
 
-    const setTime = (date: string) => {
-        if (Number(date) < 10) {
-            date = '0' + date;
-        }
-        return date;
-    };
-
     const handleQuestionFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setquestion(e.target.value);
+        setQuestionform(e.target.value);
     };
 
     const changeDocumentPage = useCallback((page: number) => {
