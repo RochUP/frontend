@@ -10,7 +10,7 @@ import { changeDocumentPageAction } from '../../actions/meetingActions';
 import { sendQuestion } from '../../utils/webSocketUtils';
 import { useSelector } from 'react-redux';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 
 type Props = {
@@ -89,6 +89,13 @@ export default function CommentListComponent(props: Props) {
         store.dispatch(changeDocumentPageAction(props.presenterId, page));
     }, []);
 
+    const scrollBottomRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        props.sortMode === 'time' &&
+            scrollBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [props.sortMode, questionList]);
+
     return (
         <div style={{ width: '100%' }}>
             <Col span={24} style={{ width: '100%' }}>
@@ -148,6 +155,7 @@ export default function CommentListComponent(props: Props) {
                                     <CommentItemComponent socket={props.socket} question={item} />
                                 </li>
                             )}
+                            footer={<div ref={scrollBottomRef} />}
                         />
                     )}
                 </Card>
