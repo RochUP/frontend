@@ -10,7 +10,7 @@ import { changeDocumentPageAction } from '../../actions/meetingActions';
 import { sendQuestion } from '../../utils/webSocketUtils';
 import { useSelector } from 'react-redux';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 
 type Props = {
@@ -31,10 +31,10 @@ export default function CommentListComponent(props: Props) {
 
     const indexnum = presenterIds.indexOf(props.presenterId);
 
-    const [questionform, setquestion] = useState<string>('');
+    const [questionform, setQuestionform] = useState<string>('');
 
     function handleSendCommentClick() {
-        setquestion(
+        setQuestionform(
             (document.getElementById('question' + props.presenterId) as HTMLInputElement).value
         );
 
@@ -42,24 +42,7 @@ export default function CommentListComponent(props: Props) {
         const documentId = documentIds[indexnum];
 
         //日付の取得
-        var date = new Date();
-        // var qtime = date.toLocaleString();
-
-        const qyear = String(date.getFullYear());
-        let qmonth = String(date.getMonth() + 1);
-        let qday = String(date.getDate());
-        let qhours = String(date.getHours());
-        let qminutes = String(date.getMinutes());
-        let qseconds = String(date.getSeconds());
-
-        qmonth = setTime(qmonth);
-        qday = setTime(qday);
-        qhours = setTime(qhours);
-        qminutes = setTime(qminutes);
-        qseconds = setTime(qseconds);
-
-        const qtime =
-            qyear + '/' + qmonth + '/' + qday + ' ' + qhours + ':' + qminutes + ':' + qseconds;
+        const questionTime = moment().format('YYYY/MM/DD HH:mm:ss');
 
         sendQuestion(
             props.socket,
@@ -68,26 +51,26 @@ export default function CommentListComponent(props: Props) {
             questionform,
             documentId,
             documentPageNow,
-            qtime
+            questionTime
         );
 
-        setquestion('');
+        setQuestionform('');
     }
 
-    const setTime = (date: string) => {
-        if (Number(date) < 10) {
-            date = '0' + date;
-        }
-        return date;
-    };
-
     const handleQuestionFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setquestion(e.target.value);
+        setQuestionform(e.target.value);
     };
 
     const changeDocumentPage = useCallback((page: number) => {
         store.dispatch(changeDocumentPageAction(props.presenterId, page));
     }, []);
+
+    const scrollBottomRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        props.sortMode === 'time' &&
+            scrollBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [props.sortMode, questionList]);
 
     return (
         <div style={{ width: '100%' }}>
@@ -148,6 +131,7 @@ export default function CommentListComponent(props: Props) {
                                     <CommentItemComponent socket={props.socket} question={item} />
                                 </li>
                             )}
+                            footer={<div ref={scrollBottomRef} />}
                         />
                     )}
                 </Card>
